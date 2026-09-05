@@ -29,7 +29,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 🚀 Masterstroke: خلفية شبكة اتصالات */
+        /* خلفية شبكة اتصالات */
         .network-bg {
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(0, 180, 216, 0.15), transparent 25%),
@@ -39,7 +39,6 @@
             background-attachment: fixed;
         }
 
-        /* الزجاج التقني المتقدم */
         .glass-panel {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
@@ -60,7 +59,6 @@
             border-color: rgba(0, 180, 216, 0.3);
         }
 
-        /* أنيميشن الطفو والنبض */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         .animate-float { animation: float 6s ease-in-out infinite; }
 
@@ -75,9 +73,20 @@
         
         .perspective-container { perspective: 1000px; }
         .phone-3d { transition: transform 0.1s ease-out; transform-style: preserve-3d; }
+
+        /* إشعار النسخ (Toast) */
+        #toastMsg {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
     </style>
 </head>
 <body class="network-bg min-h-screen flex flex-col pb-20 md:pb-0">
+
+    <!-- 🚀 إشعار عائم للنسخ والرسائل -->
+    <div id="toastMsg" class="fixed top-24 left-1/2 -translate-x-1/2 -translate-y-20 opacity-0 z-[10000] bg-slate-800 text-white px-6 py-3 rounded-full font-bold text-sm shadow-2xl flex items-center gap-2 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastText">تم النسخ بنجاح</span>
+    </div>
 
     <!-- 🚀 الهيدر (Navbar) -->
     <header class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 transition-all duration-300">
@@ -93,14 +102,8 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 md:gap-4">
-                    <button onclick="switchView('dashboardView')" class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-[#00b4d8] transition-colors bg-transparent border-none cursor-pointer">
-                        <i class="fa-solid fa-qrcode"></i> شرائحي
-                    </button>
-                    <div class="h-6 w-px bg-white/10 hidden md:block"></div>
-                    <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95 text-decoration-none">
-                        <i class="fa-regular fa-user text-[#00b4d8]"></i> حسابي
-                    </a>
+                <div class="flex items-center gap-3 md:gap-4" id="headerAuthArea">
+                    <!-- سيتم تحديث هذا القسم عبر الـ JS بناءً على حالة تسجيل الدخول -->
                 </div>
             </div>
         </div>
@@ -110,7 +113,6 @@
     <!-- 🌟 الشاشة الرئيسية (Home View) -->
     <!-- ========================================== -->
     <div id="homeView" class="block transition-opacity duration-300">
-        <!-- قسم الهيرو والبحث -->
         <main class="pt-28 md:pt-36 pb-12 md:pb-16 flex items-center justify-center relative">
             <div class="absolute inset-0 z-0 opacity-10 pointer-events-none flex items-center justify-center overflow-hidden">
                 <svg width="600" height="600" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -152,6 +154,11 @@
                         <button type="button" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors cursor-pointer">🇸🇦 السعودية</button>
                         <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors cursor-pointer">🇪🇺 أوروبا</button>
                     </div>
+
+                    <!-- 🚀 زر فحص التوافقية -->
+                    <button type="button" onclick="openCompatibilityModal()" class="mt-8 text-[11px] md:text-sm text-slate-400 hover:text-[#00b4d8] underline decoration-dashed underline-offset-4 cursor-pointer bg-transparent border-none transition-colors">
+                        <i class="fa-solid fa-mobile-screen"></i> هل هاتفي يدعم تقنية eSIM؟
+                    </button>
                 </div>
 
                 <!-- هاتف تفاعلي 3D -->
@@ -186,7 +193,6 @@
             </div>
         </main>
 
-        <!-- قسم عرض الباقات -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 relative z-20" id="packagesSection">
             <div class="flex items-end justify-between mb-6 md:mb-10">
                 <div>
@@ -204,7 +210,7 @@
     <!-- ========================================== -->
     <div id="dashboardView" class="hidden transition-opacity duration-300">
         <main class="pt-28 md:pt-36 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-            <div class="flex items-center justify-between border-b border-white/10 pb-6 mb-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/10 pb-6 mb-8 gap-4">
                 <div>
                     <h2 class="text-2xl md:text-4xl font-black text-white mb-2">شرائحي الإلكترونية 📱</h2>
                     <p class="text-slate-400 text-sm">إدارة باقات الإنترنت الخاصة بك، وعرض أكواد الـ QR.</p>
@@ -214,7 +220,17 @@
                 </button>
             </div>
 
-            <!-- حاوية الشرائح المشتراة -->
+            <!-- 🚀 بانر الوصول بدون إنترنت -->
+            <div class="bg-gradient-to-l from-amber-500/20 to-transparent border border-amber-500/30 rounded-2xl p-4 mb-8 flex items-center gap-4">
+                <div class="w-10 h-10 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 shrink-0">
+                    <i class="fa-solid fa-plane-slash text-xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-amber-400 font-bold text-sm mb-1">الوصول بدون إنترنت بالمطار</h4>
+                    <p class="text-slate-300 text-xs leading-relaxed">لضمان وصولك لكود الـ QR عند السفر، التقط "صورة للشاشة" (Screenshot) للبطاقة أدناه، أو أضف الموقع لشاشتك الرئيسية.</p>
+                </div>
+            </div>
+
             <div id="myEsimsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- سيتم حقن البطاقات هنا عبر الجافاسكربت -->
             </div>
@@ -237,7 +253,7 @@
         </a>
     </nav>
 
-    <!-- 🚀 نافذة الدفع المنبثقة السريعة (Checkout Modal) -->
+    <!-- 🚀 نافذة الدفع المنبثقة (Checkout Modal) -->
     <div id="checkoutModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer" onclick="closeCheckoutModal()"></div>
         
@@ -274,9 +290,68 @@
         </div>
     </div>
 
+    <!-- 🚀 نافذة فحص توافق الجهاز (Compatibility Modal) -->
+    <div id="compatibilityModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer" onclick="closeCompatibilityModal()"></div>
+        <div class="bg-white w-[90%] max-w-sm rounded-[2rem] p-6 relative z-10 transform translate-y-10 transition-transform duration-300 shadow-2xl border-t-[6px] border-[#1f3a40]" id="compatibilityContent">
+            <button onclick="closeCompatibilityModal()" class="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-800 transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#1f3a40]"><i class="fa-solid fa-mobile-screen text-2xl"></i></div>
+            <h3 class="text-lg font-black text-[#1f3a40] mb-2 text-center">هل هاتفك يدعم الـ eSIM؟</h3>
+            <p class="text-xs text-slate-500 font-semibold text-center mb-6 leading-relaxed">ابحث عن نوع هاتفك أدناه للتأكد من توافقه مع شرائح رمال كونكت.</p>
+            
+            <form id="checkDeviceForm" onsubmit="checkDeviceCompatibility(event)">
+                <div class="relative mb-4">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="deviceInput" required placeholder="مثال: iPhone 13, Galaxy S22..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:ring-2 focus:ring-[#00b4d8]/20 transition-all text-left" dir="ltr">
+                </div>
+                <button type="submit" class="w-full bg-[#1f3a40] hover:bg-slate-800 text-white font-black py-3 rounded-xl shadow-md transition-all active:scale-95 text-sm cursor-pointer border-none">افحص جهازي</button>
+            </form>
+            <div id="deviceResult" class="mt-4 hidden"></div>
+        </div>
+    </div>
+
     <!-- 🚀 الجافاسكربت -->
     <script>
         const API_URL = 'https://remal-connect.onrender.com';
+
+        // 🚀 تحديث الهيدر بناءً على تسجيل الدخول + المحفظة
+        function updateAuthUI() {
+            const authArea = document.getElementById('headerAuthArea');
+            const currentUserStr = localStorage.getItem('rimal_current_user');
+            
+            if (currentUserStr) {
+                const user = JSON.parse(currentUserStr);
+                // رصيد المحفظة الوهمي (يمكن جلبه من السيرفر لاحقاً)
+                const walletBalance = user.points ? (user.points / 10).toFixed(2) : '50.00'; 
+                
+                authArea.innerHTML = `
+                    <button onclick="switchView('dashboardView')" class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-[#00b4d8] transition-colors bg-transparent border-none cursor-pointer">
+                        <i class="fa-solid fa-qrcode"></i> شرائحي
+                    </button>
+                    <div class="h-6 w-px bg-white/10 hidden md:block"></div>
+                    
+                    <div class="hidden sm:flex bg-amber-500/10 border border-amber-500/20 text-amber-400 px-3 py-1.5 rounded-full items-center gap-1.5">
+                        <i class="fa-solid fa-wallet text-xs"></i>
+                        <span class="text-[10px] font-black tracking-wider" dir="ltr">${walletBalance} AED</span>
+                    </div>
+
+                    <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all flex items-center gap-2 text-decoration-none">
+                        <div class="w-6 h-6 bg-[#00b4d8] rounded-full flex items-center justify-center text-white text-xs shrink-0">${user.fullName ? user.fullName.charAt(0) : 'U'}</div>
+                        <span class="hidden md:inline">${user.fullName ? user.fullName.split(' ')[0] : 'حسابي'}</span>
+                    </a>
+                `;
+            } else {
+                authArea.innerHTML = `
+                    <button onclick="switchView('dashboardView')" class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-[#00b4d8] transition-colors bg-transparent border-none cursor-pointer">
+                        <i class="fa-solid fa-qrcode"></i> شرائحي
+                    </button>
+                    <div class="h-6 w-px bg-white/10 hidden md:block"></div>
+                    <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95 text-decoration-none">
+                        <i class="fa-regular fa-user text-[#00b4d8]"></i> <span class="hidden md:inline">دخول / تسجيل</span>
+                    </a>
+                `;
+            }
+        }
 
         // نظام التنقل (SPA Routing)
         function switchView(viewId) {
@@ -288,7 +363,7 @@
                 home.classList.remove('block');
                 dash.classList.remove('hidden');
                 dash.classList.add('block');
-                renderMyEsims(); // تحديث لوحة التحكم
+                renderMyEsims();
             } else {
                 dash.classList.add('hidden');
                 dash.classList.remove('block');
@@ -298,7 +373,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // دالة للبحث السريع
         function quickSearch(country) {
             document.getElementById('searchInput').value = country;
             fetchPackages(country);
@@ -340,7 +414,6 @@
                     container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">${data.message}</div>`;
                 }
             } catch (error) {
-                console.error("Fetch Error:", error);
                 container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم. يرجى التأكد من تشغيل الخادم.</div>`;
             } finally {
                 btn.innerHTML = originalBtnHtml;
@@ -407,7 +480,7 @@
             container.innerHTML = html;
         }
 
-        // نظام الشراء والدفع
+        // نظام الدفع 
         let currentSelectedPackage = null;
 
         function openCheckoutModal(pkgId, country, flag, data, price) {
@@ -422,7 +495,16 @@
             const actionArea = document.getElementById('checkoutActionArea');
 
             if (currentUser) {
+                // إضافة خيار استخدام المحفظة ضمنياً (UI فقط للمحاكاة)
                 actionArea.innerHTML = `
+                    <div class="flex items-center justify-between bg-amber-50 border border-amber-100 p-3 rounded-xl mb-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-wallet text-amber-500"></i>
+                            <span class="text-[10px] font-bold text-amber-800">استخدام رصيد المحفظة؟</span>
+                        </div>
+                        <input type="checkbox" class="w-4 h-4 accent-amber-500 cursor-pointer">
+                    </div>
+                    
                     <div class="flex items-center justify-center gap-2 mb-3 text-[10px] text-emerald-600 font-bold bg-emerald-50 py-1.5 rounded-lg border border-emerald-100">
                         <i class="fa-solid fa-lock"></i> دفع إلكتروني آمن ومشفّر
                     </div>
@@ -466,14 +548,10 @@
 
             try {
                 const userObj = JSON.parse(localStorage.getItem('rimal_current_user'));
-                
                 const response = await fetch(`${API_URL}/api/purchase-esim`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        packageId: currentSelectedPackage.pkgId,
-                        customerEmail: userObj.email
-                    })
+                    body: JSON.stringify({ packageId: currentSelectedPackage.pkgId, customerEmail: userObj.email })
                 });
 
                 const data = await response.json();
@@ -483,7 +561,6 @@
                     btn.classList.replace('from-[#800000]', 'from-emerald-500');
                     btn.classList.replace('to-[#a30000]', 'to-emerald-600');
                     
-                    // 🚀 Masterstroke: تخزين الشريحة محلياً لتدعم العرض بدون إنترنت (Offline Access)
                     saveEsimLocally({
                         ...currentSelectedPackage,
                         iccid: data.iccid || "8900000000000000000",
@@ -493,7 +570,7 @@
 
                     setTimeout(() => {
                         closeCheckoutModal();
-                        switchView('dashboardView'); // الانتقال السلس للوحة التحكم
+                        switchView('dashboardView');
                     }, 1200);
                 } else {
                     alert('⚠️ فشل في إصدار الشريحة: ' + data.message);
@@ -501,17 +578,80 @@
                     btn.disabled = false;
                 }
             } catch (error) {
-                console.error("Payment Error:", error);
                 alert('⚠️ حدث خطأ في الاتصال بالسيرفر أثناء الدفع.');
                 btn.innerHTML = `دفع ${currentSelectedPackage.price} AED الآن`;
                 btn.disabled = false;
             }
         }
 
-        // 🚀 نظام لوحة التحكم للأوفلاين (My eSIMs Dashboard)
+        // 🚀 نظام التوافقية (Compatibility Checker)
+        function openCompatibilityModal() {
+            document.getElementById('compatibilityModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('compatibilityModal').classList.remove('opacity-0');
+                document.getElementById('compatibilityContent').classList.remove('translate-y-10');
+            }, 10);
+        }
+
+        function closeCompatibilityModal() {
+            document.getElementById('compatibilityModal').classList.add('opacity-0');
+            document.getElementById('compatibilityContent').classList.add('translate-y-10');
+            setTimeout(() => { 
+                document.getElementById('compatibilityModal').classList.add('hidden');
+                document.getElementById('deviceResult').classList.add('hidden');
+                document.getElementById('deviceInput').value = '';
+            }, 300);
+        }
+
+        function checkDeviceCompatibility(e) {
+            e.preventDefault();
+            const device = document.getElementById('deviceInput').value.toLowerCase();
+            const resultDiv = document.getElementById('deviceResult');
+            
+            // محاكاة بسيطة للبحث (في الواقع تستخدم قائمة من المورد)
+            resultDiv.classList.remove('hidden');
+            if(device.length > 2) {
+                resultDiv.innerHTML = `
+                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-lg"></i>
+                        <div class="text-right">
+                            <h4 class="text-emerald-800 font-black text-sm mb-1">ممتاز! جهازك مدعوم</h4>
+                            <p class="text-emerald-600 text-[10px] font-bold">بناءً على بحثك، هذا الجهاز يدعم شريحة الـ eSIM. يمكنك المتابعة وشراء الباقة بكل ثقة.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // 🚀 نظام النسخ الفعلي (Copy to Clipboard)
+        function copyToClipboard(text, btnElement) {
+            const toast = document.getElementById('toastMsg');
+            
+            // استخدام واجهة الحافظة الحديثة
+            navigator.clipboard.writeText(text).then(() => {
+                // تغيير الأيقونة للنجاح
+                const icon = btnElement.querySelector('i');
+                const originalClass = icon.className;
+                icon.className = 'fa-solid fa-check text-emerald-600 text-sm';
+                
+                // إظهار التنبيه (Toast)
+                toast.classList.remove('opacity-0', '-translate-y-20');
+                toast.classList.add('opacity-100', 'translate-y-0');
+                
+                setTimeout(() => {
+                    icon.className = originalClass;
+                    toast.classList.add('opacity-0', '-translate-y-20');
+                    toast.classList.remove('opacity-100', 'translate-y-0');
+                }, 2500);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // 🚀 لوحة التحكم
         function saveEsimLocally(esimData) {
             let esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
-            esims.unshift(esimData); // إضافة الجديد في الأعلى
+            esims.unshift(esimData);
             localStorage.setItem('rimal_my_esims', JSON.stringify(esims));
         }
 
@@ -521,11 +661,11 @@
 
             if (esims.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full text-center py-16 glass-panel rounded-3xl">
-                        <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10 text-[#00b4d8] text-2xl"><i class="fa-solid fa-box-open"></i></div>
+                    <div class="col-span-full text-center py-16 glass-panel rounded-3xl border border-white/10">
+                        <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00b4d8] text-2xl shadow-inner"><i class="fa-solid fa-box-open"></i></div>
                         <p class="text-white font-black text-xl mb-2">لا توجد شرائح حالياً</p>
-                        <p class="text-slate-400 font-semibold text-sm">اشترِ باقتك الأولى وسنقوم بحفظها هنا للوصول السريع حتى بدون إنترنت!</p>
-                        <button onclick="switchView('homeView')" class="mt-6 bg-[#00b4d8] hover:bg-cyan-500 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors border-none cursor-pointer">
+                        <p class="text-slate-400 font-semibold text-sm mb-6">اشترِ باقتك الأولى وسنقوم بحفظها هنا للوصول السريع حتى بدون إنترنت!</p>
+                        <button onclick="switchView('homeView')" class="bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white px-8 py-3.5 rounded-xl font-black text-sm transition-transform active:scale-95 border-none cursor-pointer shadow-lg">
                             تصفح الباقات
                         </button>
                     </div>
@@ -535,19 +675,18 @@
 
             let html = '';
             esims.forEach((esim) => {
+                const lpaString = `LPA:1$smdp.io$${esim.iccid}`; // الصيغة الفعلية
                 html += `
                 <div class="glass-card-light rounded-3xl p-6 relative overflow-hidden flex flex-col md:flex-row gap-6 shadow-xl border-t-[4px] border-[#00b4d8]">
-                    <!-- منطقة الـ QR Code (يسار أو أعلى) -->
                     <div class="w-full md:w-1/3 flex flex-col items-center justify-center border-b md:border-b-0 md:border-l border-slate-200 pb-6 md:pb-0 md:pl-6">
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 mb-4 w-40 h-40">
                             <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
                         </div>
                         <button class="w-full bg-[#1f3a40] text-white py-2.5 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border-none cursor-pointer hover:bg-slate-800 transition-colors">
-                            <i class="fa-solid fa-bolt"></i> تثبيت ذكي (iOS/Android)
+                            <i class="fa-solid fa-mobile-button"></i> تثبيت ذكي (مباشر)
                         </button>
                     </div>
 
-                    <!-- تفاصيل الشريحة (يمين) -->
                     <div class="w-full md:w-2/3 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start mb-4">
@@ -566,19 +705,19 @@
                                     <span class="block text-[10px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-database text-[#00b4d8] ml-1"></i>البيانات</span>
                                     <span class="block font-black text-sm text-[#1f3a40]" dir="ltr">${esim.data}</span>
                                 </div>
-                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 overflow-hidden">
                                     <span class="block text-[10px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-sim-card text-[#00b4d8] ml-1"></i>ICCID</span>
                                     <span class="block font-black text-xs text-[#1f3a40] tracking-wider truncate" dir="ltr">${esim.iccid}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- التثبيت اليدوي -->
+                        <!-- 🚀 التثبيت اليدوي مفعّل مع زر النسخ -->
                         <div class="bg-amber-50 p-3 rounded-xl border border-amber-100">
-                            <p class="text-[10px] text-amber-800 font-bold mb-2"><i class="fa-solid fa-circle-info"></i> إذا لم تتمكن من مسح الرمز، استخدم التثبيت اليدوي:</p>
-                            <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-amber-100 shadow-sm">
-                                <span class="text-[10px] font-black text-slate-600 truncate mr-2" dir="ltr">LPA:1$smdp.io$${esim.iccid}</span>
-                                <button class="bg-amber-100 hover:bg-amber-200 text-amber-700 w-6 h-6 rounded flex items-center justify-center border-none cursor-pointer transition-colors" title="نسخ الكود">
+                            <p class="text-[10px] text-amber-800 font-bold mb-2"><i class="fa-solid fa-circle-info"></i> إذا لم تتمكن من مسح الرمز، انسخ الكود اليدوي للتثبيت:</p>
+                            <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-amber-100 shadow-sm cursor-pointer hover:border-amber-300 transition-colors" onclick="copyToClipboard('${lpaString}', this)">
+                                <span class="text-[10px] font-black text-slate-600 truncate mr-2 flex-1" dir="ltr">${lpaString}</span>
+                                <button class="bg-amber-100 text-amber-700 w-7 h-7 rounded-md flex items-center justify-center border-none cursor-pointer pointer-events-none shrink-0" title="نسخ الكود">
                                     <i class="fa-regular fa-copy text-xs"></i>
                                 </button>
                             </div>
@@ -608,6 +747,7 @@
                 });
             }
 
+            updateAuthUI(); // تحديث الهيدر فوراً
             fetchPackages();
         });
     </script>
