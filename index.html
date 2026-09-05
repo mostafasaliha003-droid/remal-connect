@@ -117,45 +117,6 @@
             border-radius: 32px;
         }
 
-        /* 🚀 أيقونة الدردشة المباشرة (Live Chat Floating Button) */
-        .live-chat-btn {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 28px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
-            cursor: pointer;
-            z-index: 9999;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            outline: none;
-            text-decoration: none;
-        }
-        .live-chat-btn:hover {
-            transform: scale(1.1) rotate(-10deg);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.7);
-        }
-        .live-chat-btn::before {
-            content: '';
-            position: absolute;
-            inset: -5px;
-            border-radius: 50%;
-            border: 2px solid #10b981;
-            animation: pulse-ring 2s infinite;
-        }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
         /* Utilities */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
         .animate-float { animation: float 6s ease-in-out infinite; }
@@ -167,11 +128,6 @@
     </style>
 </head>
 <body class="cyber-grid min-h-screen flex flex-col pb-20 md:pb-0">
-
-    <!-- 🚀 Live Chat Button -->
-    <a href="https://wa.me/971544757578?text=مرحباً،%20أحتاج%20مساعدة%20في%20منصة%20Remal%20Connect" target="_blank" class="live-chat-btn" title="تحدث معنا مباشرة">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
 
     <!-- 🚀 PWA Install Banner -->
     <div id="pwaInstallBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[10001] bg-gradient-to-r from-[#111c22] to-[#00b4d8] text-white px-5 py-2.5 rounded-full font-bold text-xs shadow-2xl items-center gap-3 hidden border border-[#00b4d8]/30">
@@ -202,7 +158,7 @@
                 </div>
 
                 <div class="flex items-center gap-2 md:gap-4" id="headerAuthArea">
-                    <button onclick="window.location.href='b2b-login.html'" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
+                    <button onclick="showToast('بوابة الوكلاء (B2B) سيتم تفعيلها قريباً')" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
                         <i class="fa-solid fa-briefcase"></i> بوابة الوكلاء
                     </button>
                     <div class="h-4 w-px bg-white/10 hidden lg:block mx-2"></div>
@@ -445,6 +401,7 @@
                             <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#00b4d8] group-hover:text-white transition-colors">
                                 <i class="fa-regular fa-envelope text-sm"></i>
                             </div>
+                            <!-- 🚀 تم تحديث الإيميل هنا بناءً على طلبك -->
                             <span>connect@remaltourismllc.com</span>
                         </li>
                     </ul>
@@ -519,7 +476,7 @@
                         </label>
                     </div>
                     <div class="flex justify-between items-center mt-3 pb-3 border-b border-white/5" id="giftEmailSection" style="display:none;">
-                        <span class="text-xs font-bold text-slate-400">إرسال الهدية إلى:</span>
+                        <span class="text-xs font-bold text-slate-400">إرسال הهدية إلى:</span>
                         <input type="email" id="giftEmailInput" placeholder="إيميل صديقك" class="bg-black/50 border border-white/10 rounded-lg p-2 text-xs text-left outline-none w-40 text-white focus:border-[#00b4d8] transition-colors" dir="ltr">
                     </div>
                     <div class="flex justify-between items-center mt-4">
@@ -594,7 +551,7 @@
 
     <!-- 🚀 الجافاسكربت المركزي -->
     <script>
-        const API_URL = 'https://remal-connect.onrender.com/api';
+        const API_URL = 'https://remal-connect.onrender.com';
         
         // --- 🚀 PWA Install Logic ---
         let deferredPrompt;
@@ -657,7 +614,7 @@
                 const walletBalance = user.points ? (user.points / 10).toFixed(2) : '50.00'; 
                 
                 authArea.innerHTML = `
-                    <button onclick="window.location.href='b2b-login.html'" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
+                    <button onclick="showToast('بوابة الوكلاء (B2B) سيتم تفعيلها قريباً')" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
                         <i class="fa-solid fa-briefcase"></i> بوابة الوكلاء
                     </button>
                     <div class="h-4 w-px bg-white/10 hidden lg:block mx-2"></div>
@@ -891,33 +848,51 @@
                 targetEmail = giftMail;
             }
 
-            // إظهار حالة التحميل
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري التحويل لبوابة Ziina...';
+            const isWhatsapp = document.getElementById('whatsappDelivery').checked;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري الاتصال بالبوابة...';
             btn.disabled = true; btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             try {
-                // الاتصال بالسيرفر لإنشاء جلسة دفع حقيقية
-                const response = await fetch(`${API_URL}/api/checkout`, {
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        packageId: currentSelectedPackage.pkgId, 
-                        price: currentSelectedPackage.price, // السعر الفعلي
-                        customerEmail: targetEmail 
-                    })
+                const response = await fetch(`${API_URL}/api/purchase-esim`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ packageId: currentSelectedPackage.pkgId, customerEmail: targetEmail })
                 });
-                
                 const data = await response.json();
 
-                if (response.ok && data.success && data.paymentUrl) {
-                    // 🚀 الانطلاق السحري: توجيه العميل لصفحة دفع Ziina الآمنة!
-                    window.location.href = data.paymentUrl;
+                if (data.success) {
+                    btn.innerHTML = '<i class="fa-solid fa-check-circle text-lg"></i> تمت العملية بنجاح!';
+                    btn.classList.replace('bg-[#00b4d8]', 'bg-emerald-500'); btn.classList.replace('text-[#091016]', 'text-white');
+                    
+                    if(!isGiftPurchase) {
+                        saveEsimLocally({
+                            ...currentSelectedPackage,
+                            iccid: data.iccid || "89" + Math.floor(Math.random() * 1000000000000000),
+                            qrUrl: data.qr_code_url || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SM-DP+Address:LPA:1$smdp.io$${data.iccid}`,
+                            date: new Date().toLocaleDateString('ar-AE'),
+                            totalBytes: parseInt(currentSelectedPackage.data) * 1024,
+                            usedBytes: Math.floor(Math.random() > 0.5 ? (parseInt(currentSelectedPackage.data) * 1024 * 0.95) : 1024) 
+                        });
+                        
+                        setTimeout(() => { 
+                            closeCheckoutModal(); 
+                            switchView('dashboardView'); 
+                            if(isWhatsapp) showToast('تمت إضافة الشريحة وإرسالها للواتساب ✅');
+                            else showToast('تمت إضافة الشريحة للوحة التحكم'); 
+                        }, 1200);
+                    } else {
+                        setTimeout(() => { 
+                            closeCheckoutModal(); 
+                            if(isWhatsapp) showToast('تم إرسال الهدية عبر الواتساب! 🎁');
+                            else showToast('تم إرسال الهدية للإيميل! 🎁');
+                        }, 1200);
+                    }
                 } else {
-                    showToast(data.message || 'فشل في تجهيز بوابة الدفع', true);
+                    showToast(data.message || 'فشل في العملية', true);
                     btn.innerHTML = originalText; btn.disabled = false;
                 }
             } catch (error) {
-                showToast('تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً.', true);
+                showToast('حدث خطأ في الاتصال بالخادم.', true);
                 btn.innerHTML = originalText; btn.disabled = false;
             }
         }
