@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#091016">
+    <title>بوابة الوكلاء | Remal Connect B2B</title>
+    
+    <!-- الخطوط والأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-dark: #091016;
+            --panel-bg: #111c22;
+            --primary-cyan: #00b4d8;
+            --primary-gold: #fbbf24;
+            --glass-border: rgba(255, 255, 255, 0.04);
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: white; 
+            overflow-x: hidden; 
+        }
+
+        /* 🚀 الخلفية الشبكية السينمائية الداكنة */
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 35px 35px;
+            background-position: center center;
+        }
+
+        .ambient-glow-cyan {
+            position: absolute; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(0, 180, 216, 0.05) 0%, transparent 60%);
+            top: -20vh; right: -20vw; pointer-events: none; z-index: 0;
+        }
+
+        .ambient-glow-gold {
+            position: absolute; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.04) 0%, transparent 60%);
+            bottom: -10vh; left: -10vw; pointer-events: none; z-index: 0;
+        }
+
+        /* 🚀 الزجاج التقني لـ B2B */
+        .glass-panel {
+            background: rgba(17, 28, 34, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .b2b-card {
+            background: linear-gradient(145deg, rgba(25, 40, 50, 0.6), rgba(9, 16, 22, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            position: relative; overflow: hidden;
+        }
+
+        /* 🚀 حقول الإدخال الاحترافية */
+        .premium-input, .premium-select {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .premium-input:focus, .premium-select:focus {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.2);
+            outline: none;
+        }
+        
+        /* تصميم الجدول الزجاجي */
+        .glass-table th { background: rgba(0, 180, 216, 0.1); color: #00b4d8; font-weight: 800; padding: 16px; text-align: right; }
+        .glass-table td { padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        .glass-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    </style>
+</head>
+<body class="cyber-grid relative min-h-screen pb-10">
+
+    <div class="ambient-glow-cyan"></div>
+    <div class="ambient-glow-gold"></div>
+
+    <!-- 🚀 Toast -->
+    <div id="toastMsg" class="fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-[#00b4d8] text-xl" id="toastIcon"></i>
+        <span id="toastText" class="tracking-wide">تمت العملية بنجاح</span>
+    </div>
+
+    <!-- 🚀 Navbar B2B -->
+    <header class="sticky top-0 w-full z-50 glass-panel">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                        <i class="fa-solid fa-briefcase text-[#091016] text-2xl"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-black text-xl text-white leading-tight">Remal <span class="text-amber-400">B2B Portal</span></span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">وكالة معتمدة</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <!-- رصيد المحفظة -->
+                    <div class="hidden md:flex bg-black/40 border border-white/5 px-4 py-2 rounded-xl items-center gap-3 shadow-inner">
+                        <div class="flex flex-col text-right">
+                            <span class="text-[9px] text-slate-400 font-bold">الرصيد المتاح (مسبق الدفع)</span>
+                            <span class="text-sm font-black text-amber-400 tracking-wider" dir="ltr" id="walletBalance">15,000.00 AED</span>
+                        </div>
+                        <button class="bg-amber-500/20 hover:bg-amber-500 text-amber-400 hover:text-[#091016] w-8 h-8 rounded-lg flex items-center justify-center transition-colors border border-amber-500/30">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="h-8 w-px bg-white/10 hidden md:block"></div>
+                    
+                    <!-- الملف الشخصي -->
+                    <div class="flex items-center gap-3 cursor-pointer group">
+                        <div class="text-right hidden sm:block">
+                            <span class="block text-sm font-black text-white group-hover:text-[#00b4d8] transition-colors">محمد لطفي</span>
+                            <span class="block text-[10px] font-bold text-slate-400">شركة الرمال الدولية</span>
+                        </div>
+                        <div class="w-10 h-10 bg-[#00b4d8]/20 border border-[#00b4d8]/50 rounded-full flex items-center justify-center text-[#00b4d8] font-black shadow-[0_0_15px_rgba(0,180,216,0.2)]">
+                            ML
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 relative z-20">
+        
+        <!-- 🚀 قسم الإحصائيات الحية (Top Stats) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- كرت 1 -->
+            <div class="b2b-card p-6 flex items-center justify-between border-t-[3px] border-[#00b4d8]">
+                <div>
+                    <span class="block text-xs font-bold text-slate-400 mb-2">إجمالي الشرائح المُصدرة</span>
+                    <h3 class="text-3xl font-black text-white" id="totalEsims">342</h3>
+                    <span class="text-[10px] font-bold text-emerald-400 mt-2 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +12% هذا الأسبوع</span>
+                </div>
+                <div class="w-16 h-16 bg-[#00b4d8]/10 rounded-2xl flex items-center justify-center text-[#00b4d8] text-2xl shadow-inner border border-[#00b4d8]/20">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+            </div>
+
+            <!-- كرت 2 -->
+            <div class="b2b-card p-6 flex items-center justify-between border-t-[3px] border-emerald-500 relative">
+                <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at top right, #10b981, transparent 50%);"></div>
+                <div class="relative z-10">
+                    <span class="block text-xs font-bold text-slate-400 mb-2">صافي الأرباح المحققة (Margin)</span>
+                    <h3 class="text-3xl font-black text-white tracking-widest" dir="ltr">4,250 <span class="text-sm text-emerald-500">AED</span></h3>
+                    <span class="text-[10px] font-bold text-slate-400 mt-2 block">فارق السعر بين الجملة والتجزئة</span>
+                </div>
+                <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 text-2xl shadow-inner border border-emerald-500/20 relative z-10">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+            </div>
+
+            <!-- كرت 3: White-label -->
+            <div class="b2b-card p-6 border-t-[3px] border-indigo-500 flex flex-col justify-center relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 opacity-10 group-hover:scale-110 transition-transform duration-500"><i class="fa-solid fa-paint-roller text-9xl text-indigo-400"></i></div>
+                <div class="flex justify-between items-center relative z-10 mb-3">
+                    <span class="text-xs font-bold text-slate-400">العلامة التجارية (White-Label)</span>
+                    <span class="bg-indigo-500/20 text-indigo-300 text-[9px] font-black px-2 py-1 rounded">مفعل 🟢</span>
+                </div>
+                <div class="relative z-10 bg-black/40 border border-white/5 rounded-xl p-3 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-white rounded flex items-center justify-center text-xs font-black text-indigo-900 shadow-md">RB</div>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-black text-white">RemalBookings</span>
+                            <span class="text-[9px] text-slate-500">يظهر على ملفات الـ PDF</span>
+                        </div>
+                    </div>
+                    <button onclick="showToast('سيتم فتح نافذة تعديل الشعار')" class="text-indigo-400 hover:text-white bg-transparent border-none cursor-pointer"><i class="fa-solid fa-pen-to-square"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- 🚀 القسم الأيسر: محطة الإصدار الجماعي (Bulk Generator) -->
+            <div class="lg:col-span-1">
+                <div class="b2b-card p-6 h-full flex flex-col">
+                    <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2"><i class="fa-solid fa-layer-group text-[#00b4d8]"></i> الإصدار الجماعي (Bulk)</h3>
+                    
+                    <form id="bulkForm" class="flex-1 flex flex-col" onsubmit="generateBulk(event)">
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold text-slate-400 mb-2">الوجهة (البلد / المنطقة)</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-globe absolute right-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                                <select id="bulkCountry" class="w-full premium-select rounded-xl p-3.5 pr-11 text-sm font-bold" required onchange="updateWholesalePrice()">
+                                    <option value="" disabled selected>اختر الوجهة...</option>
+                                    <option value="Turkey" data-price="25">تركيا (السعر للوكيل: 25 AED)</option>
+                                    <option value="Europe" data-price="60">أوروبا המوحدة (السعر للوكيل: 60 AED)</option>
+                                    <option value="Saudi" data-price="18">السعودية (السعر للوكيل: 18 AED)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="block text-xs font-bold text-slate-400 mb-2">حجم البيانات</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="bg-black/40 border border-white/10 rounded-xl p-3 text-center cursor-pointer hover:border-[#00b4d8] transition-colors relative">
+                                    <input type="radio" name="dataSize" value="3GB" required class="absolute opacity-0">
+                                    <span class="block font-black text-white">3 GB</span>
+                                </label>
+                                <label class="bg-[#00b4d8]/10 border border-[#00b4d8] rounded-xl p-3 text-center cursor-pointer transition-colors relative shadow-[0_0_10px_rgba(0,180,216,0.2)]">
+                                    <input type="radio" name="dataSize" value="5GB" checked class="absolute opacity-0">
+                                    <span class="block font-black text-white">5 GB</span>
+                                </label>
+                                <label class="bg-black/40 border border-white/10 rounded-xl p-3 text-center cursor-pointer hover:border-[#00b4d8] transition-colors relative">
+                                    <input type="radio" name="dataSize" value="10GB" class="absolute opacity-0">
+                                    <span class="block font-black text-white">10 GB</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <label class="block text-xs font-bold text-slate-400 mb-2">الكمية المطلوبة (QR Codes)</label>
+                            <div class="flex items-center bg-black/40 border border-white/10 rounded-xl overflow-hidden">
+                                <button type="button" onclick="adjustQty(-1)" class="w-12 h-12 bg-white/5 hover:bg-white/10 text-white font-black text-lg border-none cursor-pointer">-</button>
+                                <input type="number" id="bulkQty" value="10" min="1" max="100" class="flex-1 bg-transparent border-none text-center font-black text-xl text-white outline-none" onchange="updateWholesalePrice()">
+                                <button type="button" onclick="adjustQty(1)" class="w-12 h-12 bg-white/5 hover:bg-white/10 text-white font-black text-lg border-none cursor-pointer">+</button>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mb-5 flex justify-between items-center">
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-400 mb-1">الإجمالي المطلوب خصمه</span>
+                                <span class="block font-black text-2xl text-amber-400" dir="ltr" id="totalCostDisplay">250.00 AED</span>
+                            </div>
+                            <i class="fa-solid fa-wallet text-3xl text-amber-500/50"></i>
+                        </div>
+
+                        <button type="submit" id="generateBtn" class="w-full bg-gradient-to-l from-[#00b4d8] to-[#007790] hover:from-[#0096b4] hover:to-[#005f73] text-white font-black py-4 rounded-xl shadow-[0_5px_20px_rgba(0,180,216,0.4)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                            إصدار وتوليد الملفات <i class="fa-solid fa-bolt"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 🚀 القسم الأيمن: سجل الإصدارات (Recent Batches) -->
+            <div class="lg:col-span-2">
+                <div class="b2b-card p-6 h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-black text-white flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-[#00b4d8]"></i> أحدث مجموعات الـ QR</h3>
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                            <input type="text" placeholder="بحث برقم المرجع..." class="bg-black/30 border border-white/10 rounded-lg py-2 pr-9 pl-4 text-xs text-white outline-none focus:border-[#00b4d8] w-48 transition-colors">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto bg-black/20 rounded-xl border border-white/5">
+                        <table class="w-full text-left border-collapse glass-table" dir="rtl">
+                            <thead>
+                                <tr>
+                                    <th class="rounded-tr-xl">رقم المرجع (Batch ID)</th>
+                                    <th>الوجهة / الباقة</th>
+                                    <th>الكمية</th>
+                                    <th>التاريخ</th>
+                                    <th class="rounded-tl-xl text-center">الإجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batchesTableBody">
+                                <!-- سيتم إضافة الأسطر الجديدة هنا عبر الـ JS -->
+                                <tr class="transition-colors group">
+                                    <td class="font-black text-sm text-white" dir="ltr">#BCH-9824</td>
+                                    <td>
+                                        <span class="block font-bold text-white text-sm">تركيا 🇹🇷</span>
+                                        <span class="block text-[10px] text-slate-400 font-semibold">5 GB - 15 Days</span>
+                                    </td>
+                                    <td><span class="bg-[#00b4d8]/20 text-[#00b4d8] px-3 py-1 rounded-md text-xs font-black">20 شريحة</span></td>
+                                    <td class="text-xs text-slate-400 font-semibold">قبل ساعتين</td>
+                                    <td class="text-center">
+                                        <button onclick="showToast('جاري تحميل ملف الـ ZIP')" class="bg-white/10 hover:bg-[#00b4d8] text-white w-9 h-9 rounded-lg flex items-center justify-center transition-colors border-none cursor-pointer mx-auto shadow-sm">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="transition-colors group">
+                                    <td class="font-black text-sm text-white" dir="ltr">#BCH-9823</td>
+                                    <td>
+                                        <span class="block font-bold text-white text-sm">السعودية 🇸🇦</span>
+                                        <span class="block text-[10px] text-slate-400 font-semibold">3 GB - 7 Days</span>
+                                    </td>
+                                    <td><span class="bg-[#00b4d8]/20 text-[#00b4d8] px-3 py-1 rounded-md text-xs font-black">15 شريحة</span></td>
+                                    <td class="text-xs text-slate-400 font-semibold">أمس</td>
+                                    <td class="text-center">
+                                        <button onclick="showToast('جاري تحميل ملف الـ ZIP')" class="bg-white/10 hover:bg-[#00b4d8] text-white w-9 h-9 rounded-lg flex items-center justify-center transition-colors border-none cursor-pointer mx-auto shadow-sm">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="transition-colors group opacity-70">
+                                    <td class="font-black text-sm text-white" dir="ltr">#BCH-9822</td>
+                                    <td>
+                                        <span class="block font-bold text-white text-sm">أوروبا الموحدة 🇪🇺</span>
+                                        <span class="block text-[10px] text-slate-400 font-semibold">10 GB - 30 Days</span>
+                                    </td>
+                                    <td><span class="bg-[#00b4d8]/20 text-[#00b4d8] px-3 py-1 rounded-md text-xs font-black">5 شرائح</span></td>
+                                    <td class="text-xs text-slate-400 font-semibold">قبل 3 أيام</td>
+                                    <td class="text-center">
+                                        <button onclick="showToast('جاري تحميل ملف الـ ZIP')" class="bg-white/10 hover:bg-[#00b4d8] text-white w-9 h-9 rounded-lg flex items-center justify-center transition-colors border-none cursor-pointer mx-auto shadow-sm">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button class="text-[#00b4d8] hover:text-white text-xs font-bold transition-colors bg-transparent border-none cursor-pointer">عرض كل السجل <i class="fa-solid fa-chevron-down"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 🚀 الجافاسكربت الخاص بلوحة الـ B2B -->
+    <script>
+        let currentWalletBalance = 15000;
+        let totalIssued = 342;
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            document.getElementById('toastText').innerText = message;
+            
+            if(isError) { icon.className = 'fa-solid fa-circle-xmark text-[#ff595e] text-xl'; } 
+            else { icon.className = 'fa-solid fa-circle-check text-[#00b4d8] text-xl'; }
+
+            toast.classList.remove('opacity-0', '-translate-y-32');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-32');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        function adjustQty(amount) {
+            const qtyInput = document.getElementById('bulkQty');
+            let currentVal = parseInt(qtyInput.value) || 1;
+            let newVal = currentVal + amount;
+            if(newVal >= 1 && newVal <= 500) {
+                qtyInput.value = newVal;
+                updateWholesalePrice();
+            }
+        }
+
+        // 🚀 Masterstroke: الحساب الديناميكي للتكلفة
+        function updateWholesalePrice() {
+            const countrySelect = document.getElementById('bulkCountry');
+            const qty = parseInt(document.getElementById('bulkQty').value) || 1;
+            const displayEl = document.getElementById('totalCostDisplay');
+            
+            if(countrySelect.selectedIndex === 0) {
+                displayEl.innerText = "0.00 AED";
+                return;
+            }
+
+            const basePrice = parseFloat(countrySelect.options[countrySelect.selectedIndex].getAttribute('data-price'));
+            // افتراضياً: السعر يختلف بناءً على حجم البيانات (محاكاة)
+            const dataMultiplier = document.querySelector('input[name="dataSize"]:checked').value === '10GB' ? 1.5 : (document.querySelector('input[name="dataSize"]:checked').value === '5GB' ? 1 : 0.7);
+            
+            const total = basePrice * dataMultiplier * qty;
+            displayEl.innerText = total.toFixed(2) + " AED";
+            return total;
+        }
+
+        // تغيير المظهر عند اختيار حجم البيانات
+        document.querySelectorAll('input[name="dataSize"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.querySelectorAll('input[name="dataSize"]').forEach(r => {
+                    const parent = r.parentElement;
+                    parent.className = 'bg-black/40 border border-white/10 rounded-xl p-3 text-center cursor-pointer hover:border-[#00b4d8] transition-colors relative';
+                });
+                const activeParent = e.target.parentElement;
+                activeParent.className = 'bg-[#00b4d8]/10 border border-[#00b4d8] rounded-xl p-3 text-center cursor-pointer transition-colors relative shadow-[0_0_10px_rgba(0,180,216,0.2)]';
+                updateWholesalePrice();
+            });
+        });
+
+        // 🚀 إصدار المجموعات (Simulating Bulk Generation API)
+        function generateBulk(e) {
+            e.preventDefault();
+            const countrySelect = document.getElementById('bulkCountry');
+            if(countrySelect.selectedIndex === 0) {
+                showToast("الرجاء تحديد الوجهة أولاً!", true);
+                return;
+            }
+
+            const cost = updateWholesalePrice();
+            if(cost > currentWalletBalance) {
+                showToast("رصيد المحفظة غير كافٍ لإتمام العملية.", true);
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري توليد ملفات الـ QR...';
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            // محاكاة طلب السيرفر وتوليد الملفات
+            setTimeout(() => {
+                // 1. خصم الرصيد
+                currentWalletBalance -= cost;
+                document.getElementById('walletBalance').innerText = currentWalletBalance.toFixed(2) + " AED";
+                
+                // 2. تحديث العداد
+                const qty = parseInt(document.getElementById('bulkQty').value);
+                totalIssued += qty;
+                document.getElementById('totalEsims').innerText = totalIssued;
+
+                // 3. إضافة سطر في الجدول
+                const countryName = countrySelect.options[countrySelect.selectedIndex].text.split('(')[0].trim();
+                const dataSize = document.querySelector('input[name="dataSize"]:checked').value;
+                const batchId = Math.floor(Math.random() * 9000) + 1000;
+                
+                const newRow = `
+                <tr class="transition-colors group bg-emerald-500/10 animate-fade-in-up">
+                    <td class="font-black text-sm text-emerald-400" dir="ltr">#BCH-${batchId} <span class="text-[9px] bg-emerald-500 text-[#091016] px-1 rounded ml-1">جديد</span></td>
+                    <td>
+                        <span class="block font-bold text-white text-sm">${countryName}</span>
+                        <span class="block text-[10px] text-slate-400 font-semibold">${dataSize} - 30 Days</span>
+                    </td>
+                    <td><span class="bg-[#00b4d8]/20 text-[#00b4d8] px-3 py-1 rounded-md text-xs font-black">${qty} شريحة</span></td>
+                    <td class="text-xs text-slate-400 font-semibold">الآن</td>
+                    <td class="text-center">
+                        <button onclick="showToast('جاري تحميل ملف الـ ZIP...')" class="bg-[#00b4d8] text-[#091016] w-9 h-9 rounded-lg flex items-center justify-center transition-colors border-none cursor-pointer mx-auto shadow-[0_0_10px_rgba(0,180,216,0.5)]">
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                    </td>
+                </tr>`;
+                
+                const tbody = document.getElementById('batchesTableBody');
+                tbody.insertAdjacentHTML('afterbegin', newRow);
+
+                showToast(`تم إصدار ${qty} شريحة بنجاح! الملف جاهز للتحميل.`);
+                
+                // إعادة الزر
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
