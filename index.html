@@ -233,12 +233,41 @@
                 </button>
             </div>
 
+            <!-- 🚀 Masterstroke: نظام الولاء والمستويات (VIP Tier System) -->
+            <div class="bg-gradient-to-br from-slate-800 to-[#1f3a40] rounded-3xl p-6 md:p-8 mb-8 shadow-xl relative overflow-hidden border border-slate-700">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-amber-400 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-200 p-1 shadow-lg shrink-0">
+                            <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center text-amber-400 text-xl md:text-2xl">
+                                <i class="fa-solid fa-crown"></i>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-amber-400 text-[10px] md:text-xs font-black tracking-widest uppercase mb-1 block" id="userTierName">VIP - مستكشف</span>
+                            <h3 class="text-white text-lg md:text-2xl font-black mb-1">مكافآت رمال</h3>
+                            <p class="text-slate-400 text-[10px] md:text-xs font-bold" id="userPointsText">رصيدك: -- AED (-- نقطة)</p>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/3 bg-slate-900/50 p-4 rounded-2xl border border-slate-700 backdrop-blur-sm">
+                        <div class="flex justify-between text-[10px] font-bold text-slate-300 mb-2">
+                            <span>المستوى الحالي</span>
+                            <span class="text-amber-400" id="nextTierName">المستوى التالي</span>
+                        </div>
+                        <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden mb-2">
+                            <div class="bg-gradient-to-l from-amber-400 to-yellow-200 h-2 rounded-full transition-all duration-1000" style="width: 0%" id="tierProgressBar"></div>
+                        </div>
+                        <p class="text-[9px] text-slate-400 text-center m-0" id="tierProgressDesc">اجمع نقاطاً إضافية لزيادة الكاش باك!</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- 🚀 نظام الإحالة (Give 10, Get 10) -->
             <div class="bg-gradient-to-r from-amber-500 to-orange-400 rounded-3xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="absolute -right-10 -bottom-10 opacity-20"><i class="fa-solid fa-gift text-9xl"></i></div>
                 <div class="relative z-10 text-white text-center md:text-right">
                     <h3 class="text-xl md:text-2xl font-black mb-2">اربح 10 دراهم مع كل صديق! 🎁</h3>
-                    <p class="text-xs md:text-sm font-bold text-orange-100 max-w-lg">شارك كودك مع أصدقائك. سيحصلون على خصم 10 دراهم في أول شراء، وستحصل أنت على 10 دراهم في محفظتك فوراً.</p>
+                    <p class="text-xs md:text-sm font-bold text-orange-100 max-w-lg">شارك كودك مع أصدقائك. سيحصلون على خصم 10 دراهم، وستحصل أنت على 10 دراهم في محفظتك.</p>
                 </div>
                 <div class="relative z-10 bg-white/20 backdrop-blur-md border border-white/40 p-2 rounded-2xl flex items-center gap-3 w-full md:w-auto">
                     <span class="text-lg md:text-xl font-black text-white tracking-widest px-4" dir="ltr" id="referralCode">REMAL2026</span>
@@ -253,7 +282,7 @@
                 <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center text-[#00b4d8] shrink-0"><i class="fa-solid fa-plane-slash text-xl"></i></div>
                 <div>
                     <h4 class="text-white font-bold text-sm mb-1">الوصول بدون إنترنت ✈️</h4>
-                    <p class="text-slate-400 text-[10px] md:text-xs leading-relaxed">أكواد الـ QR محفوظة في هاتفك. أضف الموقع للشاشة الرئيسية للوصول لها بدون اتصال بالمطار.</p>
+                    <p class="text-slate-400 text-[10px] md:text-xs leading-relaxed">أكواد الـ QR محفوظة في هاتفك. استخدم زر (الإضافة للمحفظة) للوصول السريع بدون اتصال بالمطار.</p>
                 </div>
             </div>
 
@@ -463,12 +492,56 @@
             if (viewId === 'dashboardView') {
                 home.classList.add('hidden'); home.classList.remove('block');
                 dash.classList.remove('hidden'); dash.classList.add('block');
+                updateDashboardVIP(); // تحديث مستويات الـ VIP
                 renderMyEsims();
             } else {
                 dash.classList.add('hidden'); dash.classList.remove('block');
                 home.classList.remove('hidden'); home.classList.add('block');
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- 🚀 VIP Tier System Logic ---
+        function updateDashboardVIP() {
+            const currentUserStr = localStorage.getItem('rimal_current_user');
+            if (currentUserStr) {
+                const user = JSON.parse(currentUserStr);
+                const points = user.points || 150; // افتراضي للمحاكاة
+                const balance = (points / 10).toFixed(2);
+                let tierName = "مسافر";
+                let nextTier = "مستكشف";
+                let progress = 0;
+                let msg = "";
+                
+                if (points < 200) {
+                    tierName = "فضّي - مسافر";
+                    nextTier = "ذهبي - مستكشف";
+                    progress = (points / 200) * 100;
+                    msg = `اجمع ${200 - points} نقطة إضافية للترقية وزيادة الكاش باك!`;
+                } else if (points < 1000) {
+                    tierName = "ذهبي - مستكشف";
+                    nextTier = "VIP - بلاتيني";
+                    progress = ((points - 200) / 800) * 100;
+                    msg = `اجمع ${1000 - points} نقطة للوصول لقمة الـ VIP!`;
+                } else {
+                    tierName = "VIP - بلاتيني";
+                    nextTier = "أعلى مستوى";
+                    progress = 100;
+                    msg = "أنت في أعلى مستوى! استمتع بأقصى نسبة كاش باك.";
+                }
+
+                const tierEl = document.getElementById('userTierName');
+                const pointsEl = document.getElementById('userPointsText');
+                const barEl = document.getElementById('tierProgressBar');
+                const nextTierEl = document.getElementById('nextTierName');
+                const msgEl = document.getElementById('tierProgressDesc');
+                
+                if(tierEl) tierEl.innerText = tierName;
+                if(pointsEl) pointsEl.innerText = `رصيدك: ${balance} AED (${points} نقطة)`;
+                if(nextTierEl) nextTierEl.innerText = nextTier;
+                if(msgEl) msgEl.innerText = msg;
+                if(barEl) setTimeout(() => { barEl.style.width = `${progress}%`; }, 300);
+            }
         }
 
         // --- 🚀 Packages & Search ---
@@ -512,7 +585,7 @@
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
             if (packages.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-16 glass-panel rounded-3xl"><i class="fa-solid fa-earth-americas text-4xl text-slate-500 mb-3 block"></i><p class="text-slate-300 font-bold text-lg">لا توجد نتائج.</p></div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-16 glass-panel rounded-3xl"><i class="fa-solid fa-earth-americas text-4xl text-slate-500 mb-3 block"></i><p class="text-slate-300 font-bold text-lg">لا توجد نتائج مطابقة.</p></div>`;
                 return;
             }
 
@@ -562,7 +635,7 @@
             convertCurrency();
         }
 
-        // --- 🚀 الدفع (Checkout Modal) ---
+        // --- 🚀 الدفع (Checkout) ---
         let currentSelectedPackage = null;
         let isGiftPurchase = false;
 
@@ -667,7 +740,7 @@
             }
         }
 
-        // --- 🚀 نظام الشحن السريع (Top-Up Modal) ---
+        // --- 🚀 نظام الشحن السريع (Top-Up) ---
         let currentTopupIccid = '';
 
         function openTopupModal(iccid) {
@@ -694,23 +767,27 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الشحن...';
             btn.disabled = true;
 
-            // محاكاة الاتصال بالـ API לשحن الرصيد
             setTimeout(() => {
                 let esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
                 const esimIndex = esims.findIndex(e => e.iccid === currentTopupIccid);
                 
                 if (esimIndex > -1) {
-                    esims[esimIndex].totalBytes += parseInt(gb) * 1024; // زيادة الرصيد
+                    esims[esimIndex].totalBytes += parseInt(gb) * 1024;
                     localStorage.setItem('rimal_my_esims', JSON.stringify(esims));
-                    
                     closeTopupModal();
                     showToast(`تم شحن ${gb}GB بنجاح!`);
-                    renderMyEsims(); // إعادة رسم البطاقات لتحديث العداد
+                    renderMyEsims();
                 }
                 
                 btn.innerHTML = 'دفع وتفعيل فوراً <i class="fa-solid fa-bolt"></i>';
                 btn.disabled = false;
             }, 1500);
+        }
+
+        // --- 🚀 إضافة للمحفظة (Add to Wallet) ---
+        function addToWallet(iccid) {
+            showToast('جاري تحضير البطاقة... سيتم فتح تطبيق المحفظة قريباً!');
+            // هنا يتم استدعاء API لإنشاء ملف .pkpass أو رابط Google Wallet الفعلي لاحقاً
         }
 
         // --- 🚀 لوحة التحكم المتقدمة (Dashboard) ---
@@ -754,7 +831,6 @@
             esims.forEach((esim) => {
                 const lpaString = `LPA:1$smdp.io$${esim.iccid}`;
                 
-                // حساب الاستهلاك الحي
                 let totalMB = esim.totalBytes || (parseInt(esim.data) * 1024);
                 let usedMB = esim.usedBytes || 0;
                 let percentage = (usedMB / totalMB) * 100;
@@ -766,8 +842,12 @@
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 mb-4 w-40 h-40">
                             <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
                         </div>
-                        <button onclick="showToast('عفواً، هذه ميزة محاكاة تتطلب هاتفاً متوافقاً.')" class="w-full bg-[#1f3a40] hover:bg-slate-800 text-white py-3 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border-none cursor-pointer transition-colors">
+                        <button onclick="showToast('عفواً، هذه ميزة محاكاة تتطلب هاتفاً متوافقاً.')" class="w-full bg-[#1f3a40] hover:bg-slate-800 text-white py-2.5 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border-none cursor-pointer transition-colors">
                             <i class="fa-solid fa-mobile-button"></i> تثبيت تلقائي 
+                        </button>
+                        <!-- 🚀 Masterstroke: Add to Wallet -->
+                        <button onclick="addToWallet('${esim.iccid}')" class="w-full mt-3 bg-black hover:bg-slate-800 text-white py-2.5 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border border-slate-700 cursor-pointer transition-colors">
+                            <i class="fa-brands fa-apple text-lg"></i> <span class="w-px h-3 bg-slate-600"></span> <i class="fa-brands fa-google-pay text-lg"></i> محفظة الهاتف
                         </button>
                     </div>
 
@@ -784,7 +864,6 @@
                                 </div>
                             </div>
 
-                            <!-- 🚀 Live Tracking Bar -->
                             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-4">
                                 <div class="flex justify-between text-xs font-bold mb-2">
                                     <span class="text-[#1f3a40]">استهلاك البيانات</span>
