@@ -158,7 +158,8 @@
                 </div>
 
                 <div class="flex items-center gap-2 md:gap-4" id="headerAuthArea">
-                    <button onclick="showToast('بوابة الوكلاء (B2B) سيتم تفعيلها قريباً')" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
+                    <!-- 🚀 تحديث الرابط هنا -->
+                    <button onclick="window.location.href='b2b-login.html'" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
                         <i class="fa-solid fa-briefcase"></i> بوابة الوكلاء
                     </button>
                     <div class="h-4 w-px bg-white/10 hidden lg:block mx-2"></div>
@@ -401,7 +402,6 @@
                             <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#00b4d8] group-hover:text-white transition-colors">
                                 <i class="fa-regular fa-envelope text-sm"></i>
                             </div>
-                            <!-- 🚀 تم تحديث الإيميل هنا بناءً على طلبك -->
                             <span>connect@remaltourismllc.com</span>
                         </li>
                     </ul>
@@ -476,7 +476,7 @@
                         </label>
                     </div>
                     <div class="flex justify-between items-center mt-3 pb-3 border-b border-white/5" id="giftEmailSection" style="display:none;">
-                        <span class="text-xs font-bold text-slate-400">إرسال הهدية إلى:</span>
+                        <span class="text-xs font-bold text-slate-400">إرسال الهدية إلى:</span>
                         <input type="email" id="giftEmailInput" placeholder="إيميل صديقك" class="bg-black/50 border border-white/10 rounded-lg p-2 text-xs text-left outline-none w-40 text-white focus:border-[#00b4d8] transition-colors" dir="ltr">
                     </div>
                     <div class="flex justify-between items-center mt-4">
@@ -614,7 +614,8 @@
                 const walletBalance = user.points ? (user.points / 10).toFixed(2) : '50.00'; 
                 
                 authArea.innerHTML = `
-                    <button onclick="showToast('بوابة الوكلاء (B2B) سيتم تفعيلها قريباً')" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
+                    <!-- 🚀 تحديث الرابط هنا -->
+                    <button onclick="window.location.href='b2b-login.html'" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
                         <i class="fa-solid fa-briefcase"></i> بوابة الوكلاء
                     </button>
                     <div class="h-4 w-px bg-white/10 hidden lg:block mx-2"></div>
