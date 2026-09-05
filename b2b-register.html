@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#091016">
-    <title>دخول الوكلاء | Remal Connect B2B</title>
+    <title>تسجيل وكلاء السفر | Remal Connect B2B</title>
     
     <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,32 +17,49 @@
         :root {
             --bg-dark: #091016;
             --primary-cyan: #00b4d8;
-            --primary-gold: #fbbf24;
         }
 
         body { 
             font-family: 'Cairo', sans-serif; 
             background-color: var(--bg-dark); 
             color: white; 
+            overflow-x: hidden; 
         }
 
+        /* 🚀 الخلفية الشبكية والتوهج */
         .cyber-grid {
             background-image: 
                 linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
             background-size: 35px 35px;
         }
+        
+        .ambient-glow-1 {
+            position: absolute; width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(0, 180, 216, 0.05) 0%, transparent 60%);
+            top: -10vh; right: -10vw; pointer-events: none; z-index: 0;
+        }
+        
+        .ambient-glow-2 {
+            position: absolute; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.03) 0%, transparent 60%);
+            bottom: -10vh; left: -10vw; pointer-events: none; z-index: 0;
+        }
 
-        .login-card {
+        /* 🚀 البطاقة الزجاجية الفاخرة للنموذج */
+        .wizard-card {
             background: linear-gradient(160deg, rgba(25, 40, 50, 0.7), rgba(9, 16, 22, 0.95));
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-top: 1px solid rgba(251, 191, 36, 0.4); /* خط ذهبي من الأعلى */
+            border-top: 1px solid rgba(0, 180, 216, 0.3);
             border-radius: 32px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
         }
 
+        /* 🚀 حقول الإدخال الاحترافية */
         .premium-input {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -51,128 +68,390 @@
         }
         .premium-input:focus {
             background: rgba(0, 0, 0, 0.6);
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.2);
             outline: none;
         }
+
+        /* 🚀 منطقة سحب وإفلات الملفات (Drag & Drop) */
+        .file-drop-zone {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .file-drop-zone:hover, .file-drop-zone.dragover {
+            background: rgba(0, 180, 216, 0.05);
+            border-color: var(--primary-cyan);
+        }
+
+        /* 🚀 مؤشر التقدم (Stepper) */
+        .step-circle {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .step-line {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* حركات التنقل */
+        .step-content {
+            display: none;
+            animation: fadeInRight 0.4s ease forwards;
+        }
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
     </style>
 </head>
-<body class="cyber-grid min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="cyber-grid relative">
 
-    <!-- إضاءة خلفية -->
-    <div class="absolute top-0 right-0 w-96 h-96 bg-amber-500 rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
-    <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#00b4d8] rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
 
-    <div class="login-card w-full max-w-md p-8 md:p-10 relative z-10">
-        
-        <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)] mx-auto mb-5 transform rotate-3">
-                <i class="fa-solid fa-briefcase text-[#091016] text-3xl"></i>
-            </div>
-            <h2 class="text-2xl md:text-3xl font-black text-white">بوابة الوكلاء</h2>
-            <p class="text-amber-400 text-xs md:text-sm font-bold mt-2 tracking-widest uppercase">Remal B2B Portal</p>
-        </div>
-
-        <form id="b2bLoginForm" class="space-y-5">
-            <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-2">البريد الإلكتروني للشركة</label>
-                <div class="relative">
-                    <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="email" id="loginEmail" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm text-left" placeholder="info@company.com" dir="ltr">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-2">كلمة المرور</label>
-                <div class="relative">
-                    <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="password" id="loginPassword" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm text-left" placeholder="••••••••" dir="ltr">
-                </div>
-            </div>
-
-            <p id="loginAlert" class="text-xs font-bold text-center hidden mt-2"></p>
-
-            <button type="submit" id="loginBtn" class="w-full bg-gradient-to-l from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-[#091016] font-black py-4 rounded-xl shadow-[0_5px_20px_rgba(245,158,11,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer mt-4">
-                <span id="loginBtnText">تسجيل الدخول</span> <i id="loginBtnIcon" class="fa-solid fa-right-to-bracket"></i>
-            </button>
-        </form>
-
-        <div class="flex items-center my-8">
-            <div class="flex-1 h-px bg-white/10"></div>
-            <span class="px-3 text-[10px] font-bold text-slate-500">أو</span>
-            <div class="flex-1 h-px bg-white/10"></div>
-        </div>
-
-        <div class="text-center">
-            <p class="text-xs font-bold text-slate-400 mb-4">هل ترغب بالانضمام لشبكة شركاء رمال؟</p>
-            <a href="b2b-register.html" class="inline-flex items-center justify-center w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3.5 rounded-xl border border-white/10 transition-colors text-sm decoration-none">
-                سجل شركتك الآن <i class="fa-solid fa-arrow-left mr-2 text-amber-400"></i>
-            </a>
-        </div>
-
-        <div class="mt-8 text-center">
-            <a href="index.html" class="text-[10px] font-bold text-slate-500 hover:text-white transition-colors"><i class="fa-solid fa-house ml-1"></i> العودة للموقع الرئيسي</a>
-        </div>
+    <!-- 🚀 إشعار التنبيهات (Toast) -->
+    <div id="toastMsg" class="fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-[#00b4d8] text-xl" id="toastIcon"></i>
+        <span id="toastText" class="tracking-wide">تمت العملية بنجاح</span>
     </div>
 
-    <!-- 🚀 الجافاسكربت الخاص بالدخول -->
+    <!-- 🚀 هيدر مبسط للتسجيل -->
+    <header class="w-full relative z-20 pt-8 pb-4">
+        <div class="max-w-4xl mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+                <div class="w-10 h-10 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,180,216,0.3)] transform rotate-3">
+                    <i class="fa-solid fa-sim-card text-white text-lg drop-shadow-md"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-black text-xl tracking-tight text-white leading-none">Remal <span class="text-[#00b4d8]">B2B</span></span>
+                    <span class="text-[9px] tracking-[0.2em] text-slate-400 uppercase font-bold mt-1">Partner Portal</span>
+                </div>
+            </div>
+            <a href="index.html" class="text-xs font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+                عودة للموقع <i class="fa-solid fa-arrow-left"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 pb-20 relative z-20">
+        
+        <!-- عنوان الصفحة -->
+        <div class="text-center mb-10 mt-6">
+            <span class="bg-[#00b4d8]/10 text-[#00b4d8] border border-[#00b4d8]/20 px-3 py-1 rounded-full text-[10px] font-black tracking-wider uppercase mb-3 inline-block">شركاء النجاح</span>
+            <h1 class="text-3xl md:text-4xl font-black text-white mb-3">انضم لشبكة وكلاء رمال 🤝</h1>
+            <p class="text-slate-400 text-sm font-semibold max-w-lg mx-auto">سجل شركتك الآن للبدء في إصدار شرائح الـ eSIM لعملائك بأسعار الجملة الحصرية وإدارة أرباحك بسهولة.</p>
+        </div>
+
+        <div class="wizard-card p-6 md:p-10">
+            
+            <!-- 🚀 Stepper (مؤشر التقدم) -->
+            <div class="relative mb-12">
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-white/10 -translate-y-1/2 rounded-full z-0"></div>
+                <div class="absolute top-1/2 right-0 w-0 h-1 bg-gradient-to-l from-[#00b4d8] to-[#007790] -translate-y-1/2 rounded-full z-0 step-line" id="progressLine"></div>
+                
+                <div class="flex justify-between relative z-10">
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]" id="stepCircle1">1</div>
+                        <span class="text-[10px] font-bold text-white" id="stepText1">الشركة</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#111c22] text-slate-500 border-4 border-[#152329]" id="stepCircle2">2</div>
+                        <span class="text-[10px] font-bold text-slate-500" id="stepText2">المالية</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#111c22] text-slate-500 border-4 border-[#152329]" id="stepCircle3">3</div>
+                        <span class="text-[10px] font-bold text-slate-500" id="stepText3">المستندات</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🚀 محتوى النماذج -->
+            <form id="b2bRegistrationForm" onsubmit="submitForm(event)">
+                
+                <!-- ====== الخطوة 1: بيانات الشركة ====== -->
+                <div class="step-content active" id="step1">
+                    <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2"><i class="fa-solid fa-building text-[#00b4d8]"></i> البيانات الأساسية للشركة</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم الشركة السياحية / الفندق *</label>
+                            <input type="text" id="companyName" required placeholder="مثال: وكالة الأفق للسياحة" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم المدير المسؤول *</label>
+                            <input type="text" id="managerName" required placeholder="الاسم الكامل" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">البريد الإلكتروني للشركة *</label>
+                            <input type="email" id="companyEmail" required placeholder="info@company.com" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">رقم الهاتف / الواتساب *</label>
+                            <input type="tel" id="companyPhone" required placeholder="+971 50 000 0000" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">عنوان المقر الرئيسي *</label>
+                            <input type="text" required placeholder="الدولة، المدينة، الشارع..." class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">كلمة مرور حساب الوكيل *</label>
+                            <input type="password" id="companyPassword" required placeholder="••••••••" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <!-- زر للذهاب لصفحة الدخول إذا كان لديه حساب -->
+                        <a href="b2b-login.html" class="text-[#00b4d8] hover:text-white text-xs font-bold transition-colors decoration-none">لديك حساب؟ سجل الدخول</a>
+                        <button type="button" onclick="nextStep(2)" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] px-8 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 shadow-[0_0_15px_rgba(0,180,216,0.3)]">
+                            التالي: التفاصيل المالية <i class="fa-solid fa-arrow-left mr-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ====== الخطوة 2: التفاصيل المالية ====== -->
+                <div class="step-content" id="step2">
+                    <h3 class="text-xl font-black text-white mb-6 flex items-center gap-2"><i class="fa-solid fa-building-columns text-[#00b4d8]"></i> الحساب البنكي والضرائب</h3>
+                    
+                    <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl mb-6">
+                        <p class="text-amber-400 text-[10px] md:text-xs font-bold leading-relaxed m-0"><i class="fa-solid fa-circle-info ml-1"></i> يرجى التأكد من مطابقة اسم الحساب البنكي لاسم الشركة المسجل في الرخصة التجارية لضمان سلاسة التحويلات واستلام الأرباح.</p>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم الحساب البنكي (Account Name) *</label>
+                        <input type="text" id="accountName" required placeholder="اسم الشركة كما هو في البنك" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم البنك (Bank Name) *</label>
+                            <input type="text" id="bankName" required placeholder="مثال: بنك دبي الإسلامي" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">رقم الآيبان (IBAN) *</label>
+                            <input type="text" id="iban" required placeholder="AE00 0000 0000 0000 0000 00" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left uppercase tracking-wider">
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <label class="block text-[11px] font-bold text-slate-400 mb-2">الرقم الضريبي (VAT TRN) - إن وجد</label>
+                        <input type="text" id="vatNumber" placeholder="أدخل الرقم الضريبي المكون من 15 رقماً" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left tracking-widest">
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button type="button" onclick="prevStep(1)" class="text-slate-400 hover:text-white font-bold text-sm px-4 py-2 transition-colors bg-transparent border-none cursor-pointer">
+                            <i class="fa-solid fa-arrow-right ml-1"></i> السابق
+                        </button>
+                        <button type="button" onclick="nextStep(3)" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] px-8 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 shadow-[0_0_15px_rgba(0,180,216,0.3)] border-none cursor-pointer">
+                            التالي: المستندات الرسمية <i class="fa-solid fa-arrow-left mr-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ====== الخطوة 3: المستندات الرسمية ====== -->
+                <div class="step-content" id="step3">
+                    <h3 class="text-xl font-black text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-folder-open text-[#00b4d8]"></i> المستندات الثبوتية</h3>
+                    <p class="text-slate-400 text-xs font-semibold mb-6">يرجى إرفاق المستندات بوضوح (بصيغة PDF أو JPG/PNG).</p>
+
+                    <div class="space-y-4 mb-8">
+                        <div class="file-drop-zone p-6 rounded-2xl text-center relative overflow-hidden group">
+                            <input type="file" required accept=".pdf, image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="updateFileName(this, 'licenseName')">
+                            <div class="flex flex-col items-center pointer-events-none relative z-0">
+                                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-[#00b4d8] mb-3 group-hover:scale-110 transition-transform"><i class="fa-solid fa-file-contract text-xl"></i></div>
+                                <h4 class="text-white font-bold text-sm mb-1">صورة الرخصة التجارية السارية *</h4>
+                                <p class="text-slate-500 text-[10px]" id="licenseName">اسحب وأفلت الملف هنا أو اضغط للاختيار</p>
+                            </div>
+                        </div>
+
+                        <div class="file-drop-zone p-6 rounded-2xl text-center relative overflow-hidden group">
+                            <input type="file" required accept=".pdf, image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="updateFileName(this, 'idName')">
+                            <div class="flex flex-col items-center pointer-events-none relative z-0">
+                                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-amber-400 mb-3 group-hover:scale-110 transition-transform"><i class="fa-solid fa-id-card text-xl"></i></div>
+                                <h4 class="text-white font-bold text-sm mb-1">صورة هوية المالك / الجواز *</h4>
+                                <p class="text-slate-500 text-[10px]" id="idName">اسحب وأفلت الملف هنا أو اضغط للاختيار</p>
+                            </div>
+                        </div>
+
+                        <div class="file-drop-zone p-6 rounded-2xl text-center relative overflow-hidden group">
+                            <input type="file" accept=".pdf, image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="updateFileName(this, 'vatName')">
+                            <div class="flex flex-col items-center pointer-events-none relative z-0">
+                                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform"><i class="fa-solid fa-file-invoice-dollar text-xl"></i></div>
+                                <h4 class="text-white font-bold text-sm mb-1">شهادة التسجيل الضريبي (اختياري)</h4>
+                                <p class="text-slate-500 text-[10px]" id="vatName">اسحب وأفلت الملف هنا أو اضغط للاختيار</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-black/30 p-4 rounded-xl border border-white/5 mb-6">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" required class="accent-[#00b4d8] w-4 h-4 cursor-pointer">
+                            <span class="text-[10px] md:text-xs font-bold text-slate-300 leading-relaxed">أقر بأن جميع البيانات المدخلة صحيحة، وأوافق على <a href="#" class="text-[#00b4d8] hover:underline">الشروط والأحكام</a> الخاصة بوكلاء الرمال.</span>
+                        </label>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button type="button" onclick="prevStep(2)" class="text-slate-400 hover:text-white font-bold text-sm px-4 py-2 transition-colors bg-transparent border-none cursor-pointer">
+                            <i class="fa-solid fa-arrow-right ml-1"></i> السابق
+                        </button>
+                        <button type="submit" id="submitBtn" class="bg-gradient-to-l from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-white px-8 py-3.5 rounded-xl font-black text-sm transition-transform active:scale-95 shadow-[0_0_20px_rgba(16,185,129,0.4)] border-none cursor-pointer flex items-center gap-2">
+                            إرسال طلب التسجيل <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- ====== شاشة النجاح (تظهر بعد الإرسال) ====== -->
+            <div class="step-content text-center py-10" id="stepSuccess">
+                <div class="w-24 h-24 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                    <i class="fa-solid fa-check text-5xl text-emerald-400"></i>
+                </div>
+                <h2 class="text-3xl font-black text-white mb-3">تم استلام طلبك بنجاح! 🎉</h2>
+                <p class="text-slate-400 font-semibold text-sm max-w-md mx-auto mb-8 leading-relaxed">
+                    شكراً لانضمامك لشبكة شركاء رمال كونكت. يقوم فريق الاعتمادات لدينا حالياً بمراجعة مستنداتك وتفاصيل شركتك. 
+                    <br><br>سيتم التواصل معك عبر البريد الإلكتروني خلال <span class="text-[#00b4d8] font-bold">24-48 ساعة عمل</span> لتفعيل لوحة تحكم الوكيل الخاصة بك.
+                </p>
+                <button onclick="window.location.href='index.html'" class="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-xl font-bold text-sm transition-colors border border-white/10 cursor-pointer">
+                    العودة للصفحة الرئيسية
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- 🚀 الجافاسكربت -->
     <script>
         const API_URL = 'https://remal-connect.onrender.com/api';
 
-        document.getElementById('b2bLoginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('loginBtn');
-            const alertMsg = document.getElementById('loginAlert');
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            document.getElementById('toastText').innerText = message;
             
-            document.getElementById('loginBtnText').innerText = 'جاري التحقق...';
-            document.getElementById('loginBtnIcon').className = 'fa-solid fa-circle-notch fa-spin';
-            btn.disabled = true; 
-            alertMsg.classList.add('hidden');
+            if(isError) { icon.className = 'fa-solid fa-circle-xmark text-[#ff595e] text-xl'; } 
+            else { icon.className = 'fa-solid fa-circle-check text-[#00b4d8] text-xl'; }
+
+            toast.classList.remove('opacity-0', '-translate-y-32');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-32');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        function updateStepper(step) {
+            const line = document.getElementById('progressLine');
+            if(step === 1) line.style.width = '0%';
+            else if(step === 2) line.style.width = '50%';
+            else if(step === 3) line.style.width = '100%';
+
+            for(let i=1; i<=3; i++) {
+                const circle = document.getElementById(`stepCircle${i}`);
+                const text = document.getElementById(`stepText${i}`);
+                
+                if(i < step) {
+                    circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]';
+                    circle.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    text.className = 'text-[10px] font-bold text-white';
+                } else if(i === step) {
+                    circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]';
+                    circle.innerHTML = i;
+                    text.className = 'text-[10px] font-bold text-white';
+                } else {
+                    circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#111c22] text-slate-500 border-4 border-[#152329]';
+                    circle.innerHTML = i;
+                    text.className = 'text-[10px] font-bold text-slate-500';
+                }
+            }
+        }
+
+        function nextStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            updateStepper(step);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function prevStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            updateStepper(step);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateFileName(input, targetId) {
+            const target = document.getElementById(targetId);
+            if(input.files && input.files[0]) {
+                target.innerText = input.files[0].name;
+                target.classList.replace('text-slate-500', 'text-[#00b4d8]');
+                target.parentElement.parentElement.classList.add('border-[#00b4d8]', 'bg-[#00b4d8]/5');
+            } else {
+                target.innerText = 'اسحب وأفلت الملف هنا أو اضغط للاختيار';
+                target.classList.replace('text-[#00b4d8]', 'text-slate-500');
+                target.parentElement.parentElement.classList.remove('border-[#00b4d8]', 'bg-[#00b4d8]/5');
+            }
+        }
+
+        async function submitForm(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق والإرسال...';
+            btn.disabled = true;
 
             const payload = {
-                email: document.getElementById('loginEmail').value,
-                password: document.getElementById('loginPassword').value
+                companyName: document.getElementById('companyName').value,
+                managerName: document.getElementById('managerName').value,
+                email: document.getElementById('companyEmail').value,
+                phone: document.getElementById('companyPhone').value,
+                password: document.getElementById('companyPassword').value,
+                financials: {
+                    accountName: document.getElementById('accountName').value,
+                    bankName: document.getElementById('bankName').value,
+                    iban: document.getElementById('iban').value,
+                    vatNumber: document.getElementById('vatNumber').value || ''
+                },
+                docs: {
+                    licenseUrl: "https://remal-secure-storage.com/docs/license_mock.pdf", 
+                    idUrl: "https://remal-secure-storage.com/docs/id_mock.pdf",
+                    vatUrl: "https://remal-secure-storage.com/docs/vat_mock.pdf"
+                }
             };
 
             try {
-                const response = await fetch(`${API_URL}/login`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                const response = await fetch(`${API_URL}/b2b/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                const result = await response.json();
-
-                alertMsg.classList.remove('hidden');
                 
-                if (response.ok && result.success) {
-                    // 🚀 التأكد من أن المستخدم وكيل (agent) أو أدمن
-                    if (result.user.role === 'agent' || result.user.role === 'admin') {
-                        alertMsg.innerText = '✅ تم تسجيل الدخول بنجاح';
-                        alertMsg.className = 'text-xs font-bold text-center text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 py-2 rounded-lg mt-4';
-                        
-                        localStorage.setItem('rimal_current_user', JSON.stringify(result.user));
-                        
-                        // التوجيه للوحة الوكلاء
-                        setTimeout(() => { window.location.href = 'b2b-dashboard.html'; }, 1000);
-                    } else {
-                        alertMsg.innerText = '⚠️ هذا الحساب غير مصرح له بالدخول كوكيل.';
-                        alertMsg.className = 'text-xs font-bold text-center text-rose-400 bg-rose-500/10 border border-rose-500/30 py-2 rounded-lg mt-4';
-                    }
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    document.getElementById('b2bRegistrationForm').style.display = 'none';
+                    document.getElementById('stepSuccess').classList.add('active');
+                    document.querySelector('.relative.mb-12').style.display = 'none'; 
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else {
-                    alertMsg.innerText = '⚠️ ' + (result.message || 'بيانات الدخول غير صحيحة');
-                    alertMsg.className = 'text-xs font-bold text-center text-rose-400 bg-rose-500/10 border border-rose-500/30 py-2 rounded-lg mt-4';
-                }
-            } catch (error) {
-                alertMsg.classList.remove('hidden');
-                alertMsg.innerText = '⚠️ لا يمكن الاتصال بالخادم الآن.';
-                alertMsg.className = 'text-xs font-bold text-center text-rose-400 bg-rose-500/10 border border-rose-500/30 py-2 rounded-lg mt-4';
-            } finally {
-                if (alertMsg.innerText.includes('⚠️')) {
-                    document.getElementById('loginBtnText').innerText = 'تسجيل الدخول';
-                    document.getElementById('loginBtnIcon').className = 'fa-solid fa-right-to-bracket';
+                    showToast(data.message || 'حدث خطأ أثناء إرسال الطلب', true);
+                    btn.innerHTML = originalHtml;
                     btn.disabled = false;
                 }
+            } catch (error) {
+                showToast('تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً', true);
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
             }
-        });
+        }
     </script>
 </body>
 </html>
