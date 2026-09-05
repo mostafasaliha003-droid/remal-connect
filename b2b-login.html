@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#091016">
+    <title>دخول الوكلاء | Remal Connect B2B</title>
+    
+    <!-- الخطوط والأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-dark: #091016;
+            --primary-cyan: #00b4d8;
+            --primary-gold: #fbbf24;
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: white; 
+        }
+
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 35px 35px;
+        }
+
+        .login-card {
+            background: linear-gradient(160deg, rgba(25, 40, 50, 0.7), rgba(9, 16, 22, 0.95));
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .premium-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .premium-input:focus {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="cyber-grid min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <!-- إضاءة خلفية -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-amber-500 rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-[#00b4d8] rounded-full blur-[150px] opacity-10 pointer-events-none"></div>
+
+    <div class="login-card w-full max-w-md p-8 md:p-10 relative z-10">
+        
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)] mx-auto mb-5 transform rotate-3">
+                <i class="fa-solid fa-briefcase text-[#091016] text-3xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-black text-white">بوابة الوكلاء</h2>
+            <p class="text-amber-400 text-xs md:text-sm font-bold mt-2 tracking-widest uppercase">Remal B2B Portal</p>
+        </div>
+
+        <form id="b2bLoginForm" class="space-y-5">
+            <div>
+                <label class="block text-[11px] font-bold text-slate-400 mb-2">البريد الإلكتروني للشركة</label>
+                <div class="relative">
+                    <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="email" id="loginEmail" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm text-left" placeholder="info@company.com" dir="ltr">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[11px] font-bold text-slate-400 mb-2">كلمة المرور</label>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="password" id="loginPassword" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm text-left" placeholder="••••••••" dir="ltr">
+                </div>
+            </div>
+
+            <p id="loginAlert" class="text-xs font-bold text-center hidden mt-2"></p>
+
+            <button type="submit" id="loginBtn" class="w-full bg-gradient-to-l from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-[#091016] font-black py-4 rounded-xl shadow-[0_5px_20px_rgba(245,158,11,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer mt-4">
+                <span id="loginBtnText">تسجيل الدخول</span> <i id="loginBtnIcon" class="fa-solid fa-right-to-bracket"></i>
+            </button>
+        </form>
+
+        <div class="flex items-center my-8">
+            <div class="flex-1 h-px bg-white/10"></div>
+            <span class="px-3 text-[10px] font-bold text-slate-500">أو</span>
+            <div class="flex-1 h-px bg-white/10"></div>
+        </div>
+
+        <div class="text-center">
+            <p class="text-xs font-bold text-slate-400 mb-4">هل ترغب بالانضمام لشبكة شركاء رمال؟</p>
+            <a href="b2b-register.html" class="inline-flex items-center justify-center w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3.5 rounded-xl border border-white/10 transition-colors text-sm decoration-none">
+                سجل شركتك الآن <i class="fa-solid fa-arrow-left mr-2 text-amber-400"></i>
+            </a>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="index.html" class="text-[10px] font-bold text-slate-500 hover:text-white transition-colors decoration-none"><i class="fa-solid fa-house ml-1"></i> العودة للموقع الرئيسي</a>
+        </div>
+    </div>
+
+    <!-- 🚀 الجافاسكربت الخاص بالدخول -->
+    <script>
+        const API_URL = 'https://remal-connect.onrender.com/api';
+
+        document.getElementById('b2bLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const alertMsg = document.getElementById('loginAlert');
+            
+            document.getElementById('loginBtnText').innerText = 'جاري التحقق...';
+            document.getElementById('loginBtnIcon').className = 'fa-solid fa-circle-notch fa-spin';
+            btn.disabled = true; 
+            alertMsg.classList.add('hidden');
+
+            const payload = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                alertMsg.classList.remove('hidden');
+                
+                if (response.ok && result.success) {
+                    // 🚀 التأكد من أن المستخدم وكيل (agent) أو أدمن
+                    if (result.user.role === 'agent' || result.user.role === 'admin') {
+                        alertMsg.innerText = '✅ تم تسجيل الدخول بنجاح';
+                        alertMsg.className = 'text-xs font-bold text-center text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 py-2 rounded-lg mt-4';
+                        
+                        localStorage.setItem('rimal_current_user', JSON.stringify(result.user));
+                        
+                        // التوجيه للوحة الوكلاء
+                        setTimeout(() => { window.location.href = 'b2b-dashboard.html'; }, 1000);
+                    } else {
+                        alertMsg.innerText = '⚠️ هذا الحساب غير مصرح له بالدخول كوكيل.';
+                        alertMsg.className = 'text-xs font-bold text-center text-rose-400 bg-rose-500/10 border border-rose-500/30 py-2 rounded-lg mt-4';
+                    }
+                } else {
+                    alertMsg.innerText = '⚠️ ' + (result.message || 'بيانات الدخول غير صحيحة');
+                    alertMsg.className = 'text-xs font-bold text-center text-rose-400 bg-rose-500/10 border border-rose-500/30 py-2 rounded-lg mt-4';
+                }
+            } catch (error) {
+                alertMsg.classList.remove('hidden');
+                alertMsg.innerText = '⚠️ لا يمكن الاتصال بالخادم الآن.';
+                alertMsg.className = 'text-xs font-bold text-center text-rose-400 bg-rose-500/10 border border-rose-500/30 py-2 rounded-lg mt-4';
+            } finally {
+                if (alertMsg.innerText.includes('⚠️')) {
+                    document.getElementById('loginBtnText').innerText = 'تسجيل الدخول';
+                    document.getElementById('loginBtnIcon').className = 'fa-solid fa-right-to-bracket';
+                    btn.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
