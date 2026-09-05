@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#091016">
+    <title>خدمة العملاء | Remal Connect</title>
+    
+    <!-- الخطوط والأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-dark: #091016;
+            --primary-cyan: #00b4d8;
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: white; 
+            overflow-x: hidden; 
+        }
+
+        /* 🚀 الخلفية الشبكية */
+        .cyber-grid {
+            background-image: 
+                linear-gradient(rgba(0, 180, 216, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 180, 216, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center center;
+        }
+
+        /* 🚀 البطاقات الزجاجية (Glass Cards) */
+        .cs-card {
+            background: linear-gradient(145deg, rgba(17, 28, 34, 0.8), rgba(9, 16, 22, 0.95));
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            position: relative; overflow: hidden;
+        }
+
+        /* 🚀 شريط البحث الخارق */
+        .omni-search {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(0, 180, 216, 0.1);
+        }
+        .omni-search:focus-within {
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 40px rgba(0, 180, 216, 0.3);
+            transform: scale(1.02);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* 🚀 تأثيرات الحالة (X-Ray Status) */
+        .status-pulse {
+            position: relative;
+            display: inline-block;
+        }
+        .status-pulse::after {
+            content: ''; position: absolute; inset: -4px;
+            border-radius: 50%;
+            border: 2px solid #10b981;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .xray-progress { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* حركات الظهور */
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    </style>
+</head>
+<body class="cyber-grid min-h-screen flex flex-col pb-10">
+
+    <!-- 🚀 Toast -->
+    <div id="toastMsg" class="fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-[#00b4d8] text-xl" id="toastIcon"></i>
+        <span id="toastText" class="tracking-wide">تمت العملية بنجاح</span>
+    </div>
+
+    <!-- 🚀 Header: CS Panel -->
+    <header class="sticky top-0 w-full z-50 bg-[#091016]/90 backdrop-blur-xl border-b border-white/5 shadow-lg">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-24">
+                
+                <div class="flex items-center gap-4 w-1/4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,180,216,0.3)]">
+                        <i class="fa-solid fa-headset text-white text-xl"></i>
+                    </div>
+                    <div class="flex flex-col hidden md:flex">
+                        <span class="font-black text-xl text-white tracking-wide">مركز <span class="text-[#00b4d8]">الدعم</span></span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">خدمة العملاء الخارقة</span>
+                    </div>
+                </div>
+
+                <!-- 🚀 Masterstroke: Omni-Search Bar -->
+                <div class="w-2/4">
+                    <form onsubmit="searchCustomer(event)" class="omni-search flex items-center rounded-2xl px-4 py-2 w-full max-w-xl mx-auto">
+                        <i class="fa-solid fa-magnifying-glass text-[#00b4d8] text-lg mr-2"></i>
+                        <input type="text" id="omniInput" placeholder="ابحث برقم الشريحة (ICCID) أو إيميل العميل..." class="flex-1 bg-transparent border-none text-white text-sm font-bold placeholder-slate-500 outline-none p-2" autocomplete="off" dir="ltr">
+                        <button type="submit" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] px-5 py-2 rounded-xl text-xs font-black transition-colors cursor-pointer shadow-md border-none ml-2">
+                            فحص
+                        </button>
+                    </form>
+                </div>
+
+                <div class="flex items-center justify-end gap-6 w-1/4">
+                    <div class="flex items-center gap-3 cursor-pointer group">
+                        <div class="text-right hidden sm:block">
+                            <span class="block text-sm font-black text-white group-hover:text-[#00b4d8] transition-colors">Martin Gorshkov</span>
+                            <span class="block text-[10px] font-bold text-[#00b4d8]">Customer Success Agent</span>
+                        </div>
+                        <div class="w-10 h-10 bg-[#00b4d8]/20 border border-[#00b4d8]/50 rounded-full flex items-center justify-center text-[#00b4d8] font-black shadow-[0_0_15px_rgba(0,180,216,0.2)]">
+                            MG
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 relative z-20 w-full flex-1 flex flex-col">
+        
+        <!-- 🚀 شاشة الانتظار (قبل البحث) -->
+        <div id="idleState" class="flex-1 flex flex-col items-center justify-center h-full opacity-60">
+            <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6 border border-white/10">
+                <i class="fa-solid fa-sim-card text-4xl text-slate-500"></i>
+            </div>
+            <h2 class="text-2xl font-black text-white mb-2">في انتظار العميل القادم...</h2>
+            <p class="text-sm font-bold text-slate-400">أدخل رقم הـ ICCID أو الإيميل في الأعلى لبدء فحص الأشعة السينية للشريحة.</p>
+        </div>
+
+        <!-- 🚀 لوحة التحكم بالعميل 360 (تظهر بعد البحث) -->
+        <div id="customer360" class="hidden">
+            
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-black text-white flex items-center gap-2"><i class="fa-solid fa-user-check text-emerald-400"></i> ملف العميل المباشر</h2>
+                <button onclick="resetSearch()" class="text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer border border-white/5">
+                    إغلاق وبحث جديد <i class="fa-solid fa-xmark ml-1"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- ====== 1. الأشعة السينية للشريحة (eSIM X-Ray) ====== -->
+                <div class="lg:col-span-8">
+                    <div class="cs-card p-6 md:p-8 h-full border-t-[3px] border-[#00b4d8]">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-[#00b4d8] rounded-full blur-[120px] opacity-10 pointer-events-none"></div>
+                        
+                        <div class="flex flex-col md:flex-row justify-between items-start mb-8 relative z-10 gap-4">
+                            <div>
+                                <h3 class="text-3xl font-black text-white mb-1 flex items-center gap-3 drop-shadow-md">تركيا 🇹🇷 <span class="bg-[#00b4d8]/20 text-[#00b4d8] px-2 py-0.5 rounded text-[10px] font-black uppercase">Active</span></h3>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <span class="text-sm font-black text-slate-200 tracking-widest bg-black/40 px-3 py-1 rounded-md border border-white/10" dir="ltr">8900 1234 5678 9012 3456</span>
+                                    <button onclick="showToast('تم نسخ رقم الـ ICCID')" class="text-slate-400 hover:text-white bg-transparent border-none cursor-pointer"><i class="fa-regular fa-copy"></i></button>
+                                </div>
+                            </div>
+                            <div class="bg-emerald-500/10 border border-emerald-500/30 p-3 rounded-xl flex items-center gap-3">
+                                <div class="w-3 h-3 bg-emerald-500 rounded-full status-pulse"></div>
+                                <div>
+                                    <span class="block text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Network Status</span>
+                                    <span class="block text-sm font-black text-white">متصل بشبكة Turkcell</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 🚀 مسار حياة الشريحة (Timeline) -->
+                        <div class="bg-black/30 border border-white/5 rounded-2xl p-6 mb-8 relative z-10">
+                            <div class="flex justify-between items-center relative">
+                                <div class="absolute top-1/2 left-[10%] right-[10%] h-0.5 bg-white/10 -translate-y-1/2 z-0"></div>
+                                <div class="absolute top-1/2 right-[10%] w-[40%] h-0.5 bg-[#00b4d8] -translate-y-1/2 z-0 shadow-[0_0_10px_rgba(0,180,216,0.5)]"></div>
+                                
+                                <div class="flex flex-col items-center relative z-10 gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-[#00b4d8] text-[#091016] flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.4)]"><i class="fa-solid fa-cart-shopping text-xs"></i></div>
+                                    <span class="text-[10px] font-bold text-white">تم الشراء</span>
+                                    <span class="text-[8px] text-slate-500" dir="ltr">Aug 12, 10:30</span>
+                                </div>
+                                <div class="flex flex-col items-center relative z-10 gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-[#00b4d8] text-[#091016] flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.4)]"><i class="fa-solid fa-qrcode text-xs"></i></div>
+                                    <span class="text-[10px] font-bold text-white">تم مسح الكود</span>
+                                    <span class="text-[8px] text-slate-500" dir="ltr">Aug 13, 08:15</span>
+                                </div>
+                                <div class="flex flex-col items-center relative z-10 gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-[#00b4d8] text-[#091016] flex items-center justify-center shadow-[0_0_15px_rgba(0,180,216,0.4)]"><i class="fa-solid fa-wifi text-xs"></i></div>
+                                    <span class="text-[10px] font-bold text-white">تم الاتصال</span>
+                                    <span class="text-[8px] text-slate-500" dir="ltr">Aug 13, 08:16</span>
+                                </div>
+                                <div class="flex flex-col items-center relative z-10 gap-2">
+                                    <div class="w-8 h-8 rounded-full bg-[#111c22] border border-white/20 text-slate-500 flex items-center justify-center"><i class="fa-solid fa-ban text-xs"></i></div>
+                                    <span class="text-[10px] font-bold text-slate-500">منتهية</span>
+                                    <span class="text-[8px] text-slate-600" dir="ltr">Aug 28</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 🚀 الاستهلاك الحي (Data Usage) -->
+                        <div class="bg-black/30 border border-white/5 rounded-2xl p-6 relative z-10">
+                            <div class="flex justify-between items-end mb-3">
+                                <div>
+                                    <span class="text-xs font-bold text-slate-400 block mb-1">الاستهلاك الحي بدقة الميجابايت</span>
+                                    <h4 class="text-xl font-black text-white" dir="ltr">3.85 GB <span class="text-[10px] text-slate-500 font-bold">/ 5.00 GB</span></h4>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] font-bold text-slate-400 block mb-1">متبقي من الباقة</span>
+                                    <span class="bg-amber-500/20 text-amber-400 px-2 py-1 rounded font-black text-xs" dir="ltr">1.15 GB (23%)</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-white/5">
+                                <div class="bg-gradient-to-l from-amber-400 to-orange-500 h-3 rounded-full xray-progress shadow-[0_0_10px_rgba(251,191,36,0.5)]" style="width: 0%" id="dataProgressBar"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ====== 2. أزرار التدخل السريع (1-Click Actions) & بيانات العميل ====== -->
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    
+                    <!-- Customer Info -->
+                    <div class="cs-card p-6 border-t-white/10">
+                        <h3 class="text-sm font-black text-white mb-4 border-b border-white/5 pb-2">بيانات العميل</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-500 mb-1">الاسم</span>
+                                <span class="block font-black text-white text-sm">عبدالرحمن خالد</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-500 mb-1">البريد الإلكتروني</span>
+                                <div class="flex items-center justify-between">
+                                    <span class="block font-bold text-slate-300 text-xs" dir="ltr">abdulrahman@example.com</span>
+                                    <button class="text-[#00b4d8] hover:text-white bg-transparent border-none cursor-pointer"><i class="fa-regular fa-copy"></i></button>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-500 mb-1">نوع هاتف العميل (تم الالتقاط)</span>
+                                <span class="block font-black text-emerald-400 text-xs" dir="ltr"><i class="fa-brands fa-apple mr-1"></i> iPhone 15 Pro Max</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="cs-card p-6 border-t-amber-500 flex-1 flex flex-col">
+                        <h3 class="text-sm font-black text-white mb-4 border-b border-white/5 pb-2 flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-500"></i> التدخل السريع (1-Click)</h3>
+                        
+                        <div class="space-y-3 flex-1">
+                            <button onclick="simulateAction(this, 'تم إعادة إرسال الكود للواتساب بنجاح 📲')" class="w-full bg-[#00b4d8]/10 hover:bg-[#00b4d8]/20 border border-[#00b4d8]/30 text-[#00b4d8] py-3 rounded-xl font-black text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 text-right">
+                                <i class="fa-brands fa-whatsapp text-lg w-5 text-center"></i> 
+                                <span class="flex-1 text-right">إعادة إرسال הـ QR (واتساب)</span>
+                            </button>
+                            
+                            <button onclick="simulateAction(this, 'تم تنشيط وإعادة إرسال إشارة الشبكة للشريحة 🔄')" class="w-full bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 py-3 rounded-xl font-black text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 text-right">
+                                <i class="fa-solid fa-tower-broadcast text-lg w-5 text-center"></i> 
+                                <span class="flex-1 text-right">تنشيط الشبكة (Refresh)</span>
+                            </button>
+
+                            <button onclick="simulateAction(this, 'تم شحن 1 جيجا طوارئ مجاناً للعميل 🎁')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 py-3 rounded-xl font-black text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 text-right relative overflow-hidden group">
+                                <div class="absolute inset-0 bg-emerald-500/20 w-0 group-hover:w-full transition-all duration-500"></div>
+                                <i class="fa-solid fa-gift text-lg w-5 text-center relative z-10"></i> 
+                                <span class="flex-1 text-right relative z-10">شحن 1GB طوارئ (مجاناً)</span>
+                            </button>
+                            
+                            <button onclick="simulateAction(this, 'تم إيقاف الشريحة بنجاح 🚫', true)" class="w-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 py-3 rounded-xl font-black text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 text-right mt-auto">
+                                <i class="fa-solid fa-ban text-lg w-5 text-center"></i> 
+                                <span class="flex-1 text-right">إيقاف / حظر الشريحة</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 🚀 Scripts -->
+    <script>
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            document.getElementById('toastText').innerText = message;
+            
+            if(isError) { icon.className = 'fa-solid fa-circle-xmark text-rose-500 text-xl'; toast.className = 'fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(244,63,94,0.3)] border border-rose-500/40 flex items-center gap-3 pointer-events-none transition-all duration-400'; } 
+            else { icon.className = 'fa-solid fa-circle-check text-[#00b4d8] text-xl'; toast.className = 'fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,180,216,0.3)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none transition-all duration-400'; }
+
+            toast.classList.remove('opacity-0', '-translate-y-32');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-32');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        // 🚀 محاكاة البحث السريع (Omni-Search)
+        function searchCustomer(e) {
+            e.preventDefault();
+            const input = document.getElementById('omniInput');
+            if(input.value.trim() === '') {
+                showToast('يرجى إدخال رقم الـ ICCID أو الإيميل', true);
+                return;
+            }
+
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
+            // محاكاة جلب البيانات
+            setTimeout(() => {
+                document.getElementById('idleState').classList.add('hidden');
+                const panel = document.getElementById('customer360');
+                panel.classList.remove('hidden');
+                panel.classList.add('fade-in');
+                
+                // تشغيل شريط التقدم
+                setTimeout(() => {
+                    document.getElementById('dataProgressBar').style.width = '77%';
+                }, 100);
+
+                btn.innerText = originalText;
+                btn.disabled = false;
+                showToast('تم جلب بيانات الشريحة بنجاح');
+            }, 1000);
+        }
+
+        function resetSearch() {
+            document.getElementById('omniInput').value = '';
+            document.getElementById('customer360').classList.add('hidden');
+            document.getElementById('customer360').classList.remove('fade-in');
+            document.getElementById('idleState').classList.remove('hidden');
+            document.getElementById('dataProgressBar').style.width = '0%';
+        }
+
+        // 🚀 محاكاة التدخل السريع (1-Click Actions)
+        function simulateAction(btn, msg, isError = false) {
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<div class="w-full flex justify-center"><i class="fa-solid fa-spinner fa-spin text-lg"></i></div>';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                showToast(msg, isError);
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
