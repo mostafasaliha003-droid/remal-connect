@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>إنشاء حساب | Remal Connect</title>
+    
+    <!-- الخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --primary: #1f3a40;        
+            --accent-cyan: #00b4d8;    
+            --bg-light: #f4f7f6;     
+            --text-main: #2d3748;
+        }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-light); color: var(--text-main); }
+        .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300b4d8' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen flex items-center justify-center p-4">
+
+    <!-- حاوية التسجيل -->
+    <div class="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-100 w-full max-w-md overflow-hidden relative z-10">
+        
+        <!-- القسم العلوي المزخرف -->
+        <div class="bg-gradient-to-br from-[#1f3a40] to-[#2c5364] p-8 text-center relative overflow-hidden">
+            <!-- زخرفة خلفية -->
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#00b4d8] rounded-full blur-[50px] opacity-40"></div>
+            
+            <a href="index.html" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
+                <i class="fa-solid fa-arrow-right text-lg"></i>
+            </a>
+
+            <div class="w-16 h-16 mx-auto bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20 mb-4 shadow-lg transform rotate-3">
+                 <i class="fa-solid fa-user-plus text-white text-2xl"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-black text-white">حساب جديد</h2>
+            <p class="text-[#00b4d8] text-xs md:text-sm font-bold mt-1.5">انضم لـ Remal Connect وابدأ رحلتك</p>
+        </div>
+
+        <!-- نموذج الإدخال (Form) -->
+        <div class="p-6 md:p-8">
+            <form class="space-y-4">
+                
+                <!-- حقل الاسم -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">الاسم الكامل</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="الاسم الثنائي">
+                    </div>
+                </div>
+
+                <!-- حقل البريد الإلكتروني -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">البريد الإلكتروني (لاستلام كود QR)</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="email" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="name@example.com" dir="ltr">
+                    </div>
+                </div>
+
+                <!-- حقل رقم الهاتف -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">رقم الواتساب (اختياري)</label>
+                    <div class="relative">
+                        <i class="fa-brands fa-whatsapp absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="tel" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="+971 50 000 0000" dir="ltr">
+                    </div>
+                </div>
+
+                <!-- حقل كلمة المرور -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">كلمة المرور</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- زر التسجيل -->
+                <button type="button" class="w-full bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(0,180,216,0.25)] hover:shadow-[0_12px_25px_rgba(0,180,216,0.35)] mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2">
+                    إنشاء الحساب <i class="fa-solid fa-rocket"></i>
+                </button>
+            </form>
+
+            <!-- فاصل -->
+            <div class="flex items-center my-6">
+                <div class="flex-1 h-px bg-slate-100"></div>
+                <span class="px-3 text-[10px] font-bold text-slate-400 uppercase">أو</span>
+                <div class="flex-1 h-px bg-slate-100"></div>
+            </div>
+
+            <!-- التسجيل السريع بجوجل -->
+            <button class="w-full bg-white border border-slate-200 text-slate-600 font-bold py-3 rounded-xl shadow-sm hover:bg-slate-50 transition-all text-sm flex justify-center items-center gap-3">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
+                المتابعة باستخدام Google
+            </button>
+
+            <div class="mt-8 text-center">
+                <p class="text-xs font-bold text-slate-500">
+                    لديك حساب بالفعل؟ 
+                    <a href="#" class="text-[#00b4d8] hover:text-[#1f3a40] transition-colors">تسجيل الدخول</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
