@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#091016">
+    <title>مركز القيادة | Remal Connect</title>
+    
+    <!-- الخطوط والأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-dark: #050a0f;
+            --panel-bg: #0c151c;
+            --primary-cyan: #00b4d8;
+            --profit-green: #10b981;
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: white; 
+            overflow-x: hidden; 
+        }
+
+        /* 🚀 الخلفية الشبكية الاستراتيجية */
+        .command-grid {
+            background-image: 
+                linear-gradient(rgba(0, 180, 216, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 180, 216, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* 🚀 بطاقات القيادة (Command Cards) */
+        .command-card {
+            background: linear-gradient(145deg, rgba(12, 21, 28, 0.8), rgba(5, 10, 15, 0.95));
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(0, 180, 216, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(12px);
+            position: relative; overflow: hidden;
+        }
+
+        /* 🚀 تأثير النبض للخريطة (Heatmap Dots) */
+        .ping-dot {
+            position: absolute;
+            width: 8px; height: 8px;
+            background-color: var(--primary-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--primary-cyan);
+        }
+        .ping-dot::after {
+            content: ''; position: absolute; inset: -4px;
+            border: 2px solid var(--primary-cyan);
+            border-radius: 50%;
+            animation: ping-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        .ping-dot.green { background-color: var(--profit-green); box-shadow: 0 0 15px var(--profit-green); }
+        .ping-dot.green::after { border-color: var(--profit-green); }
+        
+        @keyframes ping-pulse {
+            75%, 100% { transform: scale(3); opacity: 0; }
+        }
+
+        /* الجدول الزجاجي للاعتمادات */
+        .kyc-table th { background: rgba(255, 255, 255, 0.02); color: #94a3b8; font-weight: 700; padding: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;}
+        .kyc-table td { padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.02); font-size: 13px; }
+        .kyc-table tr:hover td { background: rgba(0, 180, 216, 0.02); }
+
+        /* نافذة الإعداد الزجاجية */
+        .modal-glass {
+            background: rgba(12, 21, 28, 0.95);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid var(--primary-cyan);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+    </style>
+</head>
+<body class="command-grid min-h-screen flex flex-col pb-10">
+
+    <!-- 🚀 Toast -->
+    <div id="toastMsg" class="fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-emerald-500/40 flex items-center gap-3 pointer-events-none">
+        <i class="fa-solid fa-shield-check text-emerald-400 text-xl" id="toastIcon"></i>
+        <span id="toastText" class="tracking-wide">تم الاعتماد بنجاح</span>
+    </div>
+
+    <!-- 🚀 Header: Command Center -->
+    <header class="sticky top-0 w-full z-50 bg-[#050a0f]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-[#1f3a40] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+                        <i class="fa-solid fa-satellite-dish text-white text-xl"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-black text-xl text-white tracking-wide">مركز القيادة <span class="text-indigo-400">المركزي</span></span>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">إدارة شركة الرمال الدولية</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="hidden md:flex items-center gap-3 bg-black/40 border border-white/5 px-3 py-1.5 rounded-lg">
+                        <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span></span>
+                        <span class="text-[10px] font-bold text-emerald-400 tracking-widest uppercase">System Online</span>
+                    </div>
+                    <div class="h-8 w-px bg-white/10 hidden md:block"></div>
+                    
+                    <div class="flex items-center gap-3 cursor-pointer group">
+                        <div class="text-right hidden sm:block">
+                            <span class="block text-sm font-black text-white group-hover:text-[#00b4d8] transition-colors">محمد لطفي</span>
+                            <span class="block text-[10px] font-bold text-indigo-300">المدير العام (Admin)</span>
+                        </div>
+                        <div class="w-10 h-10 bg-indigo-500/20 border border-indigo-500/50 rounded-full flex items-center justify-center text-indigo-400 font-black shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 relative z-20 w-full">
+        
+        <!-- 🚀 1. مصفوفة الأرباح (Profit Matrix) -->
+        <h2 class="text-lg font-black text-white mb-4 flex items-center gap-2"><i class="fa-solid fa-chart-pie text-[#00b4d8]"></i> المؤشرات المالية اللحظية</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <div class="command-card p-6 border-t-[#00b4d8]">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">إجمالي المبيعات (B2C + B2B)</span>
+                        <h3 class="text-3xl font-black text-white" dir="ltr" id="grossSales">245,890 <span class="text-sm text-[#00b4d8]">AED</span></h3>
+                    </div>
+                    <div class="w-10 h-10 bg-[#00b4d8]/10 rounded-xl flex items-center justify-center text-[#00b4d8]"><i class="fa-solid fa-wallet text-lg"></i></div>
+                </div>
+                <div class="w-full bg-slate-800/50 h-1.5 rounded-full overflow-hidden"><div class="bg-[#00b4d8] h-full w-[85%]"></div></div>
+            </div>
+
+            <div class="command-card p-6 border-t-rose-500">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">تكلفة المزودين (API Costs)</span>
+                        <h3 class="text-3xl font-black text-white" dir="ltr" id="apiCosts">112,400 <span class="text-sm text-rose-500">AED</span></h3>
+                    </div>
+                    <div class="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-500"><i class="fa-solid fa-server text-lg"></i></div>
+                </div>
+                <div class="w-full bg-slate-800/50 h-1.5 rounded-full overflow-hidden"><div class="bg-rose-500 h-full w-[45%]"></div></div>
+            </div>
+
+            <div class="command-card p-6 border-t-emerald-500 bg-gradient-to-br from-emerald-900/20 to-transparent">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block mb-1">صافي الربح اللحظي (Net Margin)</span>
+                        <h3 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200 drop-shadow-md" dir="ltr" id="netProfit">133,490 <span class="text-sm text-emerald-500">AED</span></h3>
+                    </div>
+                    <div class="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]"><i class="fa-solid fa-sack-dollar text-lg"></i></div>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] font-bold text-emerald-400"><i class="fa-solid fa-caret-up"></i> هامش الربح الإجمالي: 54.2%</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            
+            <!-- 🚀 2. خريطة النشاط الحرارية (Global SVG Heatmap) -->
+            <div class="lg:col-span-2">
+                <div class="command-card p-6 h-full flex flex-col relative">
+                    <div class="flex justify-between items-center mb-6 z-10 relative">
+                        <h3 class="text-lg font-black text-white flex items-center gap-2"><i class="fa-solid fa-earth-americas text-[#00b4d8]"></i> خريطة الاتصالات الفعّالة (Live)</h3>
+                        <span class="bg-black/50 border border-white/10 px-3 py-1 rounded text-[10px] font-bold text-slate-300">1,245 شريحة متصلة الآن</span>
+                    </div>
+                    
+                    <div class="flex-1 relative w-full h-[350px] bg-[#030609] rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
+                        <!-- مسار الخريطة (SVG World Map Simplified) -->
+                        <svg class="w-[95%] h-[95%] opacity-30 text-[#00b4d8]" fill="currentColor" viewBox="0 0 1008 650" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M259.9,139.1c-1.3,0.3-2.7,1.8-3,3.3c-0.2,1,0.2,2.4,0.9,3l1.3,1.3l-2.1,3.4c-1.2,1.9-2.1,3.8-2.1,4.2 c0,0.5-0.7,0.7-1.5,0.4c-1.1-0.4-1.5,0-1.5,1.4c0,1,0.6,2,1.3,2.4c0.7,0.3,1.3,1.1,1.3,1.7c0,1.4-1.1,2.5-1.5,1.5 c-0.1-0.3-1.4,0-2.8,0.7c-2.4,1.1-2.6,1.4-2,3.3c0.4,1.3,0.2,2.2-0.5,2.2c-0.6,0-1.3,1-1.4,2.3c-0.1,1.2-0.7,2.8-1.2,3.4 c-0.6,0.6-0.8,1.9-0.5,2.9c0.4,1.4-0.1,2-1.7,2.1c-1.8,0.1-2.4,0.6-2.9,2.5c-0.4,1.7-1,2.3-2,2.3c-0.8,0-1.5,0.7-1.5,1.5 c0,0.8-0.9,1.5-2,1.5c-2,0-2,0.1,0,1.3c1.1,0.7,2,1.9,2,2.7c0,0.8,0.4,1.5,1,1.5s1,0.7,1,1.5c0,1.2,0.9,1.4,3.7,0.7 c2-0.5,4.3-0.5,5.1,0c0.8,0.4,1.5,0,1.5-1s1.3-1.6,2.8-1.2c1.6,0.3,3,0.1,3-0.5c0-0.6,1.4-0.3,3.1,0.7c1.7,1,3.5,1.4,4.1,0.8 s2.2-0.6,3.4,0c1.3,0.6,2.7,0.8,3.2,0.3c0.5-0.5,2-0.6,3.2-0.2c2.4,0.9,3,0.3,3.3-3c0.2-2.1,0.8-3.1,1.6-2.7c1.2,0.5,1.2,0,0-2 c-0.8-1.4-1.2-3.1-0.8-3.8c0.4-0.7,0.5-2.1,0.1-3c-0.4-1-0.1-1.8,0.6-1.8s1,0.7,1,1.5c0,1,0.5,1,1.8,0c2.6-2,4.6-2.2,5-0.6 c0.3,1.3,1.3,1.5,4,0.7c2.6-0.8,3.6-0.6,3.6,0.5c0,0.9-0.8,1.6-1.8,1.6c-2,0-2,0.2,0,1.4c1.1,0.7,2,2.3,2,3.5s0.6,2.3,1.4,2.3 s1.4-0.6,1.4-1.2c0-0.7,1-1.3,2.3-1.3c2.2,0,2.4,0.2,1.7,1.8c-0.4,0.9,0.1,1.7,1.3,1.7c2,0,2.1,0.4,1.1,3 c-0.8,2.1-0.6,2.5,0.7,1.7c0.9-0.6,1.7,0,1.7,1.2c0,1.5,1,1.6,2.8,0.3c1.3-1,2.8-1.3,3.5-0.6c0.7,0.7,2.2,0.6,3.4-0.2 c1.9-1.2,2.2-1.2,2.2,0c0,1.7,2.9,2.8,5.1,1.9c1-0.4,1.8,0.1,1.8,1c0,1.4-1,1.9-3.5,1.9c-2,0-3.5,0.6-3.5,1.2s1.4,1.3,3.1,1.5 c1.7,0.2,3.5,1.1,4.1,2c0.6,0.9,2.3,1.6,3.8,1.6c1.6,0,3.3,0.7,3.8,1.6c0.5,0.9,2.1,1.6,3.6,1.6s2.7,0.6,2.7,1.4 c0,0.8,0.9,1.5,2,1.5s2,0.5,2,1s-0.9,1.1-2,1.3c-1.1,0.3-2,1.1-2,1.9s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.9,1.5-2,1.5 c-1.1,0-2,0.5-2,1s1.3,1.4,2.8,1.4c1.6,0,3.5,0.7,4.3,1.5c0.8,0.8,2.4,1.5,3.6,1.5c2.4,0,3.1,2.6,0.8,3.2c-0.9,0.3-2,1-2.4,1.7 c-0.4,0.7-1.5,1.2-2.4,1.2s-1.6,0.7-1.6,1.5s-0.6,1.5-1.4,1.5c-0.8,0-1.4,0.7-1.4,1.5c0,0.8,0.7,1.5,1.5,1.5 c0.8,0,1.5,0.7,1.5,1.5c0,1.5-2.2,3.8-3.4,3.8c-0.6,0-1.1,0.7-1.1,1.5c0,1.3,1.3,2.6,3.4,3.5c1.7,0.7,3.1,1.9,3.1,2.6 s1.3,1.3,2.9,1.3c1.6,0,3.1,0.7,3.4,1.5c0.3,0.8,1.4,1.5,2.6,1.5s2.2,0.7,2.2,1.5s1.2,1.5,2.6,1.5s2.6,0.7,3.1,1.5 c0.6,0.8,1.8,1.5,2.8,1.5s2.3,1.2,3,2.7c0.6,1.5,1.6,2.7,2.2,2.7c0.6,0,1.1,0.7,1.1,1.5c0,1.3,0.8,2.1,3,3 c1.6,0.7,3,1.8,3,2.6s1,1.5,2.3,1.5s2.3,0.7,2.3,1.5s1.3,1.5,3,1.5c2.5,0,3,0.4,3,2.7c0,1.7,0.5,3.3,1,3.5c0.6,0.2,1,0.8,1,1.3 c0,0.5,0.5,1,1,1s1.3-0.5,1.9-1c0.5-0.6,1.5-1,2.2-1c1,0,1.3-0.5,1-1.7c-0.3-1.1-0.1-2.4,0.5-3c0.6-0.6,1.1-1.8,1.1-2.8 c0-1-0.5-1.8-1-1.8c-0.6,0-1.1-0.7-1.1-1.5c0-1.4,2.3-3.6,3.4-3.3c0.5,0.2,1.6-0.1,2.3-0.7c0.8-0.6,2-0.8,2.8-0.5 c0.8,0.3,2.3-0.1,3.4-0.9c1.6-1.2,2-1.2,3.3-0.3c1.6,1.1,1.7,1.1,3.5,0c1-0.6,2.8-1,4-1s2.2-0.6,2.2-1.3c0-0.7,1-1.2,2.2-1.2 c2.1,0,2.2-0.1,1.5-1c-0.4-0.6,0-1.6,1.1-2.3c1.4-0.9,1.8-1.9,1.2-3.1c-0.4-0.9-0.5-1.9-0.1-2.2c0.3-0.3,1.4,0,2.3,0.6 c1.1,0.8,2.4,1,3.7,0.6c1.3-0.4,2.7-0.1,3.8,0.7c1.4,0.9,2.1,0.9,2.8,0c0.6-0.8,1.5-1,3.5-0.7c2.1,0.3,3.1,0.1,3.8-0.8 c0.5-0.7,1.8-1.2,2.8-1.2c1,0,2.2-0.7,2.7-1.5c0.5-0.8,1.9-1.5,3.3-1.5c1.4,0,3-0.6,3.6-1.4c0.6-0.7,1.6-1.3,2.4-1.3 c1,0,1.4-0.5,1.4-1.7c0-1.4,1.4-3,2.7-3s2.1-0.5,1.7-1.4c-0.3-0.8-0.1-1.8,0.6-2.5c0.7-0.6,1.3-1.6,1.3-2.1c0-0.5,0.7-1,1.5-1 c1.1,0,1.5-0.6,1.5-1.9c0-1.1-0.6-2-1.3-2c-0.7,0-1.4-0.7-1.6-1.5c-0.2-0.8-0.8-1.5-1.4-1.5c-0.6,0-1.1-0.7-1.1-1.5 s-0.9-1.5-2.1-1.5c-1.3,0-2.1-0.5-2.1-1.3c0-0.7-0.7-1.2-1.5-1.2c-0.8,0-1.5-0.6-1.5-1.4c0-0.8-0.8-1.4-1.7-1.4 c-2.4,0-3-1.6-0.8-2.3c0.8-0.3,1.5-1,1.5-1.6c0-0.9,1.1-1.2,5.1-1.2c3.1,0,5.6-0.4,5.6-0.9c0-0.5,1-1,2.1-1c1.2,0,2.4-0.6,2.7-1.4 c0.3-0.8,1.6-1.4,2.9-1.4c1.3,0,2.6-0.6,2.9-1.4c0.3-0.8,1.3-1.4,2.1-1.4c0.8,0,1.5-0.7,1.5-1.5c0-0.8,0.7-1.5,1.5-1.5 c0.8,0,1.5-0.7,1.5-1.5s1-1.5,2.1-1.5c1.2,0,2.1-0.6,2.1-1.3c0-0.7,0.7-1.2,1.5-1.2c0.8,0,1.5-0.7,1.5-1.5c0-0.8,0.9-1.5,1.9-1.5 c1.1,0,1.9-0.5,1.9-1c0-0.6,1.1-1,2.5-1c1.4,0,2.5-0.5,2.5-1.1c0-0.6,0.6-1,1.3-1s1.3-0.5,1.3-1c0-0.6,1-1.1,2.3-1.1 c1.3,0,2.3-0.5,2.3-1c0-0.6,0.7-1,1.5-1s1.5-0.5,1.5-1c0-0.6,0.8-1,1.8-1c1,0,1.8-0.5,1.8-1c0-0.6,1-1.1,2.3-1.1 c1.3,0,2.3-0.5,2.3-1s1.3-1,2.8-1c2,0,2.8-0.5,2.8-1.6C265.4,142.1,262.1,138.5,259.9,139.1z M852.1,196.2c-0.8,0-1.5,0.7-1.5,1.5 c0,0.8-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5 s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5 s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5s-1.5,0.7-1.5,1.5 c-0.8,0-1.5,0.7-1.5,1.5s-0.7,1.5-1.5,1.5z"/>
+                        </svg>
+
+                        <!-- نقاط النبض للنشاط اللحظي -->
+                        <div class="ping-dot" style="top: 35%; left: 60%;" title="Dubai"></div>
+                        <div class="ping-dot green" style="top: 38%; left: 58%;" title="Saudi Arabia"></div>
+                        <div class="ping-dot" style="top: 25%; left: 45%;" title="Europe"></div>
+                        <div class="ping-dot green" style="top: 22%; left: 42%;" title="London"></div>
+                        <div class="ping-dot" style="top: 45%; left: 80%;" title="Asia"></div>
+                        <div class="ping-dot green" style="top: 30%; left: 20%;" title="USA"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🚀 3. مركز اعتمادات B2B (KYC Hub) -->
+            <div class="lg:col-span-1">
+                <div class="command-card p-6 h-full flex flex-col border-t-indigo-500 relative">
+                    <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none"><i class="fa-solid fa-shield-halved text-9xl"></i></div>
+                    
+                    <div class="flex justify-between items-start mb-4 relative z-10">
+                        <div>
+                            <h3 class="text-lg font-black text-white flex items-center gap-2"><i class="fa-solid fa-fingerprint text-indigo-400"></i> مركز الاعتمادات (KYC)</h3>
+                            <span class="text-[10px] text-slate-400 font-bold block mt-1">مساحة الاعتمادات (صلاحية الإدارة: محمد ورهف)</span>
+                        </div>
+                        <span class="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-black animate-pulse">2 قيد الانتظار</span>
+                    </div>
+
+                    <div class="flex-1 space-y-4 relative z-10 mt-2">
+                        
+                        <!-- Pending Agent 1 -->
+                        <div class="bg-black/30 border border-white/5 p-4 rounded-xl hover:border-indigo-500/30 transition-colors" id="agent-1">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h4 class="text-sm font-black text-white">وكالة الأفق للسياحة</h4>
+                                    <span class="text-[10px] text-slate-400 font-bold">تركيا - إسطنبول</span>
+                                </div>
+                                <button class="text-indigo-400 hover:text-white bg-transparent border-none cursor-pointer" title="عرض المستندات المرفوعة"><i class="fa-solid fa-file-pdf text-lg"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openApprovalModal('1', 'وكالة الأفق للسياحة')" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg text-[10px] font-black transition-colors cursor-pointer border-none shadow-[0_0_10px_rgba(99,102,241,0.3)]">
+                                    <i class="fa-solid fa-check mr-1"></i> مراجعة واعتماد
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Pending Agent 2 -->
+                        <div class="bg-black/30 border border-white/5 p-4 rounded-xl hover:border-indigo-500/30 transition-colors" id="agent-2">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h4 class="text-sm font-black text-white">فندق الميدان (Test)</h4>
+                                    <span class="text-[10px] text-slate-400 font-bold">الإمارات - دبي</span>
+                                </div>
+                                <button class="text-indigo-400 hover:text-white bg-transparent border-none cursor-pointer" title="عرض المستندات المرفوعة"><i class="fa-solid fa-file-pdf text-lg"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openApprovalModal('2', 'فندق الميدان (Test)')" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white py-2 rounded-lg text-[10px] font-black transition-colors cursor-pointer border-none shadow-[0_0_10px_rgba(99,102,241,0.3)]">
+                                    <i class="fa-solid fa-check mr-1"></i> مراجعة واعتماد
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🚀 جدول العمليات الحديثة (B2C & B2B) -->
+        <div class="command-card p-6 border-t-white/10">
+            <h3 class="text-lg font-black text-white mb-6 flex items-center gap-2"><i class="fa-solid fa-list-check text-slate-400"></i> أحدث العمليات (Live Feed)</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse kyc-table" dir="rtl">
+                    <thead>
+                        <tr>
+                            <th class="rounded-tr-xl">المعرف</th>
+                            <th>العميل / الوكيل</th>
+                            <th>الباقة</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                            <th class="rounded-tl-xl text-center">الوقت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-black text-white" dir="ltr">#ORD-9012</td>
+                            <td><span class="font-bold text-white">أحمد عبدالله</span> <span class="bg-[#00b4d8]/20 text-[#00b4d8] px-1.5 py-0.5 rounded text-[8px] mr-1">B2C</span></td>
+                            <td class="text-slate-300">أوروبا الموحدة - 10GB</td>
+                            <td class="font-bold text-emerald-400" dir="ltr">85.00 AED</td>
+                            <td><span class="text-emerald-400 text-xs font-bold"><i class="fa-solid fa-check-circle"></i> مفعل</span></td>
+                            <td class="text-center text-slate-500">الآن</td>
+                        </tr>
+                        <tr>
+                            <td class="font-black text-white" dir="ltr">#BCH-9824</td>
+                            <td><span class="font-bold text-white">وكالة السفر الذكي</span> <span class="bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded text-[8px] mr-1">B2B</span></td>
+                            <td class="text-slate-300">تركيا (الجملة) - 50 شريحة</td>
+                            <td class="font-bold text-emerald-400" dir="ltr">1,250.00 AED</td>
+                            <td><span class="text-emerald-400 text-xs font-bold"><i class="fa-solid fa-check-circle"></i> مُصدر</span></td>
+                            <td class="text-center text-slate-500">قبل دقيقتين</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 🚀 نافذة تحديد سقف الائتمان (KYC Approval Modal) -->
+    <div id="approvalModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-[#050a0f]/90 backdrop-blur-md cursor-pointer" onclick="closeApprovalModal()"></div>
+        <div class="modal-glass w-[90%] max-w-md p-8 relative z-10 transform translate-y-10 transition-transform duration-300 rounded-3xl" id="approvalContent">
+            
+            <button onclick="closeApprovalModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="w-16 h-16 bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-indigo-400 border border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+                <i class="fa-solid fa-shield-check text-3xl"></i>
+            </div>
+            
+            <h3 class="text-2xl font-black text-white mb-2 text-center">اعتماد الوكيل (B2B)</h3>
+            <p class="text-center text-xs font-bold text-slate-400 mb-6 border-b border-white/5 pb-4">الشركة: <span id="modalAgentName" class="text-white"></span></p>
+            
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-slate-300 mb-2">تحديد سقف الائتمان (Credit Limit) AED</label>
+                <div class="relative">
+                    <i class="fa-solid fa-money-bill-wave absolute right-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                    <input type="number" id="creditLimit" value="5000" min="0" class="w-full bg-black/50 border border-indigo-500/30 rounded-xl p-3.5 pr-11 text-lg font-black text-white outline-none focus:border-indigo-400 transition-colors shadow-inner" dir="ltr">
+                </div>
+                <p class="text-[10px] text-slate-500 mt-2 font-semibold">هذا هو الحد الأقصى الذي يمكن للوكيل إصدار شرائح به قبل أن يحتاج لشحن رصيده.</p>
+            </div>
+            
+            <button id="confirmApproveBtn" onclick="confirmApproval()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-black py-4 rounded-xl shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                اعتماد وتفعيل الحساب فوراً <i class="fa-solid fa-bolt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 🚀 Scripts -->
+    <script>
+        let currentApprovalId = null;
+
+        function showToast(message) {
+            const toast = document.getElementById('toastMsg');
+            document.getElementById('toastText').innerText = message;
+            
+            toast.classList.remove('opacity-0', '-translate-y-32');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-32');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        function openApprovalModal(id, agentName) {
+            currentApprovalId = id;
+            document.getElementById('modalAgentName').innerText = agentName;
+            
+            const modal = document.getElementById('approvalModal');
+            const content = document.getElementById('approvalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => { 
+                modal.classList.remove('opacity-0'); 
+                content.classList.remove('translate-y-10'); 
+            }, 10);
+        }
+
+        function closeApprovalModal() {
+            const modal = document.getElementById('approvalModal');
+            const content = document.getElementById('approvalContent');
+            modal.classList.add('opacity-0'); 
+            content.classList.add('translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        function confirmApproval() {
+            const btn = document.getElementById('confirmApproveBtn');
+            const limit = document.getElementById('creditLimit').value;
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الاعتماد...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                closeApprovalModal();
+                showToast(`تم اعتماد الوكيل بسقف ائتمان ${limit} AED بنجاح.`);
+                
+                // إخفاء بطاقة الوكيل بعد الاعتماد (محاكاة)
+                if(currentApprovalId) {
+                    const agentCard = document.getElementById(`agent-${currentApprovalId}`);
+                    if(agentCard) {
+                        agentCard.style.opacity = '0';
+                        setTimeout(() => agentCard.remove(), 300);
+                    }
+                }
+                
+                btn.innerHTML = 'اعتماد وتفعيل الحساب فوراً <i class="fa-solid fa-bolt"></i>';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        // محاكاة الأرقام الحية
+        setInterval(() => {
+            const grossEl = document.getElementById('grossSales');
+            const netEl = document.getElementById('netProfit');
+            
+            let currentGross = parseInt(grossEl.innerText.replace(/,/g, ''));
+            let currentNet = parseInt(netEl.innerText.replace(/,/g, ''));
+            
+            // زيادة عشوائية وهمية للعداد
+            if(Math.random() > 0.7) {
+                currentGross += Math.floor(Math.random() * 150) + 50;
+                currentNet += Math.floor(Math.random() * 80) + 20;
+                
+                grossEl.innerHTML = currentGross.toLocaleString() + ' <span class="text-sm text-[#00b4d8]">AED</span>';
+                netEl.innerHTML = currentNet.toLocaleString() + ' <span class="text-sm text-emerald-500">AED</span>';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
