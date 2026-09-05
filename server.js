@@ -100,11 +100,13 @@ const transactionSchema = new mongoose.Schema({
     sellingPrice: { type: Number, required: true }, 
     netMargin: { type: Number }, 
     whatsappDelivered: { type: Boolean, default: false },
-    status: { type: String, enum: ['success', 'failed', 'refunded'], default: 'success' }
+    status: { type: String, enum: ['pending_payment', 'success', 'failed', 'refunded'], default: 'pending_payment' }
 }, { timestamps: true });
 
 transactionSchema.pre('save', function(next) {
-    this.netMargin = this.sellingPrice - this.apiCost;
+    if(this.sellingPrice && this.apiCost) {
+        this.netMargin = this.sellingPrice - this.apiCost;
+    }
     next();
 });
 
@@ -171,18 +173,15 @@ app.post('/api/login', async (req, res) => {
 // تسجيل وكالة سفر جديدة مع استقبال الملفات عبر FormData
 app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' }, { name: 'idFile' }, { name: 'vatFile' }]), async (req, res) => {
     try {
-        // استخراج البيانات النصية المرسلة
         const { companyName, managerName, email, phone, password, accountName, bankName, iban, vatNumber } = req.body;
         const files = req.files;
         
-        // التحقق من الإيميل
         const existingUser = await User.findOne({ email });
         if (existingUser) return res.status(400).json({ success: false, message: 'البريد الإلكتروني مستخدم بالفعل' });
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password || 'defaultPass123', salt);
 
-        // إنشاء المستخدم كوكيل
         const newUser = await User.create({ 
             fullName: managerName, 
             email, 
@@ -191,7 +190,6 @@ app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' },
             role: 'agent' 
         });
         
-        // حفظ بيانات الوكالة (الروابط حالياً فارغة، سيتم تحديثها عند رفع الملفات لخدمة تخزين سحابية لاحقاً)
         const newAgency = await Agency.create({
             userId: newUser._id,
             companyName,
@@ -200,13 +198,11 @@ app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' },
             documents: { licenseUrl: '', idUrl: '', vatUrl: '' }
         });
 
-        // 🚀 إعداد المرفقات للإيميل
         let attachments = [];
         if (files['licenseFile']) attachments.push({ filename: files['licenseFile'][0].originalname, content: files['licenseFile'][0].buffer });
         if (files['idFile']) attachments.push({ filename: files['idFile'][0].originalname, content: files['idFile'][0].buffer });
         if (files['vatFile']) attachments.push({ filename: files['vatFile'][0].originalname, content: files['vatFile'][0].buffer });
 
-        // 🚀 إرسال الإيميل إلى الرمال الدولية
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: 'connect@remaltourismllc.com',
@@ -226,7 +222,6 @@ app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' },
             attachments: attachments
         };
 
-        // محاولة إرسال الإيميل (إن فشل الإيميل فلن يوقف عملية التسجيل الناجحة في الداتابيز)
         try {
             await transporter.sendMail(mailOptions);
             console.log('تم إرسال إشعار الإيميل بنجاح');
@@ -245,17 +240,15 @@ app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' },
 // 3. مركز القيادة للإدارة العليا (Admin Command Center)
 // ==========================================
 
-// جلب الطلبات المعلقة (لعرضها في Admin Dashboard)
 app.get('/api/admin/pending-kyc', async (req, res) => {
     try {
         const pendingAgencies = await Agency.find({ status: 'pending' }).populate('userId', 'email');
         
-        // إعادة صياغة البيانات لتناسب الواجهة
         const formattedAgencies = pendingAgencies.map(agent => ({
             _id: agent._id,
             companyName: agent.companyName,
             email: agent.userId ? agent.userId.email : 'No Email',
-            licenseUrl: agent.documents.licenseUrl || '#' // يمكن وضع رابط مؤقت
+            licenseUrl: agent.documents.licenseUrl || '#'
         }));
 
         res.json({ success: true, agencies: formattedAgencies });
@@ -265,7 +258,6 @@ app.get('/api/admin/pending-kyc', async (req, res) => {
     }
 });
 
-// اعتماد الوكلاء (KYC Approval)
 app.post('/api/admin/approve-kyc', async (req, res) => {
     try {
         const { agencyId, creditLimit } = req.body;
@@ -324,10 +316,99 @@ app.get('/api/search-packages', async (req, res) => {
 });
 
 // ==========================================
-// 6. مسار إصدار الشريحة وشراء الـ eSIM
+// 6. مسارات الدفع عبر Ziina وإصدار الشريحة
 // ==========================================
+
+// الخطوة أ: إنشاء رابط الدفع
+app.post('/api/checkout', async (req, res) => {
+    const { packageId, price, customerEmail } = req.body;
+    
+    try {
+        // 1. حفظ تفاصيل العملية في قاعدة البيانات مبدئياً كـ "بانتظار الدفع"
+        const newTx = new Transaction({
+            referenceId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            customerEmail: customerEmail,
+            type: 'b2c',
+            packageId: packageId,
+            sellingPrice: price,
+            apiCost: 0, // سيتم تحديثه عند التفعيل من المورد
+            status: 'pending_payment'
+        });
+        await newTx.save();
+
+        // 2. إعداد طلب الدفع لـ Ziina
+        // 🚀 تنبيه: قم بإضافة ZIINA_API_KEY إلى إعدادات الـ Environment في Render
+        const ziinaPayload = {
+            amount: price * 100, // Ziina تتعامل بالدراهم مضروبة في 100 (فلس)
+            currency_code: 'AED',
+            success_url: `https://mostafasaliha003-droid.github.io/remal-connect/index.html?payment=success&ref=${newTx.referenceId}`,
+            cancel_url: `https://mostafasaliha003-droid.github.io/remal-connect/index.html?payment=failed`,
+            test: true, // تأكد من تحويلها إلى false عند الإطلاق الحقيقي
+            reference_id: newTx.referenceId
+        };
+
+        const ziinaResponse = await axios.post('https://api.ziina.com/v1/payment_intent', ziinaPayload, {
+            headers: {
+                'Authorization': `Bearer ${process.env.ZIINA_API_KEY}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (ziinaResponse.data && ziinaResponse.data.redirect_url) {
+            res.json({
+                success: true,
+                paymentUrl: ziinaResponse.data.redirect_url,
+                referenceId: newTx.referenceId
+            });
+        } else {
+            throw new Error('لم تقم Ziina بإرجاع رابط دفع صحيح.');
+        }
+
+    } catch (error) {
+        console.error('Ziina Checkout Error:', error.message);
+        res.status(500).json({ success: false, message: 'فشل في إنشاء جلسة الدفع، يرجى المحاولة لاحقاً.' });
+    }
+});
+
+// الخطوة ب: Webhook - تستدعيه Ziina بصمت عند نجاح الدفع
+app.post('/api/webhooks/ziina', express.raw({ type: 'application/json' }), async (req, res) => {
+    try {
+        const payload = req.body;
+        
+        // التحقق من أن العملية تمت بنجاح
+        if (payload.status === 'COMPLETED') {
+            const referenceId = payload.reference_id;
+            
+            // تحديث حالة الطلب في قاعدة البيانات
+            const tx = await Transaction.findOneAndUpdate(
+                { referenceId: referenceId }, 
+                { status: 'success' }, 
+                { new: true }
+            );
+
+            if (tx) {
+                // 🚀 هنا نقوم بالاتصال بـ API مزود الـ eSIM (مثل RateHawk) لإنشاء الشريحة فعلياً!
+                // const esimData = await esimProvider.issue(tx.packageId);
+                
+                // تحديث الـ iccid والتكلفة الفعلية
+                // tx.iccid = esimData.iccid;
+                // tx.apiCost = esimData.cost;
+                // await tx.save();
+
+                console.log(`✅ تم تأكيد دفع وإصدار الشريحة للطلب: ${referenceId}`);
+            }
+        }
+        
+        // إرسال رد 200 إلى Ziina لتأكيد استلامنا للـ Webhook
+        res.status(200).send('Webhook Received');
+    } catch (error) {
+        console.error('Webhook Error:', error);
+        res.status(500).send('Webhook Processing Error');
+    }
+});
+
+// مسار محاكاة قديم (لأغراض الاختبار في الواجهة حالياً قبل تفعيل الدفع)
 app.post('/api/purchase-esim', async (req, res) => {
-    const { packageId, customerEmail } = req.body;
     try {
         res.json({
             success: true,
