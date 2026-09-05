@@ -216,6 +216,49 @@
         </a>
     </nav>
 
+    <!-- 🚀 نافذة الدفع المنبثقة السريعة (Checkout Modal) -->
+    <div id="checkoutModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <!-- خلفية ضبابية للإغلاق -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer" onclick="closeCheckoutModal()"></div>
+        
+        <!-- محتوى النافذة -->
+        <div class="bg-white w-[90%] max-w-md rounded-[2rem] p-6 relative z-10 transform translate-y-10 transition-transform duration-300 shadow-2xl border-t-[6px] border-[#00b4d8]" id="checkoutContent">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-800 transition-colors cursor-pointer border-none outline-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="w-14 h-14 bg-cyan-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00b4d8] shadow-inner">
+                <i class="fa-solid fa-cart-arrow-down text-2xl"></i>
+            </div>
+            
+            <h3 class="text-xl font-black text-[#1f3a40] mb-6 text-center">تأكيد الشراء السريع ⚡</h3>
+            
+            <!-- ملخص الباقة -->
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-6 relative overflow-hidden">
+                <div class="absolute -left-4 -top-4 opacity-5 text-6xl" id="modalBgFlag">🌍</div>
+                <div class="relative z-10">
+                    <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-200/60">
+                        <span class="text-xs font-bold text-slate-500">وجهة الإنترنت:</span>
+                        <span class="text-sm font-black text-[#1f3a40]" id="modalCountry">--</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-200/60">
+                        <span class="text-xs font-bold text-slate-500">حجم البيانات:</span>
+                        <span class="text-sm font-black text-[#00b4d8]" id="modalData" dir="ltr">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-500">المبلغ الإجمالي:</span>
+                        <span class="text-2xl font-black text-[#1f3a40]" dir="ltr"><span id="modalPrice">0</span> <span class="text-[10px] text-slate-400">AED</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- منطقة أزرار الإجراء (تتغير حسب تسجيل الدخول) -->
+            <div id="checkoutActionArea">
+                <!-- سيتم حقن الزر هنا عبر الجافاسكربت -->
+            </div>
+        </div>
+    </div>
+
     <!-- 🚀 كود الجافاسكربت للبحث والاتصال بالخادم والتأثيرات -->
     <script>
         // رابط الخادم الخاص بك على Render
@@ -290,7 +333,6 @@
                 return;
             }
 
-            // رسم البطاقات
             let html = '';
             packages.forEach((pkg, index) => {
                 const delay = index * 100;
@@ -298,7 +340,6 @@
                 
                 html += `
                 <div class="glass-card-light rounded-3xl p-5 md:p-6 relative overflow-hidden flex flex-col animate-fade-in-up" style="animation-delay: ${delay}ms;">
-                    <!-- زخرفة خلفية البطاقة -->
                     <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-bl from-cyan-100 to-transparent rounded-bl-full opacity-50 z-0 pointer-events-none"></div>
                     
                     <div class="flex items-start justify-between mb-5 relative z-10">
@@ -328,7 +369,8 @@
                             <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الإجمالي</span>
                             <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">${pkg.price} <span class="text-[10px] text-slate-400">AED</span></span>
                         </div>
-                        <button class="bg-gradient-to-l from-[#1f3a40] to-[#2c5364] hover:from-[#15282c] hover:to-[#1f3a40] text-white px-5 py-2.5 rounded-xl font-black text-xs transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+                        <!-- 🚀 زر الشراء المرتبط بالنافذة المنبثقة -->
+                        <button onclick="openCheckoutModal('${pkg.id}', '${pkg.country}', '${pkg.flag}', '${pkg.data}', ${pkg.price})" class="bg-gradient-to-l from-[#1f3a40] to-[#2c5364] hover:from-[#15282c] hover:to-[#1f3a40] text-white px-5 py-2.5 rounded-xl font-black text-xs transition-all shadow-md active:scale-95 flex items-center gap-1.5 cursor-pointer border-none">
                             شراء <i class="fa-solid fa-cart-shopping text-[10px]"></i>
                         </button>
                     </div>
@@ -336,6 +378,110 @@
             });
             
             container.innerHTML = html;
+        }
+
+        // 🚀 دوال التحكم في نافذة الدفع
+        let currentSelectedPackage = null;
+
+        function openCheckoutModal(pkgId, country, flag, data, price) {
+            currentSelectedPackage = { pkgId, country, data, price };
+            
+            // تعبئة البيانات في النافذة
+            document.getElementById('modalCountry').innerText = `${country} ${flag}`;
+            document.getElementById('modalBgFlag').innerText = flag;
+            document.getElementById('modalData').innerText = data;
+            document.getElementById('modalPrice').innerText = price;
+
+            // التحقق من تسجيل الدخول من خلال LocalStorage
+            const currentUser = localStorage.getItem('rimal_current_user');
+            const actionArea = document.getElementById('checkoutActionArea');
+
+            if (currentUser) {
+                // المستخدم مسجل الدخول -> إظهار زر الدفع 
+                actionArea.innerHTML = `
+                    <div class="flex items-center justify-center gap-2 mb-3 text-[10px] text-emerald-600 font-bold bg-emerald-50 py-1.5 rounded-lg border border-emerald-100">
+                        <i class="fa-solid fa-lock"></i> دفع إلكتروني آمن ومشفّر
+                    </div>
+                    <button id="payNowBtn" onclick="processPayment()" class="w-full bg-gradient-to-l from-[#800000] to-[#a30000] hover:from-[#990000] hover:to-[#cc0000] text-white font-black py-4 rounded-xl shadow-[0_8px_20px_rgba(128,0,0,0.3)] transition-all active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                        دفع ${price} AED الآن <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                `;
+            } else {
+                // المستخدم غير مسجل الدخول -> توجيهه للتسجيل
+                actionArea.innerHTML = `
+                    <div class="text-center mb-3">
+                        <span class="text-xs font-bold text-slate-500">يجب تسجيل الدخول لإتمام عملية الشراء</span>
+                    </div>
+                    <a href="register.html" class="w-full bg-[#00b4d8] hover:bg-cyan-500 text-white font-black py-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">
+                        تسجيل الدخول / فتح حساب <i class="fa-regular fa-user"></i>
+                    </a>
+                `;
+            }
+
+            // إظهار النافذة بتأثير ناعم
+            const modal = document.getElementById('checkoutModal');
+            const content = document.getElementById('checkoutContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('translate-y-10');
+            }, 10);
+        }
+
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            const content = document.getElementById('checkoutContent');
+            modal.classList.add('opacity-0');
+            content.classList.add('translate-y-10');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // دالة محاكاة الدفع والاتصال بالخادم
+        async function processPayment() {
+            const btn = document.getElementById('payNowBtn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري إصدار الشريحة...';
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            try {
+                // استخراج إيميل المستخدم من الجلسة
+                const userObj = JSON.parse(localStorage.getItem('rimal_current_user'));
+                
+                // إرسال الطلب لخادمك لإنشاء الـ eSIM
+                const response = await fetch(`${API_URL}/api/purchase-esim`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        packageId: currentSelectedPackage.pkgId,
+                        customerEmail: userObj.email
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // نجاح! سنعرض رسالة نجاح 
+                    btn.innerHTML = '<i class="fa-solid fa-check-circle text-lg"></i> تم الشراء بنجاح!';
+                    btn.classList.replace('from-[#800000]', 'from-emerald-500');
+                    btn.classList.replace('to-[#a30000]', 'to-emerald-600');
+                    
+                    setTimeout(() => {
+                        closeCheckoutModal();
+                        alert('🎉 مبروك! تم إصدار شريحتك بنجاح. سنقوم لاحقاً بإنشاء لوحة "شرائحي" لعرض كود الـ QR الخاص بك هنا.');
+                    }, 1500);
+                } else {
+                    alert('⚠️ فشل في إصدار الشريحة: ' + data.message);
+                    btn.innerHTML = `دفع ${currentSelectedPackage.price} AED الآن`;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error("Payment Error:", error);
+                alert('⚠️ حدث خطأ في الاتصال بالسيرفر أثناء الدفع.');
+                btn.innerHTML = `دفع ${currentSelectedPackage.price} AED الآن`;
+                btn.disabled = false;
+            }
         }
 
         // تأثير الماوس 3D للهاتف (لشاشات الديسكتوب فقط)
