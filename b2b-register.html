@@ -184,28 +184,34 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم الشركة السياحية / الفندق *</label>
-                            <input type="text" required placeholder="مثال: وكالة الأفق للسياحة" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                            <input type="text" id="companyName" required placeholder="مثال: وكالة الأفق للسياحة" class="w-full premium-input rounded-xl p-3.5 text-sm">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم المدير المسؤول *</label>
-                            <input type="text" required placeholder="الاسم الكامل" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                            <input type="text" id="managerName" required placeholder="الاسم الكامل" class="w-full premium-input rounded-xl p-3.5 text-sm">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">البريد الإلكتروني للشركة *</label>
-                            <input type="email" required placeholder="info@company.com" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
+                            <input type="email" id="companyEmail" required placeholder="info@company.com" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">رقم الهاتف / الواتساب *</label>
-                            <input type="tel" required placeholder="+971 50 000 0000" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
+                            <input type="tel" id="companyPhone" required placeholder="+971 50 000 0000" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
                         </div>
                     </div>
 
-                    <div class="mb-8">
-                        <label class="block text-[11px] font-bold text-slate-400 mb-2">عنوان المقر الرئيسي *</label>
-                        <input type="text" required placeholder="الدولة، المدينة، الشارع، رقم المبنى" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">عنوان المقر الرئيسي *</label>
+                            <input type="text" required placeholder="الدولة، المدينة، الشارع..." class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-2">كلمة مرور حساب الوكيل *</label>
+                            <input type="password" id="companyPassword" required placeholder="••••••••" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        </div>
                     </div>
 
                     <div class="flex justify-end">
@@ -225,23 +231,23 @@
 
                     <div class="mb-5">
                         <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم الحساب البنكي (Account Name) *</label>
-                        <input type="text" required placeholder="اسم الشركة كما هو في البنك" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        <input type="text" id="accountName" required placeholder="اسم الشركة كما هو في البنك" class="w-full premium-input rounded-xl p-3.5 text-sm">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم البنك (Bank Name) *</label>
-                            <input type="text" required placeholder="مثال: بنك دبي الإسلامي" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                            <input type="text" id="bankName" required placeholder="مثال: بنك دبي الإسلامي" class="w-full premium-input rounded-xl p-3.5 text-sm">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">رقم الآيبان (IBAN) *</label>
-                            <input type="text" required placeholder="AE00 0000 0000 0000 0000 00" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left uppercase tracking-wider">
+                            <input type="text" id="iban" required placeholder="AE00 0000 0000 0000 0000 00" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left uppercase tracking-wider">
                         </div>
                     </div>
 
                     <div class="mb-8">
                         <label class="block text-[11px] font-bold text-slate-400 mb-2">الرقم الضريبي (VAT TRN) - إن وجد</label>
-                        <input type="text" placeholder="أدخل الرقم الضريبي المكون من 15 رقماً" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left tracking-widest">
+                        <input type="text" id="vatNumber" placeholder="أدخل الرقم الضريبي المكون من 15 رقماً" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left tracking-widest">
                     </div>
 
                     <div class="flex justify-between items-center">
@@ -329,6 +335,8 @@
 
     <!-- 🚀 الجافاسكربت -->
     <script>
+        const API_URL = 'https://remal-connect.onrender.com/api';
+
         // إظهار التنبيهات
         function showToast(message, isError = false) {
             const toast = document.getElementById('toastMsg');
@@ -360,17 +368,14 @@
                 const text = document.getElementById(`stepText${i}`);
                 
                 if(i < step) {
-                    // مكتمل
                     circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]';
                     circle.innerHTML = '<i class="fa-solid fa-check"></i>';
                     text.className = 'text-[10px] font-bold text-white';
                 } else if(i === step) {
-                    // حالي
                     circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]';
                     circle.innerHTML = i;
                     text.className = 'text-[10px] font-bold text-white';
                 } else {
-                    // قادم
                     circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#111c22] text-slate-500 border-4 border-[#152329]';
                     circle.innerHTML = i;
                     text.className = 'text-[10px] font-bold text-slate-500';
@@ -379,9 +384,7 @@
         }
 
         function nextStep(step) {
-            // إخفاء كل الخطوات
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
-            // إظهار الخطوة المطلوبة
             document.getElementById(`step${step}`).classList.add('active');
             updateStepper(step);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -408,20 +411,58 @@
             }
         }
 
-        // إرسال النموذج (المحاكاة)
-        function submitForm(e) {
+        // 🚀 الربط مع API السحابي لإرسال النموذج
+        async function submitForm(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري رفع الملفات وإرسال الطلب...';
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق والإرسال...';
             btn.disabled = true;
 
-            // محاكاة الاتصال بالسيرفر
-            setTimeout(() => {
-                document.getElementById('b2bRegistrationForm').style.display = 'none';
-                document.getElementById('stepSuccess').classList.add('active');
-                document.querySelector('.relative.mb-12').style.display = 'none'; // إخفاء مؤشر التقدم
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 2000);
+            // تجميع البيانات لإرسالها للخادم
+            const payload = {
+                companyName: document.getElementById('companyName').value,
+                managerName: document.getElementById('managerName').value,
+                email: document.getElementById('companyEmail').value,
+                phone: document.getElementById('companyPhone').value,
+                password: document.getElementById('companyPassword').value,
+                financials: {
+                    accountName: document.getElementById('accountName').value,
+                    bankName: document.getElementById('bankName').value,
+                    iban: document.getElementById('iban').value,
+                    vatNumber: document.getElementById('vatNumber').value || ''
+                },
+                docs: {
+                    licenseUrl: "https://remal-secure-storage.com/docs/license_mock.pdf", // محاكاة لرفع الملف
+                    idUrl: "https://remal-secure-storage.com/docs/id_mock.pdf",
+                    vatUrl: "https://remal-secure-storage.com/docs/vat_mock.pdf"
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/b2b/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    document.getElementById('b2bRegistrationForm').style.display = 'none';
+                    document.getElementById('stepSuccess').classList.add('active');
+                    document.querySelector('.relative.mb-12').style.display = 'none'; // إخفاء مؤشر التقدم
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showToast(data.message || 'حدث خطأ أثناء إرسال الطلب', true);
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                showToast('تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً', true);
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
