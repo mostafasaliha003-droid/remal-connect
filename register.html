@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>حسابي | Remal Connect</title>
     
-    <!-- الخطوط -->
+    <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -16,166 +16,331 @@
         :root {
             --primary: #1f3a40;        
             --accent-cyan: #00b4d8;    
-            --bg-light: #f4f7f6;     
-            --text-main: #2d3748;
+            --bg-light: #f8fafc;     
+            --text-main: #0f172a;
         }
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-light); color: var(--text-main); }
-        .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300b4d8' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
-        .fade-transition { transition: opacity 0.3s ease-in-out; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-light); color: var(--text-main); overflow-x: hidden; }
+        
+        /* 🚀 خلفية شبكية أنيقة */
+        .bg-pattern { 
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300b4d8' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); 
+        }
+
+        /* 🚀 البطاقة الرئيسية مع ظل فاخر */
+        .auth-card {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 10px 20px -5px rgba(0, 180, 216, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 🚀 حقول الإدخال */
+        .premium-input {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+        }
+        .premium-input:focus {
+            background: white;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 180, 216, 0.1);
+            outline: none;
+        }
+
+        /* 🚀 حقول الـ OTP */
+        .otp-input {
+            width: 3rem; height: 3.5rem;
+            text-align: center; font-size: 1.5rem; font-weight: 900;
+            border-radius: 0.75rem; border: 2px solid #e2e8f0;
+            background: #f8fafc; transition: all 0.2s;
+        }
+        .otp-input:focus { border-color: var(--accent-cyan); background: white; outline: none; box-shadow: 0 4px 15px rgba(0, 180, 216, 0.15); transform: translateY(-2px); }
+
+        /* 🚀 حركات التنقل بين الشاشات */
+        .view-section { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
+        .view-section.active { display: block; opacity: 1; transform: translateY(0); animation: slideUpFade 0.4s ease forwards; }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 🚀 زر العين (تفاعل) */
+        .eye-btn {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            color: #94a3b8; cursor: pointer; transition: color 0.2s; border: none; background: none; outline: none;
+        }
+        .eye-btn:hover { color: var(--accent-cyan); }
     </style>
 </head>
-<body class="bg-pattern min-h-screen flex items-center justify-center p-4">
+<body class="bg-pattern min-h-screen flex items-center justify-center p-4 relative">
 
-    <div class="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-100 w-full max-w-md overflow-hidden relative z-10">
+    <!-- تأثيرات خلفية -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#00b4d8] rounded-full blur-[150px] opacity-20 pointer-events-none"></div>
+
+    <div class="auth-card w-full max-w-md">
         
-        <!-- القسم العلوي المزخرف -->
-        <div class="bg-gradient-to-br from-[#1f3a40] to-[#2c5364] p-8 text-center relative overflow-hidden">
+        <!-- القسم العلوي المزخرف (يتغير ديناميكياً) -->
+        <div class="bg-gradient-to-br from-[#1f3a40] to-[#2c5364] p-8 text-center relative overflow-hidden transition-all duration-500" id="headerArea">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#00b4d8] rounded-full blur-[50px] opacity-40"></div>
             
-            <a href="index.html" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
+            <a href="index.html" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors z-20">
                 <i class="fa-solid fa-arrow-right text-lg"></i>
             </a>
 
-            <div class="w-16 h-16 mx-auto bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20 mb-4 shadow-lg transform rotate-3">
+            <div class="w-16 h-16 mx-auto bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20 mb-4 shadow-lg transform rotate-3 transition-all duration-300" id="headerIconContainer">
                  <i id="headerIcon" class="fa-solid fa-user-lock text-white text-2xl"></i>
             </div>
-            <h2 id="headerTitle" class="text-2xl md:text-3xl font-black text-white">تسجيل الدخول</h2>
-            <p id="headerSub" class="text-[#00b4d8] text-xs md:text-sm font-bold mt-1.5">مرحباً بك مجدداً في Remal Connect</p>
+            <h2 id="headerTitle" class="text-2xl md:text-3xl font-black text-white relative z-10">تسجيل الدخول</h2>
+            <p id="headerSub" class="text-[#00b4d8] text-xs md:text-sm font-bold mt-1.5 relative z-10">مرحباً بك مجدداً في Remal Connect</p>
         </div>
 
         <div class="p-6 md:p-8 relative">
             
-            <!-- نموذج الدخول (Login) -->
-            <form id="loginForm" class="space-y-4 fade-transition block">
+            <!-- 1️⃣ نموذج الدخول (Login) -->
+            <form id="loginView" class="view-section active space-y-4" onsubmit="handleLogin(event)">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-1.5">البريد الإلكتروني</label>
                     <div class="relative">
                         <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="email" id="loginEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="name@example.com" dir="ltr">
+                        <input type="email" id="loginEmail" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm font-bold" placeholder="name@example.com" dir="ltr">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">كلمة المرور</label>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="block text-[11px] font-bold text-slate-500">كلمة المرور</label>
+                        <button type="button" onclick="switchView('forgotView')" class="text-[10px] font-bold text-[#00b4d8] hover:text-[#1f3a40] transition-colors border-none bg-transparent cursor-pointer">نسيت كلمة المرور؟</button>
+                    </div>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="password" id="loginPassword" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="••••••••">
+                        <input type="password" id="loginPassword" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-10 text-sm font-bold" placeholder="••••••••" dir="ltr">
+                        <button type="button" class="eye-btn" onclick="togglePassword('loginPassword', this)"><i class="fa-regular fa-eye"></i></button>
                     </div>
                 </div>
                 
                 <p id="loginAlert" class="text-xs font-bold text-center hidden mt-2"></p>
 
-                <button type="submit" id="loginBtn" class="w-full bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(0,180,216,0.25)] hover:shadow-[0_12px_25px_rgba(0,180,216,0.35)] mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2">
+                <button type="submit" id="loginBtn" class="w-full bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(0,180,216,0.25)] hover:shadow-[0_12px_25px_rgba(0,180,216,0.35)] mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2 border-none cursor-pointer">
                     <span id="loginBtnText">تسجيل الدخول</span> <i id="loginBtnIcon" class="fa-solid fa-right-to-bracket"></i>
                 </button>
+
+                <div class="mt-6 text-center">
+                    <p class="text-xs font-bold text-slate-500">ليس لديك حساب؟ <button type="button" onclick="switchView('registerView')" class="text-[#00b4d8] hover:text-[#1f3a40] transition-colors bg-transparent border-none cursor-pointer font-black px-1">سجل الآن</button></p>
+                </div>
             </form>
 
-            <!-- نموذج التسجيل (Register) -->
-            <form id="registerForm" class="space-y-4 fade-transition hidden">
+            <!-- 2️⃣ نموذج التسجيل (Register) -->
+            <form id="registerView" class="view-section space-y-4" onsubmit="handleRegister(event)">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-1.5">الاسم الكامل</label>
                     <div class="relative">
                         <i class="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="regFullName" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="الاسم الثنائي">
+                        <input type="text" id="regFullName" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm font-bold" placeholder="الاسم الثنائي">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">البريد الإلكتروني (لاستلام كود QR)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">البريد الإلكتروني</label>
                     <div class="relative">
                         <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="email" id="regEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="name@example.com" dir="ltr">
+                        <input type="email" id="regEmail" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm font-bold" placeholder="name@example.com" dir="ltr">
                     </div>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-1.5">رقم الواتساب (اختياري)</label>
                     <div class="relative">
                         <i class="fa-brands fa-whatsapp absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="tel" id="regWhatsapp" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="+971 50 000 0000" dir="ltr">
+                        <input type="tel" id="regWhatsapp" class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm font-bold" placeholder="+971 50 000 0000" dir="ltr">
                     </div>
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-1.5">كلمة المرور</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="password" id="regPassword" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="••••••••">
+                        <input type="password" id="regPassword" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-10 text-sm font-bold" placeholder="••••••••" dir="ltr">
+                        <button type="button" class="eye-btn" onclick="togglePassword('regPassword', this)"><i class="fa-regular fa-eye"></i></button>
                     </div>
                 </div>
 
                 <p id="regAlert" class="text-xs font-bold text-center hidden mt-2"></p>
 
-                <button type="submit" id="regBtn" class="w-full bg-gradient-to-l from-[#1f3a40] to-[#2c5364] text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(31,58,64,0.25)] hover:shadow-[0_12px_25px_rgba(31,58,64,0.35)] mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2">
+                <button type="submit" id="regBtn" class="w-full bg-gradient-to-l from-[#1f3a40] to-[#2c5364] text-white font-black py-3.5 rounded-xl shadow-lg mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2 border-none cursor-pointer">
                     <span id="regBtnText">إنشاء الحساب</span> <i id="regBtnIcon" class="fa-solid fa-rocket"></i>
+                </button>
+
+                <div class="mt-6 text-center">
+                    <p class="text-xs font-bold text-slate-500">لديك حساب بالفعل؟ <button type="button" onclick="switchView('loginView')" class="text-[#00b4d8] hover:text-[#1f3a40] transition-colors bg-transparent border-none cursor-pointer font-black px-1">تسجيل الدخول</button></p>
+                </div>
+            </form>
+
+            <!-- 3️⃣ نموذج نسيت كلمة المرور (Forgot Password - Email) -->
+            <form id="forgotView" class="view-section space-y-4" onsubmit="handleForgotPass(event)">
+                <p class="text-xs font-bold text-slate-500 text-center mb-6 leading-relaxed">أدخل بريدك الإلكتروني المسجل لدينا، وسنرسل لك رمز أمان (OTP) لإعادة تعيين كلمة المرور.</p>
+                <div>
+                    <div class="relative">
+                        <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="email" id="forgotEmail" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-4 text-sm font-bold" placeholder="name@example.com" dir="ltr">
+                    </div>
+                </div>
+
+                <button type="submit" id="forgotBtn" class="w-full bg-[#00b4d8] text-white font-black py-3.5 rounded-xl shadow-md mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2 border-none cursor-pointer">
+                    <span id="forgotBtnText">إرسال رمز الأمان</span> <i id="forgotBtnIcon" class="fa-solid fa-paper-plane"></i>
+                </button>
+
+                <div class="mt-6 text-center">
+                    <button type="button" onclick="switchView('loginView')" class="text-xs font-bold text-slate-500 hover:text-[#1f3a40] transition-colors bg-transparent border-none cursor-pointer"><i class="fa-solid fa-arrow-right ml-1"></i> العودة لتسجيل الدخول</button>
+                </div>
+            </form>
+
+            <!-- 4️⃣ نموذج التحقق (OTP Entry) -->
+            <form id="otpView" class="view-section space-y-6" onsubmit="handleOTPVerify(event)">
+                <div class="text-center">
+                    <p class="text-xs font-bold text-slate-500 mb-1">أدخل الرمز المكون من 4 أرقام المرسل إلى:</p>
+                    <p class="text-sm font-black text-[#1f3a40]" id="otpTargetEmail" dir="ltr">user@example.com</p>
+                </div>
+                
+                <div class="flex gap-3 justify-center" dir="ltr">
+                    <input type="text" maxlength="1" class="otp-input" required>
+                    <input type="text" maxlength="1" class="otp-input" required>
+                    <input type="text" maxlength="1" class="otp-input" required>
+                    <input type="text" maxlength="1" class="otp-input" required>
+                </div>
+
+                <p id="otpAlert" class="text-xs font-bold text-center hidden mt-2"></p>
+
+                <button type="submit" id="otpBtn" class="w-full bg-emerald-500 text-white font-black py-3.5 rounded-xl shadow-md mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2 border-none cursor-pointer">
+                    <span id="otpBtnText">تأكيد الرمز</span> <i id="otpBtnIcon" class="fa-solid fa-check-circle"></i>
+                </button>
+
+                <div class="mt-6 text-center">
+                    <p class="text-xs font-bold text-slate-500">لم يصلك الرمز؟ <button type="button" onclick="resendOTP()" class="text-[#00b4d8] hover:text-[#1f3a40] transition-colors bg-transparent border-none cursor-pointer font-black px-1" id="resendBtn">إعادة الإرسال</button></p>
+                </div>
+            </form>
+
+            <!-- 5️⃣ نموذج كلمة المرور الجديدة (Reset Password) -->
+            <form id="resetView" class="view-section space-y-4" onsubmit="handleResetPass(event)">
+                <p class="text-xs font-bold text-emerald-500 text-center mb-6 bg-emerald-50 py-2 rounded-lg"><i class="fa-solid fa-check-circle ml-1"></i> تم التحقق بنجاح. أدخل كلمة المرور الجديدة.</p>
+                
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">كلمة المرور الجديدة</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" id="newPassword" required class="w-full premium-input rounded-xl py-3.5 pr-11 pl-10 text-sm font-bold" placeholder="••••••••" dir="ltr">
+                        <button type="button" class="eye-btn" onclick="togglePassword('newPassword', this)"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <button type="submit" id="resetBtn" class="w-full bg-[#1f3a40] text-white font-black py-3.5 rounded-xl shadow-md mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2 border-none cursor-pointer">
+                    <span id="resetBtnText">حفظ وتسجيل الدخول</span> <i id="resetBtnIcon" class="fa-solid fa-floppy-disk"></i>
                 </button>
             </form>
 
-            <div class="mt-6 text-center">
-                <p class="text-xs font-bold text-slate-500" id="toggleTextWrapper">
-                    <span id="toggleTextLabel">ليس لديك حساب؟</span> 
-                    <button type="button" onclick="toggleForms()" id="toggleBtn" class="text-[#00b4d8] hover:text-[#1f3a40] transition-colors bg-transparent border-none cursor-pointer font-black px-1">سجل الآن</button>
-                </p>
-            </div>
         </div>
     </div>
 
+    <!-- 🚀 الجافاسكربت الخاص بالواجهات والـ OTP -->
     <script>
         const API_URL = 'https://remal-connect.onrender.com/api';
-        let isLoginView = true;
+        let currentOtpMode = 'register'; // يمكن أن يكون 'register' أو 'forgot'
+        let pendingUserEmail = '';
 
-        function toggleForms() {
-            isLoginView = !isLoginView;
-            const loginForm = document.getElementById('loginForm');
-            const regForm = document.getElementById('registerForm');
-            
-            if (isLoginView) {
-                loginForm.classList.remove('hidden'); regForm.classList.add('hidden');
-                document.getElementById('headerIcon').className = 'fa-solid fa-user-lock text-white text-2xl';
-                document.getElementById('headerTitle').innerText = 'تسجيل الدخول';
-                document.getElementById('headerSub').innerText = 'مرحباً بك مجدداً في Remal Connect';
-                document.getElementById('toggleTextLabel').innerText = 'ليس لديك حساب؟';
-                document.getElementById('toggleBtn').innerText = 'سجل الآن';
+        // 👁️ وظيفة كشف كلمة المرور
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                btn.style.color = '#00b4d8';
             } else {
-                loginForm.classList.add('hidden'); regForm.classList.remove('hidden');
-                document.getElementById('headerIcon').className = 'fa-solid fa-user-plus text-white text-2xl';
-                document.getElementById('headerTitle').innerText = 'حساب جديد';
-                document.getElementById('headerSub').innerText = 'انضم لـ Remal Connect وابدأ رحلتك';
-                document.getElementById('toggleTextLabel').innerText = 'لديك حساب بالفعل؟';
-                document.getElementById('toggleBtn').innerText = 'تسجيل الدخول';
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                btn.style.color = '#94a3b8';
             }
         }
 
-        // --- نظام تسجيل الدخول ---
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        // 🔄 محرك التنقل بين الشاشات (State Machine)
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            const title = document.getElementById('headerTitle');
+            const sub = document.getElementById('headerSub');
+            const icon = document.getElementById('headerIcon');
+            const headerArea = document.getElementById('headerArea');
+
+            if(viewId === 'loginView') {
+                title.innerText = 'تسجيل الدخول'; sub.innerText = 'مرحباً بك مجدداً في Remal Connect';
+                icon.className = 'fa-solid fa-user-lock text-white text-2xl';
+                headerArea.className = 'bg-gradient-to-br from-[#1f3a40] to-[#2c5364] p-8 text-center relative overflow-hidden transition-all duration-500';
+            } else if(viewId === 'registerView') {
+                title.innerText = 'حساب جديد'; sub.innerText = 'انضم لـ Remal Connect وابدأ رحلتك';
+                icon.className = 'fa-solid fa-user-plus text-white text-2xl';
+                headerArea.className = 'bg-gradient-to-br from-[#00b4d8] to-[#007790] p-8 text-center relative overflow-hidden transition-all duration-500';
+            } else if(viewId === 'forgotView') {
+                title.innerText = 'استعادة الحساب'; sub.innerText = 'لا تقلق، سنساعدك في استرجاعه';
+                icon.className = 'fa-solid fa-key text-white text-2xl';
+                headerArea.className = 'bg-gradient-to-br from-amber-500 to-orange-600 p-8 text-center relative overflow-hidden transition-all duration-500';
+            } else if(viewId === 'otpView') {
+                title.innerText = 'رمز التحقق'; sub.innerText = 'الرجاء إدخال الرمز السداسي (OTP)';
+                icon.className = 'fa-solid fa-shield-halved text-white text-2xl';
+                headerArea.className = 'bg-gradient-to-br from-indigo-500 to-purple-600 p-8 text-center relative overflow-hidden transition-all duration-500';
+            } else if(viewId === 'resetView') {
+                title.innerText = 'كلمة مرور جديدة'; sub.innerText = 'اختر كلمة مرور قوية وآمنة';
+                icon.className = 'fa-solid fa-lock-open text-white text-2xl';
+                headerArea.className = 'bg-gradient-to-br from-emerald-500 to-teal-600 p-8 text-center relative overflow-hidden transition-all duration-500';
+            }
+        }
+
+        // 🔢 منطق التركيز التلقائي في حقول الـ OTP
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, ''); // السماح بالأرقام فقط
+                if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        // ==========================================
+        // 🚀 معالجة العمليات (محاكاة الـ API)
+        // ==========================================
+
+        async function handleLogin(e) {
             e.preventDefault();
-            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('loginBtnText');
+            const btnIcon = document.getElementById('loginBtnIcon');
             const alertMsg = document.getElementById('loginAlert');
             
-            document.getElementById('loginBtnText').innerText = 'جاري التحقق...';
-            document.getElementById('loginBtnIcon').className = 'fa-solid fa-circle-notch fa-spin';
-            btn.disabled = true; alertMsg.classList.add('hidden');
+            btnText.innerText = 'جاري التحقق...'; btnIcon.className = 'fa-solid fa-circle-notch fa-spin';
+            alertMsg.classList.add('hidden');
 
-            const payload = {
-                email: document.getElementById('loginEmail').value,
-                password: document.getElementById('loginPassword').value
-            };
+            const payload = { email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value };
 
             try {
                 const response = await fetch(`${API_URL}/login`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
                 });
                 const result = await response.json();
 
                 alertMsg.classList.remove('hidden');
                 if (response.ok && result.success) {
-                    alertMsg.innerText = '✅ ' + result.message;
+                    alertMsg.innerText = '✅ تم تسجيل الدخول بنجاح';
                     alertMsg.className = 'text-xs font-bold text-center text-emerald-600 bg-emerald-50 py-2 rounded-lg mt-4';
-                    
-                    // حفظ بيانات المستخدم في الجهاز
                     localStorage.setItem('rimal_current_user', JSON.stringify(result.user));
-                    
-                    // توجيه المستخدم للرئيسية
                     setTimeout(() => { window.location.href = 'index.html'; }, 1000);
                 } else {
-                    alertMsg.innerText = '⚠️ ' + (result.message || 'خطأ في بيانات الدخول');
+                    alertMsg.innerText = '⚠️ ' + (result.message || 'بيانات الدخول غير صحيحة');
                     alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
                 }
             } catch (error) {
@@ -183,58 +348,122 @@
                 alertMsg.innerText = '⚠️ لا يمكن الاتصال بالخادم الآن.';
                 alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
             } finally {
-                document.getElementById('loginBtnText').innerText = 'تسجيل الدخول';
-                document.getElementById('loginBtnIcon').className = 'fa-solid fa-right-to-bracket';
-                btn.disabled = false;
+                btnText.innerText = 'تسجيل الدخول'; btnIcon.className = 'fa-solid fa-right-to-bracket';
             }
-        });
+        }
 
-        // --- نظام إنشاء حساب جديد ---
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        async function handleRegister(e) {
             e.preventDefault();
-            const btn = document.getElementById('regBtn');
-            const alertMsg = document.getElementById('regAlert');
+            const btnText = document.getElementById('regBtnText');
+            const btnIcon = document.getElementById('regBtnIcon');
             
-            document.getElementById('regBtnText').innerText = 'جاري التسجيل...';
-            document.getElementById('regBtnIcon').className = 'fa-solid fa-circle-notch fa-spin';
-            btn.disabled = true; alertMsg.classList.add('hidden');
+            btnText.innerText = 'جاري إرسال الرمز...'; btnIcon.className = 'fa-solid fa-circle-notch fa-spin';
+            pendingUserEmail = document.getElementById('regEmail').value;
+            currentOtpMode = 'register';
 
-            const payload = {
-                fullName: document.getElementById('regFullName').value,
-                email: document.getElementById('regEmail').value,
-                whatsapp: document.getElementById('regWhatsapp').value,
-                password: document.getElementById('regPassword').value
-            };
+            // 🚀 Masterstroke: بدلاً من التسجيل المباشر، نرسل OTP للتحقق أولاً (محاكاة)
+            setTimeout(() => {
+                document.getElementById('otpTargetEmail').innerText = pendingUserEmail;
+                switchView('otpView');
+                btnText.innerText = 'إنشاء الحساب'; btnIcon.className = 'fa-solid fa-rocket';
+                otpInputs[0].focus();
+            }, 1500);
+        }
 
-            try {
-                const response = await fetch(`${API_URL}/register`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
+        async function handleForgotPass(e) {
+            e.preventDefault();
+            const btnText = document.getElementById('forgotBtnText');
+            const btnIcon = document.getElementById('forgotBtnIcon');
+            
+            btnText.innerText = 'جاري الإرسال...'; btnIcon.className = 'fa-solid fa-circle-notch fa-spin';
+            pendingUserEmail = document.getElementById('forgotEmail').value;
+            currentOtpMode = 'forgot';
 
-                alertMsg.classList.remove('hidden');
-                if (response.ok && result.success) {
-                    alertMsg.innerText = '🎉 ' + result.message + ' - سيتم تحويلك للدخول';
-                    alertMsg.className = 'text-xs font-bold text-center text-emerald-600 bg-emerald-50 py-2 rounded-lg mt-4';
-                    document.getElementById('registerForm').reset();
-                    
-                    // تحويل المستخدم لشاشة الدخول بعد ثانيتين
-                    setTimeout(() => { toggleForms(); alertMsg.classList.add('hidden'); }, 2000);
+            // محاكاة إرسال الإيميل
+            setTimeout(() => {
+                document.getElementById('otpTargetEmail').innerText = pendingUserEmail;
+                switchView('otpView');
+                btnText.innerText = 'إرسال رمز الأمان'; btnIcon.className = 'fa-solid fa-paper-plane';
+                otpInputs[0].focus();
+            }, 1500);
+        }
+
+        async function handleOTPVerify(e) {
+            e.preventDefault();
+            const btnText = document.getElementById('otpBtnText');
+            const btnIcon = document.getElementById('otpBtnIcon');
+            const alertMsg = document.getElementById('otpAlert');
+            
+            btnText.innerText = 'جاري التحقق...'; btnIcon.className = 'fa-solid fa-circle-notch fa-spin';
+            alertMsg.classList.add('hidden');
+
+            // تجميع الكود المكتوب
+            let code = ''; otpInputs.forEach(input => code += input.value);
+
+            // محاكاة التحقق من الكود
+            setTimeout(async () => {
+                if(code.length === 4) { // بافتراض أن الكود صحيح دائماً في المحاكاة
+                    if(currentOtpMode === 'register') {
+                        // 🚀 هنا نقوم بعملية التسجيل الفعلية في الـ API بعد تأكيد الإيميل
+                        const payload = {
+                            fullName: document.getElementById('regFullName').value,
+                            email: pendingUserEmail,
+                            whatsapp: document.getElementById('regWhatsapp').value,
+                            password: document.getElementById('regPassword').value
+                        };
+                        try {
+                            const response = await fetch(`${API_URL}/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                            const result = await response.json();
+                            if (response.ok && result.success) {
+                                alertMsg.innerText = '🎉 تم توثيق الحساب بنجاح! سيتم تحويلك...';
+                                alertMsg.className = 'text-xs font-bold text-center text-emerald-600 bg-emerald-50 py-2 rounded-lg mt-4';
+                                alertMsg.classList.remove('hidden');
+                                setTimeout(() => switchView('loginView'), 2000);
+                            }
+                        } catch (err) {
+                            alertMsg.innerText = '⚠️ حدث خطأ في الخادم.'; alertMsg.classList.remove('hidden');
+                        }
+                    } else if (currentOtpMode === 'forgot') {
+                        // الانتقال لشاشة كلمة المرور الجديدة
+                        switchView('resetView');
+                    }
                 } else {
-                    alertMsg.innerText = '⚠️ ' + (result.message || 'حدث خطأ أثناء التسجيل');
+                    alertMsg.innerText = '⚠️ الرمز غير مكتمل.';
                     alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
+                    alertMsg.classList.remove('hidden');
                 }
-            } catch (error) {
-                alertMsg.classList.remove('hidden');
-                alertMsg.innerText = '⚠️ لا يمكن الاتصال بالخادم الآن.';
-                alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
-            } finally {
-                document.getElementById('regBtnText').innerText = 'إنشاء الحساب';
-                document.getElementById('regBtnIcon').className = 'fa-solid fa-rocket';
+                btnText.innerText = 'تأكيد الرمز'; btnIcon.className = 'fa-solid fa-check-circle';
+            }, 1500);
+        }
+
+        async function handleResetPass(e) {
+            e.preventDefault();
+            const btnText = document.getElementById('resetBtnText');
+            const btnIcon = document.getElementById('resetBtnIcon');
+            
+            btnText.innerText = 'جاري الحفظ...'; btnIcon.className = 'fa-solid fa-circle-notch fa-spin';
+
+            // محاكاة حفظ الباسورد الجديد
+            setTimeout(() => {
+                switchView('loginView');
+                document.getElementById('loginAlert').innerText = '✅ تم تغيير كلمة المرور بنجاح. سجل دخولك الآن.';
+                document.getElementById('loginAlert').className = 'text-xs font-bold text-center text-emerald-600 bg-emerald-50 py-2 rounded-lg mt-4 mb-4 block';
+                document.getElementById('loginAlert').classList.remove('hidden');
+                btnText.innerText = 'حفظ وتسجيل الدخول'; btnIcon.className = 'fa-solid fa-floppy-disk';
+            }, 1500);
+        }
+
+        function resendOTP() {
+            const btn = document.getElementById('resendBtn');
+            btn.innerText = 'تم الإرسال ✓';
+            btn.style.color = '#10b981';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.innerText = 'إعادة الإرسال';
+                btn.style.color = '#00b4d8';
                 btn.disabled = false;
-            }
-        });
+            }, 30000); // إتاحة الزر بعد 30 ثانية
+        }
     </script>
 </body>
 </html>
