@@ -96,7 +96,7 @@
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-24">
                 
-                <div class="flex items-center gap-4 w-1/4">
+                <div class="flex items-center gap-4 w-1/4 cursor-pointer" onclick="window.location.href='index.html'">
                     <div class="w-12 h-12 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,180,216,0.3)]">
                         <i class="fa-solid fa-headset text-white text-xl"></i>
                     </div>
@@ -141,7 +141,7 @@
                 <i class="fa-solid fa-sim-card text-4xl text-slate-500"></i>
             </div>
             <h2 class="text-2xl font-black text-white mb-2">في انتظار العميل القادم...</h2>
-            <p class="text-sm font-bold text-slate-400">أدخل رقم הـ ICCID أو الإيميل في الأعلى لبدء فحص الأشعة السينية للشريحة.</p>
+            <p class="text-sm font-bold text-slate-400">أدخل رقم الـ ICCID أو الإيميل في الأعلى لبدء فحص الأشعة السينية للشريحة.</p>
         </div>
 
         <!-- 🚀 لوحة التحكم بالعميل 360 (تظهر بعد البحث) -->
@@ -165,8 +165,8 @@
                             <div>
                                 <h3 class="text-3xl font-black text-white mb-1 flex items-center gap-3 drop-shadow-md">تركيا 🇹🇷 <span class="bg-[#00b4d8]/20 text-[#00b4d8] px-2 py-0.5 rounded text-[10px] font-black uppercase">Active</span></h3>
                                 <div class="flex items-center gap-3 mt-2">
-                                    <span class="text-sm font-black text-slate-200 tracking-widest bg-black/40 px-3 py-1 rounded-md border border-white/10" dir="ltr">8900 1234 5678 9012 3456</span>
-                                    <button onclick="showToast('تم نسخ رقم الـ ICCID')" class="text-slate-400 hover:text-white bg-transparent border-none cursor-pointer"><i class="fa-regular fa-copy"></i></button>
+                                    <span class="text-sm font-black text-slate-200 tracking-widest bg-black/40 px-3 py-1 rounded-md border border-white/10" dir="ltr" id="iccidNumber">8900 1234 5678 9012 3456</span>
+                                    <button onclick="copyICCID()" class="text-slate-400 hover:text-white bg-transparent border-none cursor-pointer"><i class="fa-regular fa-copy"></i></button>
                                 </div>
                             </div>
                             <div class="bg-emerald-500/10 border border-emerald-500/30 p-3 rounded-xl flex items-center gap-3">
@@ -256,10 +256,10 @@
                     <div class="cs-card p-6 border-t-amber-500 flex-1 flex flex-col">
                         <h3 class="text-sm font-black text-white mb-4 border-b border-white/5 pb-2 flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-500"></i> التدخل السريع (1-Click)</h3>
                         
-                        <div class="space-y-3 flex-1">
+                        <div class="space-y-3 flex-1 flex flex-col">
                             <button onclick="simulateAction(this, 'تم إعادة إرسال الكود للواتساب بنجاح 📲')" class="w-full bg-[#00b4d8]/10 hover:bg-[#00b4d8]/20 border border-[#00b4d8]/30 text-[#00b4d8] py-3 rounded-xl font-black text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 text-right">
                                 <i class="fa-brands fa-whatsapp text-lg w-5 text-center"></i> 
-                                <span class="flex-1 text-right">إعادة إرسال הـ QR (واتساب)</span>
+                                <span class="flex-1 text-right">إعادة إرسال الـ QR (واتساب)</span>
                             </button>
                             
                             <button onclick="simulateAction(this, 'تم تنشيط وإعادة إرسال إشارة الشبكة للشريحة 🔄')" class="w-full bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-400 py-3 rounded-xl font-black text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 text-right">
@@ -293,8 +293,13 @@
             const icon = document.getElementById('toastIcon');
             document.getElementById('toastText').innerText = message;
             
-            if(isError) { icon.className = 'fa-solid fa-circle-xmark text-rose-500 text-xl'; toast.className = 'fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(244,63,94,0.3)] border border-rose-500/40 flex items-center gap-3 pointer-events-none transition-all duration-400'; } 
-            else { icon.className = 'fa-solid fa-circle-check text-[#00b4d8] text-xl'; toast.className = 'fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,180,216,0.3)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none transition-all duration-400'; }
+            if(isError) { 
+                icon.className = 'fa-solid fa-circle-xmark text-rose-500 text-xl'; 
+                toast.className = 'fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(244,63,94,0.3)] border border-rose-500/40 flex items-center gap-3 pointer-events-none transition-all duration-400'; 
+            } else { 
+                icon.className = 'fa-solid fa-circle-check text-[#00b4d8] text-xl'; 
+                toast.className = 'fixed top-10 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,180,216,0.3)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none transition-all duration-400'; 
+            }
 
             toast.classList.remove('opacity-0', '-translate-y-32');
             toast.classList.add('opacity-100', 'translate-y-0');
@@ -342,6 +347,13 @@
             document.getElementById('customer360').classList.remove('fade-in');
             document.getElementById('idleState').classList.remove('hidden');
             document.getElementById('dataProgressBar').style.width = '0%';
+        }
+
+        function copyICCID() {
+            const iccidText = document.getElementById('iccidNumber').innerText;
+            navigator.clipboard.writeText(iccidText).then(() => {
+                showToast('تم نسخ رقم الـ ICCID بنجاح');
+            });
         }
 
         // 🚀 محاكاة التدخل السريع (1-Click Actions)
