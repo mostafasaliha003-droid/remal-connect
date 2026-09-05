@@ -4,6 +4,8 @@ const cors = require('cors');
 const axios = require('axios'); // مكتبة للاتصال بـ API المورد
 const mongoose = require('mongoose'); // مكتبة للاتصال بقاعدة البيانات
 const bcrypt = require('bcryptjs'); // مكتبة التشفير
+const multer = require('multer'); // مكتبة استقبال الملفات
+const nodemailer = require('nodemailer'); // مكتبة إرسال الإيميلات
 
 const app = express();
 
@@ -25,6 +27,21 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch((err) => console.error('❌ خطأ في الاتصال بقاعدة البيانات:', err));
 
 // ==========================================
+// إعدادات رفع الملفات (Multer) والإيميل (Nodemailer)
+// ==========================================
+// إعداد Multer لحفظ الملفات مؤقتاً في الذاكرة (لكي نرسلها بالإيميل مباشرة)
+const upload = multer({ storage: multer.memoryStorage() });
+
+// إعداد Nodemailer (يرجى إضافة بيانات إيميلك في ملف .env: EMAIL_USER و EMAIL_PASS)
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // أو أي مزود آخر تستخدمه
+    auth: {
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// ==========================================
 // هياكل قاعدة البيانات (Schemas & Models)
 // ==========================================
 
@@ -36,10 +53,10 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: { 
         type: String, 
-        enum: ['customer', 'agent', 'cs', 'admin'], // تحديد صلاحية الدخول
+        enum: ['customer', 'agent', 'cs', 'admin'], 
         default: 'customer' 
     },
-    walletBalance: { type: Number, default: 0 }, // رصيد المحفظة للوكلاء والعملاء
+    walletBalance: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now }
 });
 
@@ -47,7 +64,7 @@ const User = mongoose.model('User', userSchema);
 
 // 2. هيكل وكلاء السفر والشركات (B2B Agencies)
 const agencySchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // ربط الوكيل بحساب مستخدم
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     companyName: { type: String, required: true },
     managerName: { type: String, required: true },
     financials: {
@@ -64,9 +81,9 @@ const agencySchema = new mongoose.Schema({
     status: { 
         type: String, 
         enum: ['pending', 'approved', 'rejected'], 
-        default: 'pending' // بانتظار الاعتماد من مركز القيادة
+        default: 'pending' 
     },
-    creditLimit: { type: Number, default: 0 }, // السقف الائتماني المسموح به
+    creditLimit: { type: Number, default: 0 },
     totalIssuedEsims: { type: Number, default: 0 }
 }, { timestamps: true });
 
@@ -78,22 +95,20 @@ const transactionSchema = new mongoose.Schema({
     customerEmail: { type: String },
     type: { type: String, enum: ['b2c', 'b2b', 'topup'] },
     packageId: { type: String },
-    iccid: { type: String }, // رقم الشريحة الفعلي
-    apiCost: { type: Number, required: true }, // تكلفة المزود لحساب الأرباح
-    sellingPrice: { type: Number, required: true }, // سعر البيع للعميل
-    netMargin: { type: Number }, // الربح الصافي
+    iccid: { type: String }, 
+    apiCost: { type: Number, required: true }, 
+    sellingPrice: { type: Number, required: true }, 
+    netMargin: { type: Number }, 
     whatsappDelivered: { type: Boolean, default: false },
     status: { type: String, enum: ['success', 'failed', 'refunded'], default: 'success' }
 }, { timestamps: true });
 
-// حساب الربح الصافي تلقائياً قبل حفظ العملية
 transactionSchema.pre('save', function(next) {
     this.netMargin = this.sellingPrice - this.apiCost;
     next();
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);
-
 
 // ==========================================
 // مسار رئيسي لفحص حالة الخادم
@@ -102,12 +117,9 @@ app.get('/', (req, res) => {
     res.send('Remal Connect API is running with Ultimate B2B/Admin Architecture! 🚀');
 });
 
-
 // ==========================================
 // 1. نظام الحسابات (Auth System)
 // ==========================================
-
-// تسجيل حساب جديد للأفراد (B2C)
 app.post('/api/register', async (req, res) => {
     try {
         const { fullName, email, whatsapp, password } = req.body;
@@ -126,7 +138,6 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// تسجيل الدخول الشامل (Login)
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -144,7 +155,7 @@ app.post('/api/login', async (req, res) => {
                 id: user._id,
                 fullName: user.fullName,
                 email: user.email,
-                role: user.role, // مهم لتوجيه المستخدم للوحة التحكم الصحيحة (Admin, CS, Agent)
+                role: user.role,
                 walletBalance: user.walletBalance
             }
         });
@@ -154,22 +165,22 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-
 // ==========================================
 // 2. نظام وكلاء السفر (B2B Portal)
 // ==========================================
-
-// تسجيل وكالة سفر جديدة
-app.post('/api/b2b/register', async (req, res) => {
+// تسجيل وكالة سفر جديدة مع استقبال الملفات عبر FormData
+app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' }, { name: 'idFile' }, { name: 'vatFile' }]), async (req, res) => {
     try {
-        const { companyName, managerName, email, phone, password, financials, docs } = req.body;
+        // استخراج البيانات النصية المرسلة
+        const { companyName, managerName, email, phone, password, accountName, bankName, iban, vatNumber } = req.body;
+        const files = req.files;
         
         // التحقق من الإيميل
         const existingUser = await User.findOne({ email });
         if (existingUser) return res.status(400).json({ success: false, message: 'البريد الإلكتروني مستخدم بالفعل' });
 
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password || 'defaultPass123', salt);
 
         // إنشاء المستخدم كوكيل
         const newUser = await User.create({ 
@@ -180,14 +191,48 @@ app.post('/api/b2b/register', async (req, res) => {
             role: 'agent' 
         });
         
-        // حفظ بيانات الوكالة والمستندات
+        // حفظ بيانات الوكالة (الروابط حالياً فارغة، سيتم تحديثها عند رفع الملفات لخدمة تخزين سحابية لاحقاً)
         const newAgency = await Agency.create({
             userId: newUser._id,
             companyName,
             managerName,
-            financials,
-            documents: docs
+            financials: { accountName, bankName, iban, vatNumber },
+            documents: { licenseUrl: '', idUrl: '', vatUrl: '' }
         });
+
+        // 🚀 إعداد المرفقات للإيميل
+        let attachments = [];
+        if (files['licenseFile']) attachments.push({ filename: files['licenseFile'][0].originalname, content: files['licenseFile'][0].buffer });
+        if (files['idFile']) attachments.push({ filename: files['idFile'][0].originalname, content: files['idFile'][0].buffer });
+        if (files['vatFile']) attachments.push({ filename: files['vatFile'][0].originalname, content: files['vatFile'][0].buffer });
+
+        // 🚀 إرسال الإيميل إلى الرمال الدولية
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: 'connect@remaltourismllc.com',
+            subject: `طلب اعتماد وكيل جديد: ${companyName}`,
+            text: `
+                تم استلام طلب جديد للانضمام لشبكة الوكلاء.
+                
+                بيانات الشركة:
+                الاسم: ${companyName}
+                المدير: ${managerName}
+                الإيميل: ${email}
+                الهاتف: ${phone}
+                
+                يرجى مراجعة لوحة التحكم (Admin Dashboard) لاعتماد الطلب.
+                تجد المرفقات الثبوتية مع هذه الرسالة.
+            `,
+            attachments: attachments
+        };
+
+        // محاولة إرسال الإيميل (إن فشل الإيميل فلن يوقف عملية التسجيل الناجحة في الداتابيز)
+        try {
+            await transporter.sendMail(mailOptions);
+            console.log('تم إرسال إشعار الإيميل بنجاح');
+        } catch (mailError) {
+            console.error('فشل إرسال الإيميل:', mailError);
+        }
 
         res.status(201).json({ success: true, message: 'تم إرسال طلب الاعتماد بنجاح.' });
     } catch (error) {
@@ -196,17 +241,35 @@ app.post('/api/b2b/register', async (req, res) => {
     }
 });
 
-
 // ==========================================
 // 3. مركز القيادة للإدارة العليا (Admin Command Center)
 // ==========================================
+
+// جلب الطلبات المعلقة (لعرضها في Admin Dashboard)
+app.get('/api/admin/pending-kyc', async (req, res) => {
+    try {
+        const pendingAgencies = await Agency.find({ status: 'pending' }).populate('userId', 'email');
+        
+        // إعادة صياغة البيانات لتناسب الواجهة
+        const formattedAgencies = pendingAgencies.map(agent => ({
+            _id: agent._id,
+            companyName: agent.companyName,
+            email: agent.userId ? agent.userId.email : 'No Email',
+            licenseUrl: agent.documents.licenseUrl || '#' // يمكن وضع رابط مؤقت
+        }));
+
+        res.json({ success: true, agencies: formattedAgencies });
+    } catch (error) {
+        console.error('Error fetching pending KYC:', error);
+        res.status(500).json({ success: false, message: 'حدث خطأ في جلب الطلبات' });
+    }
+});
 
 // اعتماد الوكلاء (KYC Approval)
 app.post('/api/admin/approve-kyc', async (req, res) => {
     try {
         const { agencyId, creditLimit } = req.body;
         
-        // تحديث حالة الوكالة والحد الائتماني
         const agency = await Agency.findByIdAndUpdate(
             agencyId, 
             { status: 'approved', creditLimit: creditLimit },
@@ -222,40 +285,17 @@ app.post('/api/admin/approve-kyc', async (req, res) => {
     }
 });
 
-
 // ==========================================
 // 4. أتمتة الواتساب (WhatsApp Integration)
 // ==========================================
 app.post('/api/whatsapp/send-qr', async (req, res) => {
     try {
         const { phone, iccid, qrUrl, country } = req.body;
-
-        const whatsappMessage = `
-        مرحباً بك في Remal Connect! 🌍
-        رحلة سعيدة إلى *${country}*.
-        
-        شريحتك الإلكترونية (eSIM) جاهزة للتفعيل:
-        رقم الشريحة: ${iccid}
-        
-        يرجى مسح الرمز المرفق، أو استخدام كود التثبيت اليدوي أدناه:
-        LPA:1$smdp.io$${iccid}
-        
-        فريق شركة الرمال الدولية يتمنى لك سفراً آمناً! ✈️
-        `;
-
-        // 🚀 هنا سيتم استدعاء WhatsApp API الفعلي لاحقاً لإرسال الصورة والنص
-        // await whatsappProvider.sendMessage(phone, whatsappMessage, qrUrl);
-        
-        // تحديث قاعدة البيانات في حال الحاجة
-        // await Transaction.findOneAndUpdate({ iccid: iccid }, { whatsappDelivered: true });
-
         res.json({ success: true, message: 'تم تسليم الـ QR عبر الواتساب بنجاح.' });
     } catch (error) {
-        console.error('WhatsApp Error:', error);
         res.status(500).json({ success: false, message: 'فشل في الاتصال بخادم الواتساب.' });
     }
 });
-
 
 // ==========================================
 // 5. محرك البحث (الباقات المؤقتة - للواجهة)
@@ -279,49 +319,26 @@ app.get('/api/search-packages', async (req, res) => {
 
         res.status(200).json({ success: true, count: results.length, packages: results });
     } catch (error) {
-        console.error('Search error:', error);
         res.status(500).json({ success: false, message: 'حدث خطأ أثناء البحث عن الباقات' });
     }
 });
-
 
 // ==========================================
 // 6. مسار إصدار الشريحة وشراء الـ eSIM
 // ==========================================
 app.post('/api/purchase-esim', async (req, res) => {
     const { packageId, customerEmail } = req.body;
-
     try {
-        // 🚀 هنا سيتم ربط API المورد (مثل RateHawk/DOTW) لتوليد الشريحة الفعلي
-        
-        // محاكاة حفظ العملية في قاعدة البيانات وحساب الربح (Net Margin)
-        /*
-        const newTransaction = new Transaction({
-            referenceId: `ORD-${Math.floor(Math.random() * 10000)}`,
-            customerEmail: customerEmail,
-            type: 'b2c',
-            packageId: packageId,
-            iccid: '8985234567890123456',
-            apiCost: 15.00, // مثال للتكلفة من المورد
-            sellingPrice: 35.00 // مثال لسعر البيع
-        });
-        await newTransaction.save();
-        */
-
-        // إرجاع المحاكاة للواجهة الأمامية
         res.json({
             success: true,
             message: 'تم إصدار الشريحة بنجاح',
             qr_code_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$smdp.io$8985234567890123456',
             iccid: '8985234567890123456'
         });
-
     } catch (error) {
-        console.error('Error purchasing eSIM:', error.message);
         res.status(500).json({ success: false, message: 'فشل في إصدار الشريحة، يرجى مراجعة الدعم الفني' });
     }
 });
-
 
 // ==========================================
 // تشغيل الخادم
