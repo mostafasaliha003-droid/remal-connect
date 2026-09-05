@@ -13,11 +13,9 @@ const app = express();
 // إعدادات الحماية والوصول (Middleware)
 // ==========================================
 app.use(express.json());
-app.use(cors({
-    origin: ['https://mostafasaliha003-droid.github.io'], // السماح لموقعك فقط
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-}));
+
+// 🚀 الحل الجذري لمشكلة الـ CORS
+app.use(cors()); // السماح بالاتصال المفتوح لحل مشكلة حظر المتصفحات
 
 // ==========================================
 // الاتصال بقاعدة بيانات MongoDB
@@ -199,9 +197,9 @@ app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' },
         });
 
         let attachments = [];
-        if (files['licenseFile']) attachments.push({ filename: files['licenseFile'][0].originalname, content: files['licenseFile'][0].buffer });
-        if (files['idFile']) attachments.push({ filename: files['idFile'][0].originalname, content: files['idFile'][0].buffer });
-        if (files['vatFile']) attachments.push({ filename: files['vatFile'][0].originalname, content: files['vatFile'][0].buffer });
+        if (files && files['licenseFile']) attachments.push({ filename: files['licenseFile'][0].originalname, content: files['licenseFile'][0].buffer });
+        if (files && files['idFile']) attachments.push({ filename: files['idFile'][0].originalname, content: files['idFile'][0].buffer });
+        if (files && files['vatFile']) attachments.push({ filename: files['vatFile'][0].originalname, content: files['vatFile'][0].buffer });
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
