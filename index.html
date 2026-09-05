@@ -891,51 +891,33 @@
                 targetEmail = giftMail;
             }
 
-            const isWhatsapp = document.getElementById('whatsappDelivery').checked;
-
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري الاتصال بالبوابة...';
+            // إظهار حالة التحميل
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري التحويل لبوابة Ziina...';
             btn.disabled = true; btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             try {
-                const response = await fetch(`${API_URL}/api/purchase-esim`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ packageId: currentSelectedPackage.pkgId, customerEmail: targetEmail })
+                // الاتصال بالسيرفر لإنشاء جلسة دفع حقيقية
+                const response = await fetch(`${API_URL}/api/checkout`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        packageId: currentSelectedPackage.pkgId, 
+                        price: currentSelectedPackage.price, // السعر الفعلي
+                        customerEmail: targetEmail 
+                    })
                 });
+                
                 const data = await response.json();
 
-                if (data.success) {
-                    btn.innerHTML = '<i class="fa-solid fa-check-circle text-lg"></i> تمت العملية بنجاح!';
-                    btn.classList.replace('bg-[#00b4d8]', 'bg-emerald-500'); btn.classList.replace('text-[#091016]', 'text-white');
-                    
-                    if(!isGiftPurchase) {
-                        saveEsimLocally({
-                            ...currentSelectedPackage,
-                            iccid: data.iccid || "89" + Math.floor(Math.random() * 1000000000000000),
-                            qrUrl: data.qr_code_url || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SM-DP+Address:LPA:1$smdp.io$${data.iccid}`,
-                            date: new Date().toLocaleDateString('ar-AE'),
-                            totalBytes: parseInt(currentSelectedPackage.data) * 1024,
-                            usedBytes: Math.floor(Math.random() > 0.5 ? (parseInt(currentSelectedPackage.data) * 1024 * 0.95) : 1024) 
-                        });
-                        
-                        setTimeout(() => { 
-                            closeCheckoutModal(); 
-                            switchView('dashboardView'); 
-                            if(isWhatsapp) showToast('تمت إضافة الشريحة وإرسالها للواتساب ✅');
-                            else showToast('تمت إضافة الشريحة للوحة التحكم'); 
-                        }, 1200);
-                    } else {
-                        setTimeout(() => { 
-                            closeCheckoutModal(); 
-                            if(isWhatsapp) showToast('تم إرسال الهدية عبر الواتساب! 🎁');
-                            else showToast('تم إرسال الهدية للإيميل! 🎁');
-                        }, 1200);
-                    }
+                if (response.ok && data.success && data.paymentUrl) {
+                    // 🚀 الانطلاق السحري: توجيه العميل لصفحة دفع Ziina الآمنة!
+                    window.location.href = data.paymentUrl;
                 } else {
-                    showToast(data.message || 'فشل في العملية', true);
+                    showToast(data.message || 'فشل في تجهيز بوابة الدفع', true);
                     btn.innerHTML = originalText; btn.disabled = false;
                 }
             } catch (error) {
-                showToast('حدث خطأ في الاتصال بالخادم.', true);
+                showToast('تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً.', true);
                 btn.innerHTML = originalText; btn.disabled = false;
             }
         }
