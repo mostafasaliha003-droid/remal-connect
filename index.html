@@ -48,7 +48,6 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
-        /* تأثيرات البطاقات الفاتحة */
         .glass-card-light {
             background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.4);
@@ -84,7 +83,7 @@
     <header class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 md:h-20">
-                <div class="flex-shrink-0 flex items-center gap-2 md:gap-3 cursor-pointer">
+                <div class="flex-shrink-0 flex items-center gap-2 md:gap-3 cursor-pointer" onclick="switchView('homeView')">
                     <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-lg md:rounded-xl flex items-center justify-center shadow-lg transform rotate-3">
                         <i class="fa-solid fa-sim-card text-white text-base md:text-xl"></i>
                     </div>
@@ -95,11 +94,11 @@
                 </div>
 
                 <div class="flex items-center gap-3 md:gap-4">
-                    <a href="#" class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-[#00b4d8] transition-colors">
-                        <i class="fa-solid fa-circle-question"></i> كيف تعمل؟
-                    </a>
+                    <button onclick="switchView('dashboardView')" class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-[#00b4d8] transition-colors bg-transparent border-none cursor-pointer">
+                        <i class="fa-solid fa-qrcode"></i> شرائحي
+                    </button>
                     <div class="h-6 w-px bg-white/10 hidden md:block"></div>
-                    <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95">
+                    <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95 text-decoration-none">
                         <i class="fa-regular fa-user text-[#00b4d8]"></i> حسابي
                     </a>
                 </div>
@@ -107,110 +106,132 @@
         </div>
     </header>
 
-    <!-- 🚀 قسم الهيرو والبحث (Hero & Search) -->
-    <main class="pt-28 md:pt-36 pb-12 md:pb-16 flex items-center justify-center relative">
-        <div class="absolute inset-0 z-0 opacity-10 pointer-events-none flex items-center justify-center overflow-hidden">
-            <svg width="600" height="600" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#00b4d8" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,81.3,-46.3C90.8,-33.5,96.8,-18,95.6,-3.2C94.4,11.6,86,25.7,75.9,37.6C65.8,49.5,54.1,59.3,40.9,66.8C27.7,74.3,13.8,79.5,-0.6,80.5C-15.1,81.4,-30.2,77.1,-43.3,69.5C-56.4,61.9,-67.5,51,-76.3,37.9C-85.1,24.8,-91.6,9.5,-91.4,-5.6C-91.2,-20.7,-84.3,-35.6,-74.6,-48.2C-64.9,-60.8,-52.3,-71.1,-38.5,-78.3C-24.7,-85.5,-12.3,-89.6,1.4,-91.9C15.1,-94.3,30.3,-83.5,44.7,-76.4Z" transform="translate(100 100)"/>
-            </svg>
-        </div>
-
-        <div class="max-w-7xl mx-auto px-4 w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-16 relative z-10">
-            
-            <div class="w-full lg:w-1/2 text-center lg:text-right">
-                <div class="inline-flex items-center gap-2 bg-[#00b4d8]/10 border border-[#00b4d8]/30 px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-[#00b4d8] mb-4 md:mb-6">
-                    <span class="relative flex h-2 w-2">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00b4d8] opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2 w-2 bg-[#00b4d8]"></span>
-                    </span>
-                    تغطية فورية في أكثر من 150 دولة
-                </div>
-                
-                <h1 class="text-3xl sm:text-4xl md:text-6xl font-black mb-4 md:mb-6 leading-tight tracking-tight drop-shadow-lg text-white">
-                    عالمك بدون حدود.. <br/>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#00b4d8] to-white">بمسحة كود واحدة! 🌍</span>
-                </h1>
-                
-                <p class="text-slate-400 text-xs md:text-lg font-semibold max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
-                    وداعاً لفواتير التجوال المزعجة. اختر وجهتك، امسح كود الـ QR، واستمتع بإنترنت فائق السرعة فور هبوط طائرتك.
-                </p>
-
-                <!-- شريط البحث الفعلي المرتبط بالخادم -->
-                <form id="searchForm" class="glass-panel p-2 rounded-2xl md:rounded-[2rem] max-w-lg mx-auto lg:mx-0 flex items-center relative z-20 shadow-[0_20px_50px_rgba(0,180,216,0.1)] focus-within:border-[#00b4d8]/50 transition-colors">
-                    <i class="fa-solid fa-location-dot text-[#00b4d8] pl-3 md:pl-4 pr-2 text-sm md:text-lg"></i>
-                    <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: تركيا، أوروبا...)" class="flex-1 bg-transparent border-none outline-none text-xs md:text-base font-bold text-white placeholder-slate-400 h-10 md:h-12 w-full">
-                    <button type="submit" id="searchBtn" class="bg-[#00b4d8] hover:bg-cyan-500 text-white font-black py-2.5 md:py-3.5 px-6 md:px-8 rounded-xl md:rounded-[1.5rem] transition-all flex items-center justify-center gap-2 cursor-pointer btn-glow shrink-0 text-xs md:text-sm active:scale-95">
-                        ابحث <i class="fa-solid fa-magnifying-glass hidden sm:inline"></i>
-                    </button>
-                </form>
-
-                <div class="flex items-center justify-center lg:justify-start gap-2 mt-4 flex-wrap">
-                    <span class="text-[9px] md:text-[10px] font-bold text-slate-500">شائع:</span>
-                    <button type="button" onclick="quickSearch('تركيا')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors">🇹🇷 تركيا</button>
-                    <button type="button" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors">🇸🇦 السعودية</button>
-                    <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors">🇪🇺 أوروبا</button>
-                </div>
+    <!-- ========================================== -->
+    <!-- 🌟 الشاشة الرئيسية (Home View) -->
+    <!-- ========================================== -->
+    <div id="homeView" class="block transition-opacity duration-300">
+        <!-- قسم الهيرو والبحث -->
+        <main class="pt-28 md:pt-36 pb-12 md:pb-16 flex items-center justify-center relative">
+            <div class="absolute inset-0 z-0 opacity-10 pointer-events-none flex items-center justify-center overflow-hidden">
+                <svg width="600" height="600" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#00b4d8" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,81.3,-46.3C90.8,-33.5,96.8,-18,95.6,-3.2C94.4,11.6,86,25.7,75.9,37.6C65.8,49.5,54.1,59.3,40.9,66.8C27.7,74.3,13.8,79.5,-0.6,80.5C-15.1,81.4,-30.2,77.1,-43.3,69.5C-56.4,61.9,-67.5,51,-76.3,37.9C-85.1,24.8,-91.6,9.5,-91.4,-5.6C-91.2,-20.7,-84.3,-35.6,-74.6,-48.2C-64.9,-60.8,-52.3,-71.1,-38.5,-78.3C-24.7,-85.5,-12.3,-89.6,1.4,-91.9C15.1,-94.3,30.3,-83.5,44.7,-76.4Z" transform="translate(100 100)"/>
+                </svg>
             </div>
 
-            <!-- هاتف تفاعلي ثلاثي الأبعاد -->
-            <div class="hidden lg:block w-full lg:w-1/2 relative perspective-container h-[650px] flex items-center justify-center">
-                <div class="relative w-[320px] mx-auto animate-float phone-3d" id="phoneMockup">
-                    <div class="bg-slate-800 rounded-[3rem] p-3 shadow-[0_30px_60px_rgba(0,180,216,0.2)] border-[5px] border-slate-700 relative z-10 bg-gradient-to-b from-slate-700 to-slate-900">
-                        <div class="bg-white w-full h-[600px] rounded-[2.2rem] overflow-hidden relative flex flex-col">
-                            <div class="absolute top-0 inset-x-0 h-6 bg-black rounded-b-2xl w-32 mx-auto z-20 flex justify-center items-end pb-1.5"><div class="w-12 h-1 bg-slate-800 rounded-full"></div></div>
-                            <div class="bg-gradient-to-b from-[#1f3a40] to-[#2c5364] pt-12 pb-6 px-4 text-center rounded-b-[2rem] relative shadow-md">
-                                <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 border border-white/20 backdrop-blur-sm"><span class="text-2xl">⚡</span></div>
-                                <h4 class="text-white font-black text-lg mb-1">الإنترنت جاهز</h4>
-                                <p class="text-[#00b4d8] text-[10px] font-bold uppercase tracking-wider">Fast & Secure</p>
-                            </div>
-                            <div class="flex-1 bg-[#f4f7f6] p-4 space-y-3 flex flex-col justify-center">
-                                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-cyan-50 rounded-xl flex items-center justify-center text-[#00b4d8]"><i class="fa-solid fa-qrcode"></i></div>
-                                    <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 1</span><span class="block text-sm font-black text-slate-800">امسح الكود</span></div>
+            <div class="max-w-7xl mx-auto px-4 w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-16 relative z-10">
+                <div class="w-full lg:w-1/2 text-center lg:text-right">
+                    <div class="inline-flex items-center gap-2 bg-[#00b4d8]/10 border border-[#00b4d8]/30 px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-[#00b4d8] mb-4 md:mb-6">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00b4d8] opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#00b4d8]"></span>
+                        </span>
+                        تغطية فورية في أكثر من 150 دولة
+                    </div>
+                    
+                    <h1 class="text-3xl sm:text-4xl md:text-6xl font-black mb-4 md:mb-6 leading-tight tracking-tight drop-shadow-lg text-white">
+                        عالمك بدون حدود.. <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#00b4d8] to-white">بمسحة كود واحدة! 🌍</span>
+                    </h1>
+                    
+                    <p class="text-slate-400 text-xs md:text-lg font-semibold max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+                        وداعاً لفواتير التجوال المزعجة. اختر وجهتك، امسح كود الـ QR، واستمتع بإنترنت فائق السرعة فور هبوط طائرتك.
+                    </p>
+
+                    <!-- شريط البحث -->
+                    <form id="searchForm" class="glass-panel p-2 rounded-2xl md:rounded-[2rem] max-w-lg mx-auto lg:mx-0 flex items-center relative z-20 shadow-[0_20px_50px_rgba(0,180,216,0.1)] focus-within:border-[#00b4d8]/50 transition-colors">
+                        <i class="fa-solid fa-location-dot text-[#00b4d8] pl-3 md:pl-4 pr-2 text-sm md:text-lg"></i>
+                        <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: تركيا، أوروبا...)" class="flex-1 bg-transparent border-none outline-none text-xs md:text-base font-bold text-white placeholder-slate-400 h-10 md:h-12 w-full">
+                        <button type="submit" id="searchBtn" class="bg-[#00b4d8] hover:bg-cyan-500 text-white font-black py-2.5 md:py-3.5 px-6 md:px-8 rounded-xl md:rounded-[1.5rem] transition-all flex items-center justify-center gap-2 cursor-pointer btn-glow shrink-0 text-xs md:text-sm active:scale-95">
+                            ابحث <i class="fa-solid fa-magnifying-glass hidden sm:inline"></i>
+                        </button>
+                    </form>
+
+                    <div class="flex items-center justify-center lg:justify-start gap-2 mt-4 flex-wrap">
+                        <span class="text-[9px] md:text-[10px] font-bold text-slate-500">شائع:</span>
+                        <button type="button" onclick="quickSearch('تركيا')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors cursor-pointer">🇹🇷 تركيا</button>
+                        <button type="button" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors cursor-pointer">🇸🇦 السعودية</button>
+                        <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors cursor-pointer">🇪🇺 أوروبا</button>
+                    </div>
+                </div>
+
+                <!-- هاتف تفاعلي 3D -->
+                <div class="hidden lg:block w-full lg:w-1/2 relative perspective-container h-[650px] flex items-center justify-center">
+                    <div class="relative w-[320px] mx-auto animate-float phone-3d" id="phoneMockup">
+                        <div class="bg-slate-800 rounded-[3rem] p-3 shadow-[0_30px_60px_rgba(0,180,216,0.2)] border-[5px] border-slate-700 relative z-10 bg-gradient-to-b from-slate-700 to-slate-900">
+                            <div class="bg-white w-full h-[600px] rounded-[2.2rem] overflow-hidden relative flex flex-col">
+                                <div class="absolute top-0 inset-x-0 h-6 bg-black rounded-b-2xl w-32 mx-auto z-20 flex justify-center items-end pb-1.5"><div class="w-12 h-1 bg-slate-800 rounded-full"></div></div>
+                                <div class="bg-gradient-to-b from-[#1f3a40] to-[#2c5364] pt-12 pb-6 px-4 text-center rounded-b-[2rem] relative shadow-md">
+                                    <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 border border-white/20 backdrop-blur-sm"><span class="text-2xl">⚡</span></div>
+                                    <h4 class="text-white font-black text-lg mb-1">الإنترنت جاهز</h4>
+                                    <p class="text-[#00b4d8] text-[10px] font-bold uppercase tracking-wider">Fast & Secure</p>
                                 </div>
-                                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500"><i class="fa-solid fa-sliders"></i></div>
-                                    <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 2</span><span class="block text-sm font-black text-slate-800">فعّل البيانات</span></div>
-                                </div>
-                                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500"><i class="fa-solid fa-earth-americas"></i></div>
-                                    <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 3</span><span class="block text-sm font-black text-slate-800">أنت متصل!</span></div>
+                                <div class="flex-1 bg-[#f4f7f6] p-4 space-y-3 flex flex-col justify-center">
+                                    <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-cyan-50 rounded-xl flex items-center justify-center text-[#00b4d8]"><i class="fa-solid fa-qrcode"></i></div>
+                                        <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 1</span><span class="block text-sm font-black text-slate-800">امسح الكود</span></div>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500"><i class="fa-solid fa-sliders"></i></div>
+                                        <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 2</span><span class="block text-sm font-black text-slate-800">فعّل البيانات</span></div>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500"><i class="fa-solid fa-earth-americas"></i></div>
+                                        <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 3</span><span class="block text-sm font-black text-slate-800">أنت متصل!</span></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-        </div>
-    </main>
+        </main>
 
-    <!-- 🚀 قسم عرض الباقات (يتم تحديثه بالـ JS) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 relative z-20" id="packagesSection">
-        <div class="flex items-end justify-between mb-6 md:mb-10">
-            <div>
-                <h3 class="text-2xl md:text-3xl font-black text-white mb-2" id="resultsTitle">الوجهات الأكثر طلباً 🔥</h3>
-                <p class="text-xs md:text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR في ثوانٍ، وانطلق.</p>
+        <!-- قسم عرض الباقات -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 relative z-20" id="packagesSection">
+            <div class="flex items-end justify-between mb-6 md:mb-10">
+                <div>
+                    <h3 class="text-2xl md:text-3xl font-black text-white mb-2" id="resultsTitle">الوجهات الأكثر طلباً 🔥</h3>
+                    <p class="text-xs md:text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR في ثوانٍ، وانطلق.</p>
+                </div>
             </div>
-        </div>
+            <!-- حاوية الباقات -->
+            <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6"></div>
+        </section>
+    </div>
 
-        <!-- حاوية الباقات -->
-        <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
-            <!-- سيتم حقن الباقات هنا عبر الجافاسكربت -->
-        </div>
-    </section>
+    <!-- ========================================== -->
+    <!-- 🌟 شاشة لوحة تحكم شرائحي (Dashboard View) -->
+    <!-- ========================================== -->
+    <div id="dashboardView" class="hidden transition-opacity duration-300">
+        <main class="pt-28 md:pt-36 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+            <div class="flex items-center justify-between border-b border-white/10 pb-6 mb-8">
+                <div>
+                    <h2 class="text-2xl md:text-4xl font-black text-white mb-2">شرائحي الإلكترونية 📱</h2>
+                    <p class="text-slate-400 text-sm">إدارة باقات الإنترنت الخاصة بك، وعرض أكواد الـ QR.</p>
+                </div>
+                <button onclick="switchView('homeView')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors border border-white/20 cursor-pointer">
+                    <i class="fa-solid fa-arrow-right"></i> عودة للرئيسية
+                </button>
+            </div>
+
+            <!-- حاوية الشرائح المشتراة -->
+            <div id="myEsimsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- سيتم حقن البطاقات هنا عبر الجافاسكربت -->
+            </div>
+        </main>
+    </div>
 
     <!-- 🚀 شريط التنقل السفلي للموبايل بطبقة زجاجية -->
     <nav class="md:hidden fixed bottom-4 left-4 right-4 glass-panel rounded-2xl flex justify-around items-center py-2 z-[999] shadow-lg border border-white/20 bg-slate-900/80">
-        <a href="#" onclick="window.scrollTo(0,0)" class="flex flex-col items-center gap-1 text-[#00b4d8] w-16">
+        <a href="#" onclick="switchView('homeView')" class="flex flex-col items-center gap-1 text-[#00b4d8] w-16 text-decoration-none">
             <i class="fa-solid fa-globe text-lg"></i>
             <span class="text-[9px] font-bold">الوجهات</span>
         </a>
-        <a href="#" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16">
+        <a href="#" onclick="switchView('dashboardView')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16 text-decoration-none">
             <i class="fa-solid fa-qrcode text-lg"></i>
             <span class="text-[9px] font-bold">شرائحي</span>
         </a>
-        <a href="register.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16">
+        <a href="register.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16 text-decoration-none">
             <i class="fa-regular fa-user text-lg"></i>
             <span class="text-[9px] font-bold">حسابي</span>
         </a>
@@ -218,10 +239,8 @@
 
     <!-- 🚀 نافذة الدفع المنبثقة السريعة (Checkout Modal) -->
     <div id="checkoutModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <!-- خلفية ضبابية للإغلاق -->
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer" onclick="closeCheckoutModal()"></div>
         
-        <!-- محتوى النافذة -->
         <div class="bg-white w-[90%] max-w-md rounded-[2rem] p-6 relative z-10 transform translate-y-10 transition-transform duration-300 shadow-2xl border-t-[6px] border-[#00b4d8]" id="checkoutContent">
             <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-800 transition-colors cursor-pointer border-none outline-none">
                 <i class="fa-solid fa-xmark"></i>
@@ -233,7 +252,6 @@
             
             <h3 class="text-xl font-black text-[#1f3a40] mb-6 text-center">تأكيد الشراء السريع ⚡</h3>
             
-            <!-- ملخص الباقة -->
             <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-6 relative overflow-hidden">
                 <div class="absolute -left-4 -top-4 opacity-5 text-6xl" id="modalBgFlag">🌍</div>
                 <div class="relative z-10">
@@ -252,26 +270,41 @@
                 </div>
             </div>
 
-            <!-- منطقة أزرار الإجراء (تتغير حسب تسجيل الدخول) -->
-            <div id="checkoutActionArea">
-                <!-- سيتم حقن الزر هنا عبر الجافاسكربت -->
-            </div>
+            <div id="checkoutActionArea"></div>
         </div>
     </div>
 
-    <!-- 🚀 كود الجافاسكربت للبحث والاتصال بالخادم والتأثيرات -->
+    <!-- 🚀 الجافاسكربت -->
     <script>
-        // رابط الخادم الخاص بك على Render
         const API_URL = 'https://remal-connect.onrender.com';
 
-        // دالة للبحث السريع عند الضغط على الأزرار الصغيرة
+        // نظام التنقل (SPA Routing)
+        function switchView(viewId) {
+            const home = document.getElementById('homeView');
+            const dash = document.getElementById('dashboardView');
+            
+            if (viewId === 'dashboardView') {
+                home.classList.add('hidden');
+                home.classList.remove('block');
+                dash.classList.remove('hidden');
+                dash.classList.add('block');
+                renderMyEsims(); // تحديث لوحة التحكم
+            } else {
+                dash.classList.add('hidden');
+                dash.classList.remove('block');
+                home.classList.remove('hidden');
+                home.classList.add('block');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // دالة للبحث السريع
         function quickSearch(country) {
             document.getElementById('searchInput').value = country;
             fetchPackages(country);
             document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // الاستماع لحدث الضغط على زر البحث
         document.getElementById('searchForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const query = document.getElementById('searchInput').value.trim();
@@ -279,18 +312,16 @@
             document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // دالة جلب الباقات من الخادم
+        // جلب الباقات
         async function fetchPackages(query = '') {
             const container = document.getElementById('packagesContainer');
             const title = document.getElementById('resultsTitle');
             const btn = document.getElementById('searchBtn');
             const originalBtnHtml = btn.innerHTML;
 
-            // تغيير حالة الزر أثناء التحميل
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
             btn.disabled = true;
             
-            // إظهار تأثير التحميل في الحاوية
             container.innerHTML = `
                 <div class="col-span-full flex flex-col items-center justify-center py-16">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-4"></div>
@@ -299,7 +330,6 @@
             `;
 
             try {
-                // الاتصال بمسار البحث في الخادم
                 const response = await fetch(`${API_URL}/api/search-packages?q=${encodeURIComponent(query)}`);
                 const data = await response.json();
 
@@ -313,13 +343,12 @@
                 console.error("Fetch Error:", error);
                 container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم. يرجى التأكد من تشغيل الخادم.</div>`;
             } finally {
-                // إعادة الزر لحالته الطبيعية
                 btn.innerHTML = originalBtnHtml;
                 btn.disabled = false;
             }
         }
 
-        // دالة رسم (حقن) الباقات في الواجهة
+        // رسم الباقات
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
             
@@ -328,7 +357,7 @@
                     <div class="col-span-full text-center py-16 glass-panel rounded-3xl">
                         <i class="fa-solid fa-earth-americas text-4xl text-slate-500 mb-3 block"></i>
                         <p class="text-slate-300 font-bold text-lg">لم نتمكن من العثور على باقات تطابق بحثك.</p>
-                        <p class="text-slate-500 font-semibold text-sm mt-2">جرب البحث باسم دولة أخرى مثل: تركيا، السعودية، أو أوروبا.</p>
+                        <p class="text-slate-500 font-semibold text-sm mt-2">جرب البحث باسم دولة أخرى.</p>
                     </div>`;
                 return;
             }
@@ -369,35 +398,30 @@
                             <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الإجمالي</span>
                             <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">${pkg.price} <span class="text-[10px] text-slate-400">AED</span></span>
                         </div>
-                        <!-- 🚀 زر الشراء المرتبط بالنافذة المنبثقة -->
                         <button onclick="openCheckoutModal('${pkg.id}', '${pkg.country}', '${pkg.flag}', '${pkg.data}', ${pkg.price})" class="bg-gradient-to-l from-[#1f3a40] to-[#2c5364] hover:from-[#15282c] hover:to-[#1f3a40] text-white px-5 py-2.5 rounded-xl font-black text-xs transition-all shadow-md active:scale-95 flex items-center gap-1.5 cursor-pointer border-none">
                             شراء <i class="fa-solid fa-cart-shopping text-[10px]"></i>
                         </button>
                     </div>
                 </div>`;
             });
-            
             container.innerHTML = html;
         }
 
-        // 🚀 دوال التحكم في نافذة الدفع
+        // نظام الشراء والدفع
         let currentSelectedPackage = null;
 
         function openCheckoutModal(pkgId, country, flag, data, price) {
-            currentSelectedPackage = { pkgId, country, data, price };
+            currentSelectedPackage = { pkgId, country, flag, data, price };
             
-            // تعبئة البيانات في النافذة
             document.getElementById('modalCountry').innerText = `${country} ${flag}`;
             document.getElementById('modalBgFlag').innerText = flag;
             document.getElementById('modalData').innerText = data;
             document.getElementById('modalPrice').innerText = price;
 
-            // التحقق من تسجيل الدخول من خلال LocalStorage
             const currentUser = localStorage.getItem('rimal_current_user');
             const actionArea = document.getElementById('checkoutActionArea');
 
             if (currentUser) {
-                // المستخدم مسجل الدخول -> إظهار زر الدفع 
                 actionArea.innerHTML = `
                     <div class="flex items-center justify-center gap-2 mb-3 text-[10px] text-emerald-600 font-bold bg-emerald-50 py-1.5 rounded-lg border border-emerald-100">
                         <i class="fa-solid fa-lock"></i> دفع إلكتروني آمن ومشفّر
@@ -407,7 +431,6 @@
                     </button>
                 `;
             } else {
-                // المستخدم غير مسجل الدخول -> توجيهه للتسجيل
                 actionArea.innerHTML = `
                     <div class="text-center mb-3">
                         <span class="text-xs font-bold text-slate-500">يجب تسجيل الدخول لإتمام عملية الشراء</span>
@@ -418,7 +441,6 @@
                 `;
             }
 
-            // إظهار النافذة بتأثير ناعم
             const modal = document.getElementById('checkoutModal');
             const content = document.getElementById('checkoutContent');
             modal.classList.remove('hidden');
@@ -433,12 +455,9 @@
             const content = document.getElementById('checkoutContent');
             modal.classList.add('opacity-0');
             content.classList.add('translate-y-10');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
-        // دالة محاكاة الدفع والاتصال بالخادم
         async function processPayment() {
             const btn = document.getElementById('payNowBtn');
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري إصدار الشريحة...';
@@ -446,10 +465,8 @@
             btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             try {
-                // استخراج إيميل المستخدم من الجلسة
                 const userObj = JSON.parse(localStorage.getItem('rimal_current_user'));
                 
-                // إرسال الطلب لخادمك لإنشاء الـ eSIM
                 const response = await fetch(`${API_URL}/api/purchase-esim`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -462,15 +479,22 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // نجاح! سنعرض رسالة نجاح 
                     btn.innerHTML = '<i class="fa-solid fa-check-circle text-lg"></i> تم الشراء بنجاح!';
                     btn.classList.replace('from-[#800000]', 'from-emerald-500');
                     btn.classList.replace('to-[#a30000]', 'to-emerald-600');
                     
+                    // 🚀 Masterstroke: تخزين الشريحة محلياً لتدعم العرض بدون إنترنت (Offline Access)
+                    saveEsimLocally({
+                        ...currentSelectedPackage,
+                        iccid: data.iccid || "8900000000000000000",
+                        qrUrl: data.qr_code_url || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SM-DP+Address:LPA:1$smdp.io$${data.iccid}`,
+                        date: new Date().toLocaleDateString('ar-AE')
+                    });
+
                     setTimeout(() => {
                         closeCheckoutModal();
-                        alert('🎉 مبروك! تم إصدار شريحتك بنجاح. سنقوم لاحقاً بإنشاء لوحة "شرائحي" لعرض كود الـ QR الخاص بك هنا.');
-                    }, 1500);
+                        switchView('dashboardView'); // الانتقال السلس للوحة التحكم
+                    }, 1200);
                 } else {
                     alert('⚠️ فشل في إصدار الشريحة: ' + data.message);
                     btn.innerHTML = `دفع ${currentSelectedPackage.price} AED الآن`;
@@ -484,7 +508,88 @@
             }
         }
 
-        // تأثير الماوس 3D للهاتف (لشاشات الديسكتوب فقط)
+        // 🚀 نظام لوحة التحكم للأوفلاين (My eSIMs Dashboard)
+        function saveEsimLocally(esimData) {
+            let esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
+            esims.unshift(esimData); // إضافة الجديد في الأعلى
+            localStorage.setItem('rimal_my_esims', JSON.stringify(esims));
+        }
+
+        function renderMyEsims() {
+            const container = document.getElementById('myEsimsContainer');
+            const esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
+
+            if (esims.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-16 glass-panel rounded-3xl">
+                        <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10 text-[#00b4d8] text-2xl"><i class="fa-solid fa-box-open"></i></div>
+                        <p class="text-white font-black text-xl mb-2">لا توجد شرائح حالياً</p>
+                        <p class="text-slate-400 font-semibold text-sm">اشترِ باقتك الأولى وسنقوم بحفظها هنا للوصول السريع حتى بدون إنترنت!</p>
+                        <button onclick="switchView('homeView')" class="mt-6 bg-[#00b4d8] hover:bg-cyan-500 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors border-none cursor-pointer">
+                            تصفح الباقات
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            esims.forEach((esim) => {
+                html += `
+                <div class="glass-card-light rounded-3xl p-6 relative overflow-hidden flex flex-col md:flex-row gap-6 shadow-xl border-t-[4px] border-[#00b4d8]">
+                    <!-- منطقة الـ QR Code (يسار أو أعلى) -->
+                    <div class="w-full md:w-1/3 flex flex-col items-center justify-center border-b md:border-b-0 md:border-l border-slate-200 pb-6 md:pb-0 md:pl-6">
+                        <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 mb-4 w-40 h-40">
+                            <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
+                        </div>
+                        <button class="w-full bg-[#1f3a40] text-white py-2.5 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border-none cursor-pointer hover:bg-slate-800 transition-colors">
+                            <i class="fa-solid fa-bolt"></i> تثبيت ذكي (iOS/Android)
+                        </button>
+                    </div>
+
+                    <!-- تفاصيل الشريحة (يمين) -->
+                    <div class="w-full md:w-2/3 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <span class="inline-block bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-1 rounded text-[9px] font-black mb-2">جاهز للتفعيل ✅</span>
+                                    <h3 class="text-2xl font-black text-[#1f3a40] flex items-center gap-2">${esim.country} ${esim.flag}</h3>
+                                </div>
+                                <div class="text-left">
+                                    <span class="block text-[10px] text-slate-400 font-bold mb-0.5">تاريخ الشراء</span>
+                                    <span class="block text-xs font-bold text-slate-700" dir="ltr">${esim.date}</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3 mb-6">
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <span class="block text-[10px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-database text-[#00b4d8] ml-1"></i>البيانات</span>
+                                    <span class="block font-black text-sm text-[#1f3a40]" dir="ltr">${esim.data}</span>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                    <span class="block text-[10px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-sim-card text-[#00b4d8] ml-1"></i>ICCID</span>
+                                    <span class="block font-black text-xs text-[#1f3a40] tracking-wider truncate" dir="ltr">${esim.iccid}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- التثبيت اليدوي -->
+                        <div class="bg-amber-50 p-3 rounded-xl border border-amber-100">
+                            <p class="text-[10px] text-amber-800 font-bold mb-2"><i class="fa-solid fa-circle-info"></i> إذا لم تتمكن من مسح الرمز، استخدم التثبيت اليدوي:</p>
+                            <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-amber-100 shadow-sm">
+                                <span class="text-[10px] font-black text-slate-600 truncate mr-2" dir="ltr">LPA:1$smdp.io$${esim.iccid}</span>
+                                <button class="bg-amber-100 hover:bg-amber-200 text-amber-700 w-6 h-6 rounded flex items-center justify-center border-none cursor-pointer transition-colors" title="نسخ الكود">
+                                    <i class="fa-regular fa-copy text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // تأثير الماوس 3D للهاتف 
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.perspective-container');
             const phone = document.getElementById('phoneMockup');
@@ -494,19 +599,15 @@
                     const rect = container.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -15; 
-                    const rotateY = ((x - centerX) / centerX) * 15;
+                    const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -15; 
+                    const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 15;
                     phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 });
-                
                 container.addEventListener('mouseleave', () => {
                     phone.style.transform = `rotateX(0deg) rotateY(0deg)`;
                 });
             }
 
-            // جلب الباقات الافتراضية عند تحميل الصفحة
             fetchPackages();
         });
     </script>
