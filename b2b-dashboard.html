@@ -104,7 +104,7 @@
     <header class="sticky top-0 w-full z-50 glass-panel">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4 cursor-pointer" onclick="window.location.href='index.html'">
                     <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)]">
                         <i class="fa-solid fa-briefcase text-[#091016] text-2xl"></i>
                     </div>
@@ -207,7 +207,7 @@
                                 <select id="bulkCountry" class="w-full premium-select rounded-xl p-3.5 pr-11 text-sm font-bold" required onchange="updateWholesalePrice()">
                                     <option value="" disabled selected>اختر الوجهة...</option>
                                     <option value="Turkey" data-price="25">تركيا (السعر للوكيل: 25 AED)</option>
-                                    <option value="Europe" data-price="60">أوروبا המوحدة (السعر للوكيل: 60 AED)</option>
+                                    <option value="Europe" data-price="60">أوروبا الموحدة (السعر للوكيل: 60 AED)</option>
                                     <option value="Saudi" data-price="18">السعودية (السعر للوكيل: 18 AED)</option>
                                 </select>
                             </div>
@@ -364,7 +364,7 @@
             }
         }
 
-        // 🚀 Masterstroke: الحساب الديناميكي للتكلفة
+        // 🚀 الحساب الديناميكي للتكلفة
         function updateWholesalePrice() {
             const countrySelect = document.getElementById('bulkCountry');
             const qty = parseInt(document.getElementById('bulkQty').value) || 1;
