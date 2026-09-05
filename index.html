@@ -117,14 +117,12 @@
                 </div>
 
                 <div class="flex items-center gap-3 md:gap-4" id="headerAuthArea">
-                    <!-- 🚀 محول العملات الديناميكي -->
                     <select id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-white/10 border border-white/20 text-white text-xs font-bold py-1 px-2 rounded-lg outline-none cursor-pointer">
                         <option value="AED" class="text-black">AED</option>
                         <option value="SAR" class="text-black">SAR</option>
                         <option value="USD" class="text-black">USD</option>
                         <option value="EUR" class="text-black">EUR</option>
                     </select>
-
                     <div class="h-5 w-px bg-white/10 hidden md:block"></div>
                     <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95 text-decoration-none">
                         <i class="fa-regular fa-user text-[#00b4d8]"></i> <span class="hidden md:inline">دخول / تسجيل</span>
@@ -158,7 +156,6 @@
                         وداعاً لفواتير التجوال المزعجة. اختر وجهتك، امسح كود الـ QR، واستمتع بإنترنت فائق السرعة فور هبوط طائرتك.
                     </p>
 
-                    <!-- شريط البحث -->
                     <form id="searchForm" class="glass-panel p-2 rounded-2xl md:rounded-[2rem] max-w-lg mx-auto lg:mx-0 flex items-center relative z-20 shadow-[0_20px_50px_rgba(0,180,216,0.1)] focus-within:border-[#00b4d8]/50 transition-colors">
                         <i class="fa-solid fa-location-dot text-[#00b4d8] pl-3 md:pl-4 pr-2 text-sm md:text-lg"></i>
                         <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: تركيا، أوروبا...)" class="flex-1 bg-transparent border-none outline-none text-xs md:text-base font-bold text-white placeholder-slate-400 h-10 md:h-12 w-full">
@@ -179,7 +176,6 @@
                     </button>
                 </div>
 
-                <!-- هاتف تفاعلي 3D -->
                 <div class="hidden lg:block w-full lg:w-1/2 relative perspective-container h-[650px] flex items-center justify-center">
                     <div class="relative w-[320px] mx-auto animate-float phone-3d" id="phoneMockup">
                         <div class="bg-slate-800 rounded-[3rem] p-3 shadow-[0_30px_60px_rgba(0,180,216,0.2)] border-[5px] border-slate-700 relative z-10 bg-gradient-to-b from-slate-700 to-slate-900">
@@ -218,27 +214,26 @@
                     <p class="text-xs md:text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR في ثوانٍ، وانطلق.</p>
                 </div>
             </div>
-            <!-- حاوية الباقات -->
             <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6"></div>
         </section>
     </div>
 
     <!-- ========================================== -->
-    <!-- 🌟 شاشة لوحة تحكم شرائحي (Dashboard & Referrals) -->
+    <!-- 🌟 شاشة لوحة تحكم شرائحي (Dashboard View) -->
     <!-- ========================================== -->
     <div id="dashboardView" class="hidden transition-opacity duration-300">
         <main class="pt-28 md:pt-36 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/10 pb-6 mb-8 gap-4">
                 <div>
                     <h2 class="text-2xl md:text-4xl font-black text-white mb-2">شرائحي ومحفظتي 📱</h2>
-                    <p class="text-slate-400 text-sm">إدارة الباقات، تتبع الاستهلاك الحي، ومشاركة كود الخصم.</p>
+                    <p class="text-slate-400 text-sm">إدارة الباقات، تتبع الاستهلاك الحي، وشحن الرصيد.</p>
                 </div>
                 <button onclick="switchView('homeView')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-xs font-bold transition-colors border border-white/20 cursor-pointer">
                     <i class="fa-solid fa-arrow-right"></i> عودة للرئيسية
                 </button>
             </div>
 
-            <!-- 🚀 Masterstroke: نظام الإحالة (Give 10, Get 10) -->
+            <!-- 🚀 نظام الإحالة (Give 10, Get 10) -->
             <div class="bg-gradient-to-r from-amber-500 to-orange-400 rounded-3xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="absolute -right-10 -bottom-10 opacity-20"><i class="fa-solid fa-gift text-9xl"></i></div>
                 <div class="relative z-10 text-white text-center md:text-right">
@@ -293,9 +288,7 @@
             <div class="w-14 h-14 bg-cyan-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00b4d8] shadow-inner" id="modalIconContainer">
                 <i class="fa-solid fa-cart-arrow-down text-2xl" id="modalMainIcon"></i>
             </div>
-            
             <h3 class="text-xl font-black text-[#1f3a40] mb-6 text-center" id="modalMainTitle">تأكيد الشراء السريع ⚡</h3>
-            
             <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-6 relative overflow-hidden">
                 <div class="absolute -left-4 -top-4 opacity-5 text-6xl" id="modalBgFlag">🌍</div>
                 <div class="relative z-10">
@@ -321,18 +314,59 @@
         </div>
     </div>
 
-    <!-- 🚀 نافذة فحص توافق الجهاز -->
+    <!-- 🚀 نافذة شحن الرصيد (Top-Up Modal) -->
+    <div id="topupModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer" onclick="closeTopupModal()"></div>
+        <div class="bg-white w-[90%] max-w-md rounded-[2rem] p-6 relative z-10 transform translate-y-10 transition-transform duration-300 shadow-2xl border-t-[6px] border-[#00b4d8]" id="topupContent">
+            <button onclick="closeTopupModal()" class="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors border-none cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-14 h-14 bg-[#00b4d8]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00b4d8]">
+                <i class="fa-solid fa-bolt text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-black text-[#1f3a40] mb-2 text-center">شحن رصيد البيانات ⚡</h3>
+            <p class="text-center text-xs font-bold text-slate-500 mb-6">الشريحة: <span id="topupIccid" class="text-[#1f3a40]" dir="ltr"></span></p>
+            
+            <div class="space-y-3 mb-6">
+                <label class="flex justify-between items-center bg-slate-50 border border-slate-200 p-3 rounded-xl cursor-pointer hover:border-[#00b4d8] transition-colors">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="topupOption" value="1|15" class="accent-[#00b4d8] w-4 h-4 cursor-pointer">
+                        <span class="font-black text-[#1f3a40]">1 GB</span>
+                    </div>
+                    <span class="font-bold text-sm text-[#00b4d8]">15 AED</span>
+                </label>
+                <label class="flex justify-between items-center bg-slate-50 border border-slate-200 p-3 rounded-xl cursor-pointer hover:border-[#00b4d8] transition-colors">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="topupOption" value="3|35" checked class="accent-[#00b4d8] w-4 h-4 cursor-pointer">
+                        <span class="font-black text-[#1f3a40]">3 GB</span>
+                    </div>
+                    <span class="font-bold text-sm text-[#00b4d8]">35 AED</span>
+                </label>
+                <label class="flex justify-between items-center bg-slate-50 border border-slate-200 p-3 rounded-xl cursor-pointer hover:border-[#00b4d8] transition-colors">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="topupOption" value="5|50" class="accent-[#00b4d8] w-4 h-4 cursor-pointer">
+                        <span class="font-black text-[#1f3a40]">5 GB</span>
+                    </div>
+                    <span class="font-bold text-sm text-[#00b4d8]">50 AED</span>
+                </label>
+            </div>
+            
+            <button id="confirmTopupBtn" onclick="confirmTopup()" class="w-full bg-gradient-to-l from-[#00b4d8] to-[#007790] hover:from-[#0096b4] hover:to-[#005f73] text-white font-black py-3.5 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer">
+                دفع وتفعيل فوراً <i class="fa-solid fa-bolt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 🚀 نافذة فحص التوافقية -->
     <div id="compatibilityModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm cursor-pointer" onclick="closeCompatibilityModal()"></div>
         <div class="bg-white w-[90%] max-w-sm rounded-[2rem] p-6 relative z-10 transform translate-y-10 transition-transform duration-300 shadow-2xl border-t-[6px] border-[#1f3a40]" id="compatibilityContent">
-            <button onclick="closeCompatibilityModal()" class="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 hover:text-slate-800 transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeCompatibilityModal()" class="absolute top-4 left-4 w-8 h-8 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
             <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#1f3a40]"><i class="fa-solid fa-mobile-screen text-2xl"></i></div>
             <h3 class="text-lg font-black text-[#1f3a40] mb-2 text-center">هل هاتفك يدعم الـ eSIM؟</h3>
             <p class="text-xs text-slate-500 font-semibold text-center mb-6 leading-relaxed">ابحث عن نوع هاتفك أدناه للتأكد من توافقه.</p>
             <form id="checkDeviceForm" onsubmit="checkDeviceCompatibility(event)">
                 <div class="relative mb-4">
                     <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="deviceInput" required placeholder="مثال: iPhone 13, Galaxy S22..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] transition-all text-left" dir="ltr">
+                    <input type="text" id="deviceInput" required placeholder="مثال: iPhone 13..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] transition-all text-left" dir="ltr">
                 </div>
                 <button type="submit" class="w-full bg-[#1f3a40] hover:bg-slate-800 text-white font-black py-3 rounded-xl shadow-md transition-all active:scale-95 text-sm cursor-pointer border-none">افحص جهازي</button>
             </form>
@@ -362,7 +396,7 @@
             }
         });
 
-        // --- 🚀 Dynamic Currency Converter ---
+        // --- 🚀 Currency Converter ---
         const exchangeRates = { 'AED': 1, 'SAR': 1.02, 'USD': 0.27, 'EUR': 0.25 };
         let currentCurrency = 'AED';
 
@@ -378,17 +412,14 @@
             });
         }
 
-        // --- 🚀 Show Toast ---
+        // --- 🚀 Toast Notification ---
         function showToast(message, isError = false) {
             const toast = document.getElementById('toastMsg');
             const icon = document.getElementById('toastIcon');
             document.getElementById('toastText').innerText = message;
             
-            if(isError) {
-                icon.className = 'fa-solid fa-circle-xmark text-red-400 text-lg';
-            } else {
-                icon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
-            }
+            if(isError) { icon.className = 'fa-solid fa-circle-xmark text-red-400 text-lg'; } 
+            else { icon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg'; }
 
             toast.classList.remove('opacity-0', '-translate-y-24');
             toast.classList.add('opacity-100', 'translate-y-0');
@@ -398,7 +429,7 @@
             }, 3000);
         }
 
-        // --- 🚀 Auth & Header UI ---
+        // --- 🚀 Header UI ---
         function updateAuthUI() {
             const authArea = document.getElementById('headerAuthArea');
             const currentUserStr = localStorage.getItem('rimal_current_user');
@@ -406,25 +437,16 @@
             if (currentUserStr) {
                 const user = JSON.parse(currentUserStr);
                 const walletBalance = user.points ? (user.points / 10).toFixed(2) : '50.00'; 
-                
                 authArea.innerHTML = `
-                    <!-- محول العملات -->
                     <select id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-white/10 border border-white/20 text-white text-xs font-bold py-1 px-2 rounded-lg outline-none cursor-pointer mr-2">
-                        <option value="AED" class="text-black">AED</option>
-                        <option value="SAR" class="text-black">SAR</option>
-                        <option value="USD" class="text-black">USD</option>
-                        <option value="EUR" class="text-black">EUR</option>
+                        <option value="AED" class="text-black">AED</option><option value="SAR" class="text-black">SAR</option><option value="USD" class="text-black">USD</option><option value="EUR" class="text-black">EUR</option>
                     </select>
-
                     <button onclick="switchView('dashboardView')" class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-[#00b4d8] transition-colors bg-transparent border-none cursor-pointer">
                         <i class="fa-solid fa-qrcode"></i> شرائحي
                     </button>
-                    
                     <div class="hidden sm:flex bg-amber-500/10 border border-amber-500/20 text-amber-400 px-3 py-1.5 rounded-full items-center gap-1.5 ml-2">
-                        <i class="fa-solid fa-wallet text-xs"></i>
-                        <span class="text-[10px] font-black tracking-wider" dir="ltr">${walletBalance} AED</span>
+                        <i class="fa-solid fa-wallet text-xs"></i><span class="text-[10px] font-black tracking-wider" dir="ltr">${walletBalance} AED</span>
                     </div>
-
                     <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all flex items-center gap-2 text-decoration-none">
                         <div class="w-6 h-6 bg-[#00b4d8] rounded-full flex items-center justify-center text-white text-xs shrink-0">${user.fullName ? user.fullName.charAt(0) : 'U'}</div>
                         <span class="hidden md:inline">${user.fullName ? user.fullName.split(' ')[0] : 'حسابي'}</span>
@@ -434,7 +456,7 @@
             }
         }
 
-        // --- 🚀 SPA Navigation ---
+        // --- 🚀 Navigation ---
         function switchView(viewId) {
             const home = document.getElementById('homeView');
             const dash = document.getElementById('dashboardView');
@@ -468,14 +490,12 @@
             const btn = document.getElementById('searchBtn');
             const originalBtnHtml = btn.innerHTML;
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
             container.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-16"><div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-4"></div><p class="text-slate-400 font-bold text-sm">جاري البحث...</p></div>`;
 
             try {
                 const response = await fetch(`${API_URL}/api/search-packages?q=${encodeURIComponent(query)}`);
                 const data = await response.json();
-
                 if (data.success) {
                     title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8]">${query}</span>` : 'الوجهات الأكثر طلباً 🔥';
                     renderPackages(data.packages);
@@ -492,7 +512,7 @@
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
             if (packages.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-16 glass-panel rounded-3xl"><i class="fa-solid fa-earth-americas text-4xl text-slate-500 mb-3 block"></i><p class="text-slate-300 font-bold text-lg">لا توجد نتائج مطابقة.</p></div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-16 glass-panel rounded-3xl"><i class="fa-solid fa-earth-americas text-4xl text-slate-500 mb-3 block"></i><p class="text-slate-300 font-bold text-lg">لا توجد نتائج.</p></div>`;
                 return;
             }
 
@@ -504,7 +524,6 @@
                 html += `
                 <div class="glass-card-light rounded-3xl p-5 md:p-6 relative overflow-hidden flex flex-col animate-fade-in-up" style="animation-delay: ${delay}ms;">
                     <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-bl from-cyan-100 to-transparent rounded-bl-full opacity-50 z-0 pointer-events-none"></div>
-                    
                     <div class="flex items-start justify-between mb-5 relative z-10">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl">${pkg.flag}</div>
@@ -515,7 +534,6 @@
                         </div>
                         ${hotBadge}
                     </div>
-
                     <div class="space-y-2.5 mb-6 relative z-10 flex-1">
                         <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-database text-[#00b4d8] ml-2"></i>البيانات</span>
@@ -526,17 +544,13 @@
                             <span class="font-black text-sm text-[#1f3a40]">${pkg.validity}</span>
                         </div>
                     </div>
-
                     <div class="flex items-center justify-between border-t border-slate-100 pt-4 relative z-10">
                         <div class="text-right">
                             <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الإجمالي</span>
                             <span class="block font-black text-xl text-[#00b4d8] price-val" data-aed="${pkg.price}" dir="ltr">${pkg.price} <span class="text-[10px] text-slate-400">AED</span></span>
                         </div>
                         <div class="flex gap-2">
-                            <!-- 🚀 Masterstroke: زر الهدية -->
-                            <button onclick="openCheckoutModal('${pkg.id}', '${pkg.country}', '${pkg.flag}', '${pkg.data}', ${pkg.price}, true)" class="bg-amber-100 hover:bg-amber-200 text-amber-600 w-10 h-10 rounded-xl flex items-center justify-center transition-colors border-none cursor-pointer shadow-sm" title="إرسال كهدية">
-                                <i class="fa-solid fa-gift"></i>
-                            </button>
+                            <button onclick="openCheckoutModal('${pkg.id}', '${pkg.country}', '${pkg.flag}', '${pkg.data}', ${pkg.price}, true)" class="bg-amber-100 hover:bg-amber-200 text-amber-600 w-10 h-10 rounded-xl flex items-center justify-center transition-colors border-none cursor-pointer shadow-sm" title="إرسال كهدية"><i class="fa-solid fa-gift"></i></button>
                             <button onclick="openCheckoutModal('${pkg.id}', '${pkg.country}', '${pkg.flag}', '${pkg.data}', ${pkg.price}, false)" class="bg-gradient-to-l from-[#1f3a40] to-[#2c5364] hover:from-[#15282c] hover:to-[#1f3a40] text-white px-5 py-2.5 rounded-xl font-black text-xs transition-all shadow-md active:scale-95 flex items-center gap-1.5 cursor-pointer border-none">
                                 شراء <i class="fa-solid fa-cart-shopping text-[10px]"></i>
                             </button>
@@ -545,10 +559,10 @@
                 </div>`;
             });
             container.innerHTML = html;
-            convertCurrency(); // تطبيق العملة الحالية
+            convertCurrency();
         }
 
-        // --- 🚀 نظام الدفع الذكي (Checkout) ---
+        // --- 🚀 الدفع (Checkout Modal) ---
         let currentSelectedPackage = null;
         let isGiftPurchase = false;
 
@@ -563,7 +577,6 @@
             const priceVal = (price * exchangeRates[currentCurrency]).toFixed(2);
             document.getElementById('modalPrice').innerHTML = `${priceVal} <span class="text-[10px] text-slate-400">${currentCurrency}</span>`;
 
-            // تغيير الواجهة إذا كانت هدية
             if(isGift) {
                 document.getElementById('modalMainTitle').innerText = 'إرسال باقة كهدية 🎁';
                 document.getElementById('modalIconContainer').className = 'w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-amber-500 shadow-inner';
@@ -589,12 +602,7 @@
                     </button>
                 `;
             } else {
-                actionArea.innerHTML = `
-                    <div class="text-center mb-3"><span class="text-xs font-bold text-slate-500">يجب تسجيل الدخول لإتمام العملية</span></div>
-                    <a href="register.html" class="w-full bg-[#00b4d8] hover:bg-cyan-500 text-white font-black py-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">
-                        تسجيل الدخول / فتح حساب <i class="fa-regular fa-user"></i>
-                    </a>
-                `;
+                actionArea.innerHTML = `<div class="text-center mb-3"><span class="text-xs font-bold text-slate-500">يجب تسجيل الدخول لإتمام العملية</span></div><a href="register.html" class="w-full bg-[#00b4d8] hover:bg-cyan-500 text-white font-black py-4 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">تسجيل الدخول / فتح حساب <i class="fa-regular fa-user"></i></a>`;
             }
 
             const modal = document.getElementById('checkoutModal');
@@ -614,7 +622,6 @@
             const btn = document.getElementById('payNowBtn');
             const originalText = btn.innerHTML;
             
-            // إذا كانت هدية يجب التأكد من الإيميل
             let targetEmail = JSON.parse(localStorage.getItem('rimal_current_user')).email;
             if(isGiftPurchase) {
                 const giftMail = document.getElementById('giftEmailInput').value.trim();
@@ -631,7 +638,6 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ packageId: currentSelectedPackage.pkgId, customerEmail: targetEmail })
                 });
-
                 const data = await response.json();
 
                 if (data.success) {
@@ -639,14 +645,13 @@
                     btn.classList.replace('from-[#800000]', 'from-emerald-500'); btn.classList.replace('to-[#a30000]', 'to-emerald-600');
                     
                     if(!isGiftPurchase) {
-                        // إضافة بيانات وهمية للاستهلاك الحي (Mock Data Usage)
                         saveEsimLocally({
                             ...currentSelectedPackage,
-                            iccid: data.iccid || "8900000000000000000",
+                            iccid: data.iccid || "89" + Math.floor(Math.random() * 1000000000000000),
                             qrUrl: data.qr_code_url || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SM-DP+Address:LPA:1$smdp.io$${data.iccid}`,
                             date: new Date().toLocaleDateString('ar-AE'),
-                            totalBytes: parseInt(currentSelectedPackage.data) * 1024, // بالميجا
-                            usedBytes: Math.floor(Math.random() * 2048) // استهلاك وهمي للمحاكاة
+                            totalBytes: parseInt(currentSelectedPackage.data) * 1024,
+                            usedBytes: Math.floor(Math.random() * 2048)
                         });
                         setTimeout(() => { closeCheckoutModal(); switchView('dashboardView'); showToast('تمت إضافة الشريحة للوحة التحكم'); }, 1200);
                     } else {
@@ -662,7 +667,53 @@
             }
         }
 
-        // --- 🚀 نظام لوحة التحكم المتقدم (Smart Dashboard) ---
+        // --- 🚀 نظام الشحن السريع (Top-Up Modal) ---
+        let currentTopupIccid = '';
+
+        function openTopupModal(iccid) {
+            currentTopupIccid = iccid;
+            document.getElementById('topupIccid').innerText = iccid;
+            const modal = document.getElementById('topupModal');
+            const content = document.getElementById('topupContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
+        }
+
+        function closeTopupModal() {
+            const modal = document.getElementById('topupModal');
+            const content = document.getElementById('topupContent');
+            modal.classList.add('opacity-0'); content.classList.add('translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        function confirmTopup() {
+            const btn = document.getElementById('confirmTopupBtn');
+            const selectedOption = document.querySelector('input[name="topupOption"]:checked').value;
+            const [gb, price] = selectedOption.split('|');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الشحن...';
+            btn.disabled = true;
+
+            // محاكاة الاتصال بالـ API לשحن الرصيد
+            setTimeout(() => {
+                let esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
+                const esimIndex = esims.findIndex(e => e.iccid === currentTopupIccid);
+                
+                if (esimIndex > -1) {
+                    esims[esimIndex].totalBytes += parseInt(gb) * 1024; // زيادة الرصيد
+                    localStorage.setItem('rimal_my_esims', JSON.stringify(esims));
+                    
+                    closeTopupModal();
+                    showToast(`تم شحن ${gb}GB بنجاح!`);
+                    renderMyEsims(); // إعادة رسم البطاقات لتحديث العداد
+                }
+                
+                btn.innerHTML = 'دفع وتفعيل فوراً <i class="fa-solid fa-bolt"></i>';
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        // --- 🚀 لوحة التحكم المتقدمة (Dashboard) ---
         function copyReferralCode() {
             const code = document.getElementById('referralCode').innerText;
             navigator.clipboard.writeText(code).then(() => { showToast('تم نسخ كود الإحالة!'); });
@@ -703,7 +754,7 @@
             esims.forEach((esim) => {
                 const lpaString = `LPA:1$smdp.io$${esim.iccid}`;
                 
-                // 🚀 Masterstroke: حساب الاستهلاك الحي (Live Data Tracking UI)
+                // حساب الاستهلاك الحي
                 let totalMB = esim.totalBytes || (parseInt(esim.data) * 1024);
                 let usedMB = esim.usedBytes || 0;
                 let percentage = (usedMB / totalMB) * 100;
@@ -711,7 +762,6 @@
                 
                 html += `
                 <div class="glass-card-light rounded-3xl p-5 md:p-6 relative overflow-hidden flex flex-col md:flex-row gap-6 shadow-xl border-t-[4px] border-[#00b4d8]">
-                    
                     <div class="w-full md:w-1/3 flex flex-col items-center justify-center border-b md:border-b-0 md:border-l border-slate-200 pb-6 md:pb-0 md:pl-6">
                         <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-100 mb-4 w-40 h-40">
                             <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
@@ -738,13 +788,13 @@
                             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-4">
                                 <div class="flex justify-between text-xs font-bold mb-2">
                                     <span class="text-[#1f3a40]">استهلاك البيانات</span>
-                                    <span class="text-slate-500" dir="ltr">${(usedMB/1024).toFixed(2)} GB / ${esim.data}</span>
+                                    <span class="text-slate-500" dir="ltr">${(usedMB/1024).toFixed(2)} GB / ${(totalMB/1024).toFixed(2)} GB</span>
                                 </div>
                                 <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
                                     <div class="${progressColor} h-2.5 rounded-full progress-bar-fill" style="width: 0%" data-width="${percentage}%"></div>
                                 </div>
                                 <div class="mt-3 flex justify-end">
-                                    <button onclick="showToast('سيتم توجيهك لشراء باقة إضافية قريباً')" class="bg-white border border-[#00b4d8] text-[#00b4d8] hover:bg-[#00b4d8] hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors cursor-pointer flex items-center gap-1">
+                                    <button onclick="openTopupModal('${esim.iccid}')" class="bg-white border border-[#00b4d8] text-[#00b4d8] hover:bg-[#00b4d8] hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors cursor-pointer flex items-center gap-1">
                                         <i class="fa-solid fa-bolt"></i> شحن الرصيد (Top-Up)
                                     </button>
                                 </div>
@@ -769,7 +819,6 @@
             });
             container.innerHTML = html;
 
-            // تفعيل أنيميشن شريط التقدم بعد الرسم
             setTimeout(() => {
                 document.querySelectorAll('.progress-bar-fill').forEach(bar => {
                     bar.style.width = bar.getAttribute('data-width');
@@ -777,17 +826,13 @@
             }, 100);
         }
 
-        // --- 🚀 التوافقية (Compatibility Modal) ---
+        // --- 🚀 التوافقية ---
         function openCompatibilityModal() {
             document.getElementById('compatibilityModal').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('compatibilityModal').classList.remove('opacity-0');
-                document.getElementById('compatibilityContent').classList.remove('translate-y-10');
-            }, 10);
+            setTimeout(() => { document.getElementById('compatibilityModal').classList.remove('opacity-0'); document.getElementById('compatibilityContent').classList.remove('translate-y-10'); }, 10);
         }
         function closeCompatibilityModal() {
-            document.getElementById('compatibilityModal').classList.add('opacity-0');
-            document.getElementById('compatibilityContent').classList.add('translate-y-10');
+            document.getElementById('compatibilityModal').classList.add('opacity-0'); document.getElementById('compatibilityContent').classList.add('translate-y-10');
             setTimeout(() => { document.getElementById('compatibilityModal').classList.add('hidden'); document.getElementById('deviceResult').classList.add('hidden'); }, 300);
         }
         function checkDeviceCompatibility(e) {
