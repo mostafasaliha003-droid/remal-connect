@@ -3,166 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>رمال كونّكت | Remal Connect - إنترنت يطير بيك! 🚀</title>
+    <title>Remal Connect | إنترنت عالمي في جيبك 🌍</title>
     
+    <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         :root {
             --primary: #1f3a40;        
             --accent-cyan: #00b4d8;    
-            --bg-light: #f4f7f6;     
-            --text-main: #2d3748;
+            --tech-dark: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-light); color: var(--text-main); overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-        
-        /* 🚀 Masterstroke: Ultimate Glassmorphism */
-        .glass-panel { 
-            background: rgba(255, 255, 255, 0.7); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255,255,255,0.8); 
-            box-shadow: 0 8px 32px 0 rgba(31, 58, 64, 0.05);
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--tech-dark); 
+            color: white; 
+            overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent;
         }
-        
-        .brand-gradient { background: linear-gradient(135deg, var(--primary), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* 🚀 Masterstroke: Smooth Card Transitions */
-        .hover-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .hover-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 180, 216, 0.12); border-color: rgba(0, 180, 216, 0.3); }
-        
+
+        /* 🚀 Masterstroke: خلفية شبكة اتصالات */
+        .network-bg {
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 180, 216, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(31, 58, 64, 0.5), transparent 25%);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* الزجاج التقني المتقدم */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* تأثيرات البطاقات الفاتحة */
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .glass-card-light:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 180, 216, 0.15);
+            border-color: rgba(0, 180, 216, 0.3);
+        }
+
+        /* أنيميشن الطفو والنبض */
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        @keyframes glowPulse { 0% { box-shadow: 0 0 10px rgba(0, 180, 216, 0.2); } 50% { box-shadow: 0 0 25px rgba(0, 180, 216, 0.6); } 100% { box-shadow: 0 0 10px rgba(0, 180, 216, 0.2); } }
+        .btn-glow { animation: glowPulse 2s infinite; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* 🚀 Masterstroke: 3D Phone Perspective */
+        
         .perspective-container { perspective: 1000px; }
         .phone-3d { transition: transform 0.1s ease-out; transform-style: preserve-3d; }
-        
-        /* Floating Animation */
-        @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-        .animate-float { animation: floating 6s ease-in-out infinite; }
-
-        /* SVG Background */
-        .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300b4d8' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
     </style>
 </head>
-<body class="bg-pattern pb-24 md:pb-0">
+<body class="network-bg min-h-screen flex flex-col pb-20 md:pb-0">
 
-    <!-- 🌟 شريط علوي -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-white/50 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex items-center justify-between">
-            <div class="flex items-center gap-2 md:gap-3 cursor-pointer group">
-                <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#1f3a40] to-[#00b4d8] rounded-xl flex items-center justify-center shadow-lg transform -rotate-3 group-hover:rotate-0 transition-transform">
-                    <i class="fa-solid fa-sim-card text-white text-lg md:text-xl"></i>
+    <!-- 🚀 الهيدر (Navbar) -->
+    <header class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <div class="flex-shrink-0 flex items-center gap-2 md:gap-3 cursor-pointer">
+                    <div class="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-lg md:rounded-xl flex items-center justify-center shadow-lg transform rotate-3">
+                        <i class="fa-solid fa-sim-card text-white text-base md:text-xl"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-black text-lg md:text-xl tracking-tight text-white leading-none">Remal <span class="text-[#00b4d8]">Connect</span></span>
+                        <span class="text-[8px] md:text-[9px] tracking-[0.2em] text-slate-400 uppercase font-bold mt-0.5 md:mt-1">Smart eSIM</span>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="font-black text-lg md:text-2xl text-[#1f3a40] leading-none tracking-tight">رمال كونّكت</h1>
-                    <p class="text-[9px] md:text-[10px] font-black text-[#00b4d8] uppercase tracking-[0.2em] mt-0.5">Remal Connect</p>
+
+                <div class="flex items-center gap-3 md:gap-4">
+                    <a href="#" class="hidden md:flex items-center gap-2 text-sm font-bold text-slate-300 hover:text-[#00b4d8] transition-colors">
+                        <i class="fa-solid fa-circle-question"></i> كيف تعمل؟
+                    </a>
+                    <div class="h-6 w-px bg-white/10 hidden md:block"></div>
+                    <a href="register.html" class="glass-panel hover:bg-white/10 text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95">
+                        <i class="fa-regular fa-user text-[#00b4d8]"></i> حسابي
+                    </a>
                 </div>
-            </div>
-
-            <div class="hidden md:flex items-center gap-8 bg-white/50 px-6 py-2 rounded-full border border-white">
-                <a href="#" class="font-bold text-[#1f3a40] hover:text-[#00b4d8] transition-colors text-sm">الوجهات</a>
-                <a href="#" class="font-bold text-slate-500 hover:text-[#00b4d8] transition-colors text-sm">كيف تعمل؟</a>
-                <a href="#" class="font-bold text-slate-500 hover:text-[#00b4d8] transition-colors text-sm">الباقات العالمية</a>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <a href="register.html" class="bg-gradient-to-l from-[#1f3a40] to-[#2c5364] hover:from-[#15282c] hover:to-[#1f3a40] text-white w-9 h-9 md:w-auto md:px-6 md:py-2.5 rounded-full font-black flex items-center justify-center gap-2 transition-all shadow-[0_8px_20px_rgba(31,58,64,0.2)] active:scale-95 text-xs md:text-sm border border-white/10">
-                    <i class="fa-regular fa-user"></i>
-                    <span class="hidden md:inline">دخول / تسجيل</span>
-                </a>
             </div>
         </div>
     </header>
 
-    <!-- 🌟 واجهة البحث السريع والتفاعل ثلاثي الأبعاد -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-16 pb-12 relative">
-        <div class="absolute top-20 right-10 w-64 h-64 bg-[#00b4d8] rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
-        
-        <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+    <!-- 🚀 قسم الهيرو والبحث (Hero & Search) -->
+    <main class="pt-28 md:pt-36 pb-12 md:pb-16 flex items-center justify-center relative">
+        <div class="absolute inset-0 z-0 opacity-10 pointer-events-none flex items-center justify-center overflow-hidden">
+            <svg width="600" height="600" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#00b4d8" d="M44.7,-76.4C58.8,-69.2,71.8,-59.1,81.3,-46.3C90.8,-33.5,96.8,-18,95.6,-3.2C94.4,11.6,86,25.7,75.9,37.6C65.8,49.5,54.1,59.3,40.9,66.8C27.7,74.3,13.8,79.5,-0.6,80.5C-15.1,81.4,-30.2,77.1,-43.3,69.5C-56.4,61.9,-67.5,51,-76.3,37.9C-85.1,24.8,-91.6,9.5,-91.4,-5.6C-91.2,-20.7,-84.3,-35.6,-74.6,-48.2C-64.9,-60.8,-52.3,-71.1,-38.5,-78.3C-24.7,-85.5,-12.3,-89.6,1.4,-91.9C15.1,-94.3,30.3,-83.5,44.7,-76.4Z" transform="translate(100 100)"/>
+            </svg>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-16 relative z-10">
             
-            <div class="w-full lg:w-1/2 text-center lg:text-right relative z-10">
-                <div class="inline-flex items-center gap-2 bg-white border border-[#00b4d8]/20 shadow-sm px-4 py-1.5 rounded-full text-[10px] md:text-xs font-black text-[#00b4d8] mb-6 animate-fade-in-up">
-                    <span class="relative flex h-2.5 w-2.5">
+            <div class="w-full lg:w-1/2 text-center lg:text-right">
+                <div class="inline-flex items-center gap-2 bg-[#00b4d8]/10 border border-[#00b4d8]/30 px-3 md:px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-[#00b4d8] mb-4 md:mb-6">
+                    <span class="relative flex h-2 w-2">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00b4d8] opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00b4d8]"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-[#00b4d8]"></span>
                     </span>
-                    تغطية فورية في +190 دولة
+                    تغطية فورية في أكثر من 150 دولة
                 </div>
                 
-                <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#1f3a40] leading-tight mb-6">
-                    سافر، وامسح الـ QR.. <br>
-                    <span class="brand-gradient">وخلّك متصل فوراً! 🌍</span>
-                </h2>
-                <p class="text-sm md:text-base font-bold text-slate-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                    تجاوز طوابير المطارات وفواتير التجوال المزعجة. اشترِ باقتك أونلاين، وثبّت شريحتك الإلكترونية (eSIM) في ثوانٍ.
+                <h1 class="text-3xl sm:text-4xl md:text-6xl font-black mb-4 md:mb-6 leading-tight tracking-tight drop-shadow-lg text-white">
+                    عالمك بدون حدود.. <br/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#00b4d8] to-white">بمسحة كود واحدة! 🌍</span>
+                </h1>
+                
+                <p class="text-slate-400 text-xs md:text-lg font-semibold max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+                    وداعاً لفواتير التجوال المزعجة. اختر وجهتك، امسح كود الـ QR، واستمتع بإنترنت فائق السرعة فور هبوط طائرتك.
                 </p>
 
-                <!-- شريط البحث (Masterstroke: Clean UI) -->
-                <div class="bg-white p-2 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-slate-100 flex items-center relative z-20 w-full max-w-lg mx-auto lg:mx-0 hover:border-[#00b4d8]/40 transition-colors">
-                    <div class="pl-4 pr-3 flex items-center justify-center">
-                        <i class="fa-solid fa-location-dot text-[#00b4d8] text-lg"></i>
-                    </div>
-                    <input type="text" placeholder="إلى أين تسافر؟ (مثال: دبي، لندن...)" class="flex-1 bg-transparent border-none outline-none font-bold text-sm md:text-base text-[#1f3a40] placeholder:text-slate-400 h-12 w-full">
-                    <button class="bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white px-6 md:px-8 h-12 rounded-xl font-black text-xs md:text-sm shadow-md hover:shadow-lg transition-all active:scale-95 whitespace-nowrap flex items-center gap-2">
-                        ابحث <i class="fa-solid fa-arrow-left hidden sm:inline"></i>
+                <!-- شريط البحث الفعلي المرتبط بالخادم -->
+                <form id="searchForm" class="glass-panel p-2 rounded-2xl md:rounded-[2rem] max-w-lg mx-auto lg:mx-0 flex items-center relative z-20 shadow-[0_20px_50px_rgba(0,180,216,0.1)] focus-within:border-[#00b4d8]/50 transition-colors">
+                    <i class="fa-solid fa-location-dot text-[#00b4d8] pl-3 md:pl-4 pr-2 text-sm md:text-lg"></i>
+                    <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: تركيا، أوروبا...)" class="flex-1 bg-transparent border-none outline-none text-xs md:text-base font-bold text-white placeholder-slate-400 h-10 md:h-12 w-full">
+                    <button type="submit" id="searchBtn" class="bg-[#00b4d8] hover:bg-cyan-500 text-white font-black py-2.5 md:py-3.5 px-6 md:px-8 rounded-xl md:rounded-[1.5rem] transition-all flex items-center justify-center gap-2 cursor-pointer btn-glow shrink-0 text-xs md:text-sm active:scale-95">
+                        ابحث <i class="fa-solid fa-magnifying-glass hidden sm:inline"></i>
                     </button>
+                </form>
+
+                <div class="flex items-center justify-center lg:justify-start gap-2 mt-4 flex-wrap">
+                    <span class="text-[9px] md:text-[10px] font-bold text-slate-500">شائع:</span>
+                    <button type="button" onclick="quickSearch('تركيا')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors">🇹🇷 تركيا</button>
+                    <button type="button" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors">🇸🇦 السعودية</button>
+                    <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold text-slate-300 transition-colors">🇪🇺 أوروبا</button>
                 </div>
             </div>
 
-            <!-- هاتف تفاعلي ثلاثي الأبعاد (Masterstroke) -->
-            <div class="hidden sm:block w-full lg:w-1/2 relative perspective-container">
-                <div class="relative w-[300px] md:w-[340px] mx-auto animate-float phone-3d" id="phoneMockup">
-                    <div class="bg-slate-800 rounded-[3rem] p-3.5 shadow-[0_30px_60px_rgba(31,58,64,0.4)] border-[6px] border-slate-700 relative z-10 bg-gradient-to-b from-slate-700 to-slate-900">
-                        <div class="bg-white w-full h-[580px] rounded-[2.2rem] overflow-hidden relative flex flex-col">
-                            <!-- نوتش ذكي -->
-                            <div class="absolute top-0 inset-x-0 h-7 bg-black rounded-b-3xl w-36 mx-auto z-20 flex justify-center items-end pb-1.5">
-                                <div class="w-16 h-1.5 bg-slate-800 rounded-full"></div>
+            <!-- هاتف تفاعلي ثلاثي الأبعاد -->
+            <div class="hidden lg:block w-full lg:w-1/2 relative perspective-container h-[650px] flex items-center justify-center">
+                <div class="relative w-[320px] mx-auto animate-float phone-3d" id="phoneMockup">
+                    <div class="bg-slate-800 rounded-[3rem] p-3 shadow-[0_30px_60px_rgba(0,180,216,0.2)] border-[5px] border-slate-700 relative z-10 bg-gradient-to-b from-slate-700 to-slate-900">
+                        <div class="bg-white w-full h-[600px] rounded-[2.2rem] overflow-hidden relative flex flex-col">
+                            <div class="absolute top-0 inset-x-0 h-6 bg-black rounded-b-2xl w-32 mx-auto z-20 flex justify-center items-end pb-1.5"><div class="w-12 h-1 bg-slate-800 rounded-full"></div></div>
+                            <div class="bg-gradient-to-b from-[#1f3a40] to-[#2c5364] pt-12 pb-6 px-4 text-center rounded-b-[2rem] relative shadow-md">
+                                <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2 border border-white/20 backdrop-blur-sm"><span class="text-2xl">⚡</span></div>
+                                <h4 class="text-white font-black text-lg mb-1">الإنترنت جاهز</h4>
+                                <p class="text-[#00b4d8] text-[10px] font-bold uppercase tracking-wider">Fast & Secure</p>
                             </div>
-                            
-                            <!-- محتوى الشاشة -->
-                            <div class="bg-gradient-to-b from-[#1f3a40] to-[#2c5364] pt-14 pb-8 px-5 text-center rounded-b-[2.5rem] relative shadow-md">
-                                <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3 border border-white/20 backdrop-blur-sm">
-                                    <span class="text-2xl">🇪🇺</span>
+                            <div class="flex-1 bg-[#f4f7f6] p-4 space-y-3 flex flex-col justify-center">
+                                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-cyan-50 rounded-xl flex items-center justify-center text-[#00b4d8]"><i class="fa-solid fa-qrcode"></i></div>
+                                    <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 1</span><span class="block text-sm font-black text-slate-800">امسح الكود</span></div>
                                 </div>
-                                <h4 class="text-white font-black text-xl mb-1 tracking-wide">باقة أوروبا الموحدة</h4>
-                                <p class="text-[#00b4d8] text-[11px] font-black tracking-wider uppercase">Europe Premium</p>
-                            </div>
-                            
-                            <div class="flex-1 bg-[#f4f7f6] p-5 space-y-4">
-                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between hover:border-[#00b4d8]/30 transition-colors">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center text-[#00b4d8]"><i class="fa-solid fa-wifi text-lg"></i></div>
-                                        <div class="text-right">
-                                            <span class="block text-[10px] text-slate-400 font-bold">حجم البيانات</span>
-                                            <span class="block text-lg font-black text-slate-800">10 GB</span>
-                                        </div>
-                                    </div>
-                                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500"><i class="fa-solid fa-sliders"></i></div>
+                                    <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 2</span><span class="block text-sm font-black text-slate-800">فعّل البيانات</span></div>
                                 </div>
-                                
-                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between hover:border-amber-400/30 transition-colors">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500"><i class="fa-solid fa-calendar-days text-lg"></i></div>
-                                        <div class="text-right">
-                                            <span class="block text-[10px] text-slate-400 font-bold">مدة الصلاحية</span>
-                                            <span class="block text-lg font-black text-slate-800">30 يوماً</span>
-                                        </div>
-                                    </div>
+                                <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500"><i class="fa-solid fa-earth-americas"></i></div>
+                                    <div class="text-right flex-1"><span class="block text-[9px] text-slate-400 font-bold">الخطوة 3</span><span class="block text-sm font-black text-slate-800">أنت متصل!</span></div>
                                 </div>
-
-                                <div class="flex items-center justify-center gap-2 pt-2 pb-2">
-                                    <i class="fa-solid fa-lock text-emerald-500 text-[10px]"></i>
-                                    <span class="text-[10px] font-bold text-slate-400">دفع إلكتروني فوري ومشفّر</span>
-                                </div>
-
-                                <button class="w-full bg-gradient-to-l from-[#1f3a40] to-[#2c5364] text-white font-black py-4 rounded-xl shadow-lg text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
-                                    شراء الباقة - 85 AED
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -172,134 +185,160 @@
         </div>
     </main>
 
-    <!-- 🌟 قسم الوجهات والباقات -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 relative z-20">
-        
-        <div class="flex items-end justify-between mb-8 md:mb-10">
+    <!-- 🚀 قسم عرض الباقات (يتم تحديثه بالـ JS) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16 relative z-20" id="packagesSection">
+        <div class="flex items-end justify-between mb-6 md:mb-10">
             <div>
-                <h3 class="text-2xl md:text-3xl font-black text-[#1f3a40] mb-2">الوجهات الأكثر طلباً 🔥</h3>
-                <p class="text-xs md:text-sm font-bold text-slate-500">اختر وجهتك، استلم الـ QR، وسافر وأنت مرتاح.</p>
+                <h3 class="text-2xl md:text-3xl font-black text-white mb-2" id="resultsTitle">الوجهات الأكثر طلباً 🔥</h3>
+                <p class="text-xs md:text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR في ثوانٍ، وانطلق.</p>
             </div>
         </div>
 
-        <div class="flex items-center gap-3 overflow-x-auto hide-scrollbar pb-2 mb-6 snap-x">
-            <button class="bg-[#1f3a40] text-white px-6 py-2.5 rounded-full font-bold text-xs md:text-sm whitespace-nowrap snap-start shadow-md border border-[#1f3a40]">الأكثر مبيعاً</button>
-            <button class="bg-white border border-slate-200 text-slate-600 hover:border-[#00b4d8] hover:text-[#00b4d8] px-6 py-2.5 rounded-full font-bold text-xs md:text-sm whitespace-nowrap transition-colors snap-start shadow-sm">الشرق الأوسط</button>
-            <button class="bg-white border border-slate-200 text-slate-600 hover:border-[#00b4d8] hover:text-[#00b4d8] px-6 py-2.5 rounded-full font-bold text-xs md:text-sm whitespace-nowrap transition-colors snap-start shadow-sm">باقات قارية (Global)</button>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            <!-- بطاقة 1 -->
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] p-6 hover-card relative overflow-hidden flex flex-col">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-50 rounded-full z-0 pointer-events-none"></div>
-                
-                <div class="flex items-start justify-between mb-5 relative z-10">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl">🇹🇷</div>
-                        <div>
-                            <h4 class="font-black text-lg text-[#1f3a40]">تركيا</h4>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5">Turkey</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-2 mb-6 relative z-10 flex-1">
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100/50">
-                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-wifi text-slate-400 ml-2"></i>البيانات</span>
-                        <span class="font-black text-sm text-[#1f3a40]" dir="ltr">5 GB</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100/50">
-                        <span class="text-xs font-bold text-slate-500"><i class="fa-regular fa-clock text-slate-400 ml-2"></i>الصلاحية</span>
-                        <span class="font-black text-sm text-[#1f3a40]">15 يوماً</span>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between border-t border-slate-100 pt-4 relative z-10">
-                    <div class="text-right">
-                        <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">35 <span class="text-[10px] text-slate-400">AED</span></span>
-                    </div>
-                    <button class="bg-slate-100 hover:bg-[#1f3a40] hover:text-white text-[#1f3a40] px-4 py-2 rounded-xl font-black text-xs transition-colors">
-                        تفاصيل
-                    </button>
-                </div>
-            </div>
-
-            <!-- بطاقة 2 -->
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.03)] p-6 hover-card relative overflow-hidden flex flex-col">
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full z-0 pointer-events-none"></div>
-                
-                <div class="flex items-start justify-between mb-5 relative z-10">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl">🇪🇺</div>
-                        <div>
-                            <h4 class="font-black text-lg text-[#1f3a40]">أوروبا </h4>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5">33 Countries</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-2 mb-6 relative z-10 flex-1">
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100/50">
-                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-wifi text-slate-400 ml-2"></i>البيانات</span>
-                        <span class="font-black text-sm text-[#1f3a40]" dir="ltr">10 GB</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100/50">
-                        <span class="text-xs font-bold text-slate-500"><i class="fa-regular fa-clock text-slate-400 ml-2"></i>الصلاحية</span>
-                        <span class="font-black text-sm text-[#1f3a40]">30 يوماً</span>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between border-t border-slate-100 pt-4 relative z-10">
-                    <div class="text-right">
-                        <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">85 <span class="text-[10px] text-slate-400">AED</span></span>
-                    </div>
-                    <button class="bg-slate-100 hover:bg-[#1f3a40] hover:text-white text-[#1f3a40] px-4 py-2 rounded-xl font-black text-xs transition-colors">
-                        تفاصيل
-                    </button>
-                </div>
-            </div>
-
-            <!-- إضافة بطاقة شرح سريعة كـ Masterstroke تصميمي -->
-            <div class="bg-gradient-to-br from-[#1f3a40] to-[#2c5364] rounded-3xl p-6 relative overflow-hidden flex flex-col justify-center text-white sm:col-span-2 lg:col-span-2 shadow-lg">
-                <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-4 translate-y-4">
-                    <i class="fa-solid fa-bolt text-9xl"></i>
-                </div>
-                <div class="relative z-10">
-                    <div class="inline-block bg-white/10 px-3 py-1 rounded-full text-[10px] font-bold border border-white/20 mb-4 backdrop-blur-sm">
-                        سهولة غير مسبوقة
-                    </div>
-                    <h3 class="text-2xl md:text-3xl font-black mb-3 leading-tight">الإنترنت أصبح أسهل <br> من حزم حقيبتك!</h3>
-                    <p class="text-slate-300 text-xs md:text-sm font-semibold max-w-sm leading-relaxed mb-6">
-                        بثلاث خطوات بسيطة: ابحث عن وجهتك، قم بعملية الدفع الآمنة، وامسح الرمز لتفعيل شريحتك فوراً.
-                    </p>
-                    <button class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-6 py-3 rounded-xl font-black text-sm transition-colors shadow-[0_5px_15px_rgba(0,180,216,0.3)] flex items-center gap-2 w-fit">
-                        شاهد دليل التفعيل <i class="fa-regular fa-circle-play"></i>
-                    </button>
-                </div>
-            </div>
-
+        <!-- حاوية الباقات -->
+        <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+            <!-- سيتم حقن الباقات هنا عبر الجافاسكربت -->
         </div>
     </section>
 
-    <!-- 🌟 شريط التنقل السفلي للموبايل بطبقة زجاجية -->
-    <nav class="md:hidden fixed bottom-4 left-4 right-4 glass-panel rounded-2xl flex justify-around items-center py-2.5 z-[999] shadow-lg border border-white">
-        <a href="#" class="flex flex-col items-center gap-1 text-[#00b4d8] w-16">
+    <!-- 🚀 شريط التنقل السفلي للموبايل بطبقة زجاجية -->
+    <nav class="md:hidden fixed bottom-4 left-4 right-4 glass-panel rounded-2xl flex justify-around items-center py-2 z-[999] shadow-lg border border-white/20 bg-slate-900/80">
+        <a href="#" onclick="window.scrollTo(0,0)" class="flex flex-col items-center gap-1 text-[#00b4d8] w-16">
             <i class="fa-solid fa-globe text-lg"></i>
             <span class="text-[9px] font-bold">الوجهات</span>
         </a>
-        <a href="#" class="flex flex-col items-center gap-1 text-slate-400 hover:text-[#1f3a40] transition-colors w-16">
+        <a href="#" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16">
             <i class="fa-solid fa-qrcode text-lg"></i>
             <span class="text-[9px] font-bold">شرائحي</span>
         </a>
-        <a href="register.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-[#1f3a40] transition-colors w-16">
+        <a href="register.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16">
             <i class="fa-regular fa-user text-lg"></i>
             <span class="text-[9px] font-bold">حسابي</span>
         </a>
     </nav>
 
-    <!-- كود بسيط للتأثير ثلاثي الأبعاد للهاتف -->
+    <!-- 🚀 كود الجافاسكربت للبحث والاتصال بالخادم والتأثيرات -->
     <script>
+        // رابط الخادم الخاص بك على Render
+        const API_URL = 'https://remal-connect.onrender.com';
+
+        // دالة للبحث السريع عند الضغط على الأزرار الصغيرة
+        function quickSearch(country) {
+            document.getElementById('searchInput').value = country;
+            fetchPackages(country);
+            document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // الاستماع لحدث الضغط على زر البحث
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            fetchPackages(query);
+            document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // دالة جلب الباقات من الخادم
+        async function fetchPackages(query = '') {
+            const container = document.getElementById('packagesContainer');
+            const title = document.getElementById('resultsTitle');
+            const btn = document.getElementById('searchBtn');
+            const originalBtnHtml = btn.innerHTML;
+
+            // تغيير حالة الزر أثناء التحميل
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+            
+            // إظهار تأثير التحميل في الحاوية
+            container.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-16">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-4"></div>
+                    <p class="text-slate-400 font-bold text-sm">جاري البحث عن أفضل الباقات...</p>
+                </div>
+            `;
+
+            try {
+                // الاتصال بمسار البحث في الخادم
+                const response = await fetch(`${API_URL}/api/search-packages?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8]">${query}</span>` : 'الوجهات الأكثر طلباً 🔥';
+                    renderPackages(data.packages);
+                } else {
+                    container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">${data.message}</div>`;
+                }
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم. يرجى التأكد من تشغيل الخادم.</div>`;
+            } finally {
+                // إعادة الزر لحالته الطبيعية
+                btn.innerHTML = originalBtnHtml;
+                btn.disabled = false;
+            }
+        }
+
+        // دالة رسم (حقن) الباقات في الواجهة
+        function renderPackages(packages) {
+            const container = document.getElementById('packagesContainer');
+            
+            if (packages.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-16 glass-panel rounded-3xl">
+                        <i class="fa-solid fa-earth-americas text-4xl text-slate-500 mb-3 block"></i>
+                        <p class="text-slate-300 font-bold text-lg">لم نتمكن من العثور على باقات تطابق بحثك.</p>
+                        <p class="text-slate-500 font-semibold text-sm mt-2">جرب البحث باسم دولة أخرى مثل: تركيا، السعودية، أو أوروبا.</p>
+                    </div>`;
+                return;
+            }
+
+            // رسم البطاقات
+            let html = '';
+            packages.forEach((pkg, index) => {
+                const delay = index * 100;
+                const hotBadge = pkg.isHot ? `<div class="bg-rose-50 text-rose-600 border border-rose-100 px-2.5 py-1 rounded-md text-[9px] font-black uppercase">الأكثر مبيعاً 🔥</div>` : '';
+                
+                html += `
+                <div class="glass-card-light rounded-3xl p-5 md:p-6 relative overflow-hidden flex flex-col animate-fade-in-up" style="animation-delay: ${delay}ms;">
+                    <!-- زخرفة خلفية البطاقة -->
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-bl from-cyan-100 to-transparent rounded-bl-full opacity-50 z-0 pointer-events-none"></div>
+                    
+                    <div class="flex items-start justify-between mb-5 relative z-10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-2xl">${pkg.flag}</div>
+                            <div>
+                                <h4 class="font-black text-lg text-[#1f3a40]">${pkg.country}</h4>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase block mt-0.5">${pkg.type === 'global' ? 'Global' : (pkg.type === 'regional' ? 'Regional' : 'Local')}</span>
+                            </div>
+                        </div>
+                        ${hotBadge}
+                    </div>
+
+                    <div class="space-y-2.5 mb-6 relative z-10 flex-1">
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-database text-[#00b4d8] ml-2"></i>البيانات</span>
+                            <span class="font-black text-sm text-[#1f3a40]" dir="ltr">${pkg.data}</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <span class="text-xs font-bold text-slate-500"><i class="fa-regular fa-clock text-[#00b4d8] ml-2"></i>الصلاحية</span>
+                            <span class="font-black text-sm text-[#1f3a40]">${pkg.validity}</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between border-t border-slate-100 pt-4 relative z-10">
+                        <div class="text-right">
+                            <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الإجمالي</span>
+                            <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">${pkg.price} <span class="text-[10px] text-slate-400">AED</span></span>
+                        </div>
+                        <button class="bg-gradient-to-l from-[#1f3a40] to-[#2c5364] hover:from-[#15282c] hover:to-[#1f3a40] text-white px-5 py-2.5 rounded-xl font-black text-xs transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+                            شراء <i class="fa-solid fa-cart-shopping text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // تأثير الماوس 3D للهاتف (لشاشات الديسكتوب فقط)
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.perspective-container');
             const phone = document.getElementById('phoneMockup');
@@ -309,13 +348,10 @@
                     const rect = container.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
-                    
-                    const rotateX = ((y - centerY) / centerY) * -10; // درجة الميلان
-                    const rotateY = ((x - centerX) / centerX) * 10;
-                    
+                    const rotateX = ((y - centerY) / centerY) * -15; 
+                    const rotateY = ((x - centerX) / centerX) * 15;
                     phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 });
                 
@@ -323,6 +359,9 @@
                     phone.style.transform = `rotateX(0deg) rotateY(0deg)`;
                 });
             }
+
+            // جلب الباقات الافتراضية عند تحميل الصفحة
+            fetchPackages();
         });
     </script>
 </body>
