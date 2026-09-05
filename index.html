@@ -117,6 +117,45 @@
             border-radius: 32px;
         }
 
+        /* 🚀 أيقونة الدردشة المباشرة (Live Chat Floating Button) */
+        .live-chat-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            outline: none;
+            text-decoration: none;
+        }
+        .live-chat-btn:hover {
+            transform: scale(1.1) rotate(-10deg);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.7);
+        }
+        .live-chat-btn::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 2px solid #10b981;
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
         /* Utilities */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
         .animate-float { animation: float 6s ease-in-out infinite; }
@@ -128,6 +167,11 @@
     </style>
 </head>
 <body class="cyber-grid min-h-screen flex flex-col pb-20 md:pb-0">
+
+    <!-- 🚀 Live Chat Button -->
+    <a href="https://wa.me/971544757578?text=مرحباً،%20أحتاج%20مساعدة%20في%20منصة%20Remal%20Connect" target="_blank" class="live-chat-btn" title="تحدث معنا مباشرة">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
 
     <!-- 🚀 PWA Install Banner -->
     <div id="pwaInstallBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[10001] bg-gradient-to-r from-[#111c22] to-[#00b4d8] text-white px-5 py-2.5 rounded-full font-bold text-xs shadow-2xl items-center gap-3 hidden border border-[#00b4d8]/30">
@@ -158,7 +202,6 @@
                 </div>
 
                 <div class="flex items-center gap-2 md:gap-4" id="headerAuthArea">
-                    <!-- 🚀 تحديث الرابط هنا -->
                     <button onclick="window.location.href='b2b-login.html'" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
                         <i class="fa-solid fa-briefcase"></i> بوابة الوكلاء
                     </button>
@@ -551,7 +594,7 @@
 
     <!-- 🚀 الجافاسكربت المركزي -->
     <script>
-        const API_URL = 'https://remal-connect.onrender.com';
+        const API_URL = 'https://remal-connect.onrender.com/api';
         
         // --- 🚀 PWA Install Logic ---
         let deferredPrompt;
@@ -614,7 +657,6 @@
                 const walletBalance = user.points ? (user.points / 10).toFixed(2) : '50.00'; 
                 
                 authArea.innerHTML = `
-                    <!-- 🚀 تحديث الرابط هنا -->
                     <button onclick="window.location.href='b2b-login.html'" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
                         <i class="fa-solid fa-briefcase"></i> بوابة الوكلاء
                     </button>
