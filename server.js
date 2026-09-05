@@ -7,18 +7,21 @@ const bcrypt = require('bcryptjs'); // مكتبة التشفير
 
 const app = express();
 
-// إعدادات الحماية والوصول
+// ==========================================
+// إعدادات الحماية والوصول (Middleware)
+// ==========================================
 app.use(express.json());
 app.use(cors({
-    origin: ['https://mostafasaliha003-droid.github.io'], // السماح لموقعك فقط بالاتصال بالخادم
-    methods: ['GET', 'POST']
+    origin: ['https://mostafasaliha003-droid.github.io'], // السماح لموقعك فقط
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
 }));
 
 // ==========================================
 // الاتصال بقاعدة بيانات MongoDB
 // ==========================================
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ متصل بقاعدة بيانات MongoDB بنجاح'))
+  .then(() => console.log('✅ متصل بقاعدة بيانات MongoDB (Remal Connect) بنجاح'))
   .catch((err) => console.error('❌ خطأ في الاتصال بقاعدة البيانات:', err));
 
 // إنشاء هيكل بيانات المستخدم (Schema)
@@ -33,14 +36,14 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 // ==========================================
-// مسار رئيسي لفحص حالة الخادم (لتجنب خطأ Cannot GET /)
+// مسار رئيسي لفحص حالة الخادم
 // ==========================================
 app.get('/', (req, res) => {
-    res.send('Remal Connect API is running perfectly! 🚀');
+    res.send('Remal Connect API is running with Ultimate UI support! 🚀');
 });
 
 // ==========================================
-// 1. مسار (Endpoint) لإنشاء حساب جديد
+// 1. نظام الحسابات: إنشاء حساب جديد (Register)
 // ==========================================
 app.post('/api/register', async (req, res) => {
     try {
@@ -56,7 +59,7 @@ app.post('/api/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // حفظ المستخدم الجديد في قاعدة البيانات
+        // حفظ المستخدم الجديد
         const newUser = new User({
             fullName,
             email,
@@ -65,7 +68,6 @@ app.post('/api/register', async (req, res) => {
         });
 
         await newUser.save();
-
         res.status(201).json({ success: true, message: 'تم إنشاء الحساب بنجاح!' });
     } catch (error) {
         console.error('Registration error:', error);
@@ -74,33 +76,87 @@ app.post('/api/register', async (req, res) => {
 });
 
 // ==========================================
-// 2. مسار (Endpoint) لجلب الباقات من المورد
+// 2. نظام الحسابات: تسجيل الدخول (Login) - (جديد)
 // ==========================================
-app.get('/api/packages', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     try {
-        // هنا يتم وضع رابط API المورد
-        const supplierResponse = await axios.get('https://api.esim-supplier.com/v1/packages', {
-            headers: {
-                'Authorization': `Bearer ${process.env.SUPPLIER_API_KEY}` // المفتاح السري الآمن
+        const { email, password } = req.body;
+
+        // البحث عن المستخدم
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' });
+        }
+
+        // مطابقة كلمة المرور المشفّرة
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' });
+        }
+
+        // إرسال بيانات المستخدم (بدون كلمة المرور) للواجهة
+        res.status(200).json({ 
+            success: true, 
+            message: 'تم تسجيل الدخول بنجاح',
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                email: user.email
             }
         });
-        
-        // إرسال الباقات إلى واجهة موقعك
-        res.json(supplierResponse.data);
     } catch (error) {
-        console.error('Error fetching packages:', error.message);
-        res.status(500).json({ error: 'حدث خطأ أثناء جلب الباقات' });
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, message: 'حدث خطأ داخلي أثناء تسجيل الدخول' });
     }
 });
 
 // ==========================================
-// 3. مسار (Endpoint) لإنشاء الشريحة بعد الدفع
+// 3. محرك البحث عن باقات الـ eSIM - (معدل للعمل مع الواجهة الجديدة)
+// ==========================================
+app.get('/api/search-packages', async (req, res) => {
+    try {
+        const searchQuery = req.query.q ? req.query.q.toLowerCase() : '';
+
+        // 💡 ملاحظة: هذا "محاكي مؤقت" (Mock Data) لكي يعمل محرك البحث في موقعك فوراً
+        // بمجرد حصولك على مفاتيح API المورد (مثل RateHawk/Airalo للـ eSIM)، سنقوم باستبدال هذه المصفوفة بطلب Axios حقيقي
+        const mockPackages = [
+            { id: "p_turkey", country: "تركيا", flag: "🇹🇷", data: "5 GB", validity: "15 يوماً", price: 35, type: "local", isHot: true },
+            { id: "p_eu", country: "أوروبا الموحدة", flag: "🇪🇺", data: "10 GB", validity: "30 يوماً", price: 85, type: "regional", isHot: false },
+            { id: "p_ksa", country: "السعودية", flag: "🇸🇦", data: "3 GB", validity: "7 أيام", price: 25, type: "local", isHot: false },
+            { id: "p_uk", country: "بريطانيا", flag: "🇬🇧", data: "10 GB", validity: "30 يوماً", price: 45, type: "local", isHot: false },
+            { id: "p_global", country: "العالمية (Global)", flag: "🌍", data: "20 GB", validity: "365 يوماً", price: 150, type: "global", isHot: false }
+        ];
+
+        // فلترة النتائج بناءً على بحث المستخدم
+        let results = mockPackages;
+        if (searchQuery) {
+            results = mockPackages.filter(pkg => 
+                pkg.country.toLowerCase().includes(searchQuery)
+            );
+        }
+
+        // إرجاع النتائج للواجهة الأمامية
+        res.status(200).json({
+            success: true,
+            count: results.length,
+            packages: results
+        });
+
+    } catch (error) {
+        console.error('Search error:', error);
+        res.status(500).json({ success: false, message: 'حدث خطأ أثناء البحث عن الباقات' });
+    }
+});
+
+// ==========================================
+// 4. مسار إصدار الشريحة بعد الدفع (جاهز للربط الفعلي)
 // ==========================================
 app.post('/api/purchase-esim', async (req, res) => {
     const { packageId, customerEmail } = req.body;
 
     try {
-        // طلب إصدار شريحة جديدة من المورد
+        // سيتم تفعيل هذا الكود بمجرد استلام وثائق المورد (API Docs)
+        /*
         const orderResponse = await axios.post('https://api.esim-supplier.com/v1/orders', {
             package_id: packageId,
             email: customerEmail
@@ -110,18 +166,19 @@ app.post('/api/purchase-esim', async (req, res) => {
                 'Content-Type': 'application/json'
             }
         });
+        */
 
-        // إرجاع كود الـ QR للعميل ليعرض في الواجهة
+        // محاكاة نجاح عملية الشراء للواجهة الأمامية
         res.json({
             success: true,
-            message: 'تم إصدار الشريحة بنجاح',
-            qr_code_url: orderResponse.data.qr_code_url,
-            iccid: orderResponse.data.iccid
+            message: 'تم إصدار الشريحة بنجاح (وضع المحاكاة)',
+            qr_code_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=MOCK_ESIM_DATA_FOR_REMAL_CONNECT',
+            iccid: '8985234567890123456'
         });
 
     } catch (error) {
         console.error('Error purchasing eSIM:', error.message);
-        res.status(500).json({ error: 'فشل في إصدار الشريحة، يرجى مراجعة الدعم الفني' });
+        res.status(500).json({ success: false, message: 'فشل في إصدار الشريحة، يرجى مراجعة الدعم الفني' });
     }
 });
 
@@ -130,5 +187,5 @@ app.post('/api/purchase-esim', async (req, res) => {
 // ==========================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Remal Connect API is running on port ${PORT} 🚀`);
+    console.log(`✅ Remal Connect API is running on port ${PORT} 🚀`);
 });
