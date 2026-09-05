@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>إنشاء حساب | Remal Connect</title>
+    <title>حسابي | Remal Connect</title>
     
     <!-- الخطوط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -21,16 +21,15 @@
         }
         body { font-family: 'Cairo', sans-serif; background-color: var(--bg-light); color: var(--text-main); }
         .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300b4d8' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        .fade-transition { transition: opacity 0.3s ease-in-out; }
     </style>
 </head>
 <body class="bg-pattern min-h-screen flex items-center justify-center p-4">
 
-    <!-- حاوية التسجيل -->
     <div class="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-100 w-full max-w-md overflow-hidden relative z-10">
         
         <!-- القسم العلوي المزخرف -->
         <div class="bg-gradient-to-br from-[#1f3a40] to-[#2c5364] p-8 text-center relative overflow-hidden">
-            <!-- زخرفة خلفية -->
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#00b4d8] rounded-full blur-[50px] opacity-40"></div>
             
             <a href="index.html" class="absolute top-4 right-4 text-white/70 hover:text-white transition-colors">
@@ -38,135 +37,201 @@
             </a>
 
             <div class="w-16 h-16 mx-auto bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20 mb-4 shadow-lg transform rotate-3">
-                 <i class="fa-solid fa-user-plus text-white text-2xl"></i>
+                 <i id="headerIcon" class="fa-solid fa-user-lock text-white text-2xl"></i>
             </div>
-            <h2 class="text-2xl md:text-3xl font-black text-white">حساب جديد</h2>
-            <p class="text-[#00b4d8] text-xs md:text-sm font-bold mt-1.5">انضم لـ Remal Connect وابدأ رحلتك</p>
+            <h2 id="headerTitle" class="text-2xl md:text-3xl font-black text-white">تسجيل الدخول</h2>
+            <p id="headerSub" class="text-[#00b4d8] text-xs md:text-sm font-bold mt-1.5">مرحباً بك مجدداً في Remal Connect</p>
         </div>
 
-        <!-- نموذج الإدخال (Form) -->
-        <div class="p-6 md:p-8">
-            <form id="registerForm" class="space-y-4">
-                
-                <!-- حقل الاسم -->
+        <div class="p-6 md:p-8 relative">
+            
+            <!-- نموذج الدخول (Login) -->
+            <form id="loginForm" class="space-y-4 fade-transition block">
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">الاسم الكامل</label>
-                    <div class="relative">
-                        <i class="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="fullName" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="الاسم الثنائي">
-                    </div>
-                </div>
-
-                <!-- حقل البريد الإلكتروني -->
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">البريد الإلكتروني (لاستلام كود QR)</label>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">البريد الإلكتروني</label>
                     <div class="relative">
                         <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="email" id="email" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="name@example.com" dir="ltr">
+                        <input type="email" id="loginEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="name@example.com" dir="ltr">
                     </div>
                 </div>
-
-                <!-- حقل رقم الهاتف -->
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">رقم الواتساب (اختياري)</label>
-                    <div class="relative">
-                        <i class="fa-brands fa-whatsapp absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="tel" id="whatsapp" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="+971 50 000 0000" dir="ltr">
-                    </div>
-                </div>
-
-                <!-- حقل كلمة المرور -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-1.5">كلمة المرور</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="password" id="password" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="••••••••">
+                        <input type="password" id="loginPassword" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="••••••••">
                     </div>
                 </div>
+                
+                <p id="loginAlert" class="text-xs font-bold text-center hidden mt-2"></p>
 
-                <!-- رسالة التنبيه (تظهر عند الخطأ أو النجاح) -->
-                <p id="alertMessage" class="text-xs font-bold text-center hidden mt-2"></p>
-
-                <!-- زر التسجيل -->
-                <button type="submit" id="submitBtn" class="w-full bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(0,180,216,0.25)] hover:shadow-[0_12px_25px_rgba(0,180,216,0.35)] mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2">
-                    <span id="btnText">إنشاء الحساب</span> <i id="btnIcon" class="fa-solid fa-rocket"></i>
+                <button type="submit" id="loginBtn" class="w-full bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(0,180,216,0.25)] hover:shadow-[0_12px_25px_rgba(0,180,216,0.35)] mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2">
+                    <span id="loginBtnText">تسجيل الدخول</span> <i id="loginBtnIcon" class="fa-solid fa-right-to-bracket"></i>
                 </button>
             </form>
 
-            <!-- فاصل -->
-            <div class="flex items-center my-6">
-                <div class="flex-1 h-px bg-slate-100"></div>
-                <span class="px-3 text-[10px] font-bold text-slate-400 uppercase">أو</span>
-                <div class="flex-1 h-px bg-slate-100"></div>
-            </div>
+            <!-- نموذج التسجيل (Register) -->
+            <form id="registerForm" class="space-y-4 fade-transition hidden">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">الاسم الكامل</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="regFullName" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="الاسم الثنائي">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">البريد الإلكتروني (لاستلام كود QR)</label>
+                    <div class="relative">
+                        <i class="fa-regular fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="email" id="regEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="name@example.com" dir="ltr">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">رقم الواتساب (اختياري)</label>
+                    <div class="relative">
+                        <i class="fa-brands fa-whatsapp absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="tel" id="regWhatsapp" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="+971 50 000 0000" dir="ltr">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1.5">كلمة المرور</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="password" id="regPassword" required class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pr-11 pl-4 text-sm font-bold text-[#1f3a40] outline-none focus:border-[#00b4d8] focus:bg-white transition-all shadow-sm" placeholder="••••••••">
+                    </div>
+                </div>
 
-            <!-- التسجيل السريع بجوجل -->
-            <button class="w-full bg-white border border-slate-200 text-slate-600 font-bold py-3 rounded-xl shadow-sm hover:bg-slate-50 transition-all text-sm flex justify-center items-center gap-3">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
-                المتابعة باستخدام Google
-            </button>
+                <p id="regAlert" class="text-xs font-bold text-center hidden mt-2"></p>
 
-            <div class="mt-8 text-center">
-                <p class="text-xs font-bold text-slate-500">
-                    لديك حساب بالفعل؟ 
-                    <a href="#" class="text-[#00b4d8] hover:text-[#1f3a40] transition-colors">تسجيل الدخول</a>
+                <button type="submit" id="regBtn" class="w-full bg-gradient-to-l from-[#1f3a40] to-[#2c5364] text-white font-black py-3.5 rounded-xl shadow-[0_8px_20px_rgba(31,58,64,0.25)] hover:shadow-[0_12px_25px_rgba(31,58,64,0.35)] mt-6 text-sm transition-all active:scale-95 flex justify-center items-center gap-2">
+                    <span id="regBtnText">إنشاء الحساب</span> <i id="regBtnIcon" class="fa-solid fa-rocket"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-xs font-bold text-slate-500" id="toggleTextWrapper">
+                    <span id="toggleTextLabel">ليس لديك حساب؟</span> 
+                    <button type="button" onclick="toggleForms()" id="toggleBtn" class="text-[#00b4d8] hover:text-[#1f3a40] transition-colors bg-transparent border-none cursor-pointer font-black px-1">سجل الآن</button>
                 </p>
             </div>
         </div>
     </div>
 
-    <!-- كود الجافاسكربت لربط الواجهة بالخادم -->
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); // منع إعادة تحميل الصفحة عند الضغط على الزر
-            
-            const btn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
-            const btnIcon = document.getElementById('btnIcon');
-            const alertMsg = document.getElementById('alertMessage');
-            
-            // تغيير شكل الزر أثناء معالجة الطلب
-            btnText.innerText = 'جاري التسجيل...';
-            btnIcon.className = 'fa-solid fa-circle-notch fa-spin';
-            btn.disabled = true;
-            alertMsg.classList.add('hidden');
+        const API_URL = 'https://remal-connect.onrender.com/api';
+        let isLoginView = true;
 
-            // تجميع البيانات من الحقول
-            const userData = {
-                fullName: document.getElementById('fullName').value,
-                email: document.getElementById('email').value,
-                whatsapp: document.getElementById('whatsapp').value,
-                password: document.getElementById('password').value
+        function toggleForms() {
+            isLoginView = !isLoginView;
+            const loginForm = document.getElementById('loginForm');
+            const regForm = document.getElementById('registerForm');
+            
+            if (isLoginView) {
+                loginForm.classList.remove('hidden'); regForm.classList.add('hidden');
+                document.getElementById('headerIcon').className = 'fa-solid fa-user-lock text-white text-2xl';
+                document.getElementById('headerTitle').innerText = 'تسجيل الدخول';
+                document.getElementById('headerSub').innerText = 'مرحباً بك مجدداً في Remal Connect';
+                document.getElementById('toggleTextLabel').innerText = 'ليس لديك حساب؟';
+                document.getElementById('toggleBtn').innerText = 'سجل الآن';
+            } else {
+                loginForm.classList.add('hidden'); regForm.classList.remove('hidden');
+                document.getElementById('headerIcon').className = 'fa-solid fa-user-plus text-white text-2xl';
+                document.getElementById('headerTitle').innerText = 'حساب جديد';
+                document.getElementById('headerSub').innerText = 'انضم لـ Remal Connect وابدأ رحلتك';
+                document.getElementById('toggleTextLabel').innerText = 'لديك حساب بالفعل؟';
+                document.getElementById('toggleBtn').innerText = 'تسجيل الدخول';
+            }
+        }
+
+        // --- نظام تسجيل الدخول ---
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const alertMsg = document.getElementById('loginAlert');
+            
+            document.getElementById('loginBtnText').innerText = 'جاري التحقق...';
+            document.getElementById('loginBtnIcon').className = 'fa-solid fa-circle-notch fa-spin';
+            btn.disabled = true; alertMsg.classList.add('hidden');
+
+            const payload = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
             };
 
             try {
-                // إرسال البيانات لخادم Render الخاص بك
-                const response = await fetch('https://remal-connect.onrender.com/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userData)
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
 
-                // عرض النتيجة
                 alertMsg.classList.remove('hidden');
                 if (response.ok && result.success) {
-                    alertMsg.innerText = '🎉 ' + result.message;
+                    alertMsg.innerText = '✅ ' + result.message;
                     alertMsg.className = 'text-xs font-bold text-center text-emerald-600 bg-emerald-50 py-2 rounded-lg mt-4';
-                    document.getElementById('registerForm').reset(); // إفراغ الحقول بعد النجاح
+                    
+                    // حفظ بيانات المستخدم في الجهاز
+                    localStorage.setItem('rimal_current_user', JSON.stringify(result.user));
+                    
+                    // توجيه المستخدم للرئيسية
+                    setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+                } else {
+                    alertMsg.innerText = '⚠️ ' + (result.message || 'خطأ في بيانات الدخول');
+                    alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
+                }
+            } catch (error) {
+                alertMsg.classList.remove('hidden');
+                alertMsg.innerText = '⚠️ لا يمكن الاتصال بالخادم الآن.';
+                alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
+            } finally {
+                document.getElementById('loginBtnText').innerText = 'تسجيل الدخول';
+                document.getElementById('loginBtnIcon').className = 'fa-solid fa-right-to-bracket';
+                btn.disabled = false;
+            }
+        });
+
+        // --- نظام إنشاء حساب جديد ---
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('regBtn');
+            const alertMsg = document.getElementById('regAlert');
+            
+            document.getElementById('regBtnText').innerText = 'جاري التسجيل...';
+            document.getElementById('regBtnIcon').className = 'fa-solid fa-circle-notch fa-spin';
+            btn.disabled = true; alertMsg.classList.add('hidden');
+
+            const payload = {
+                fullName: document.getElementById('regFullName').value,
+                email: document.getElementById('regEmail').value,
+                whatsapp: document.getElementById('regWhatsapp').value,
+                password: document.getElementById('regPassword').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/register`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                alertMsg.classList.remove('hidden');
+                if (response.ok && result.success) {
+                    alertMsg.innerText = '🎉 ' + result.message + ' - سيتم تحويلك للدخول';
+                    alertMsg.className = 'text-xs font-bold text-center text-emerald-600 bg-emerald-50 py-2 rounded-lg mt-4';
+                    document.getElementById('registerForm').reset();
+                    
+                    // تحويل المستخدم لشاشة الدخول بعد ثانيتين
+                    setTimeout(() => { toggleForms(); alertMsg.classList.add('hidden'); }, 2000);
                 } else {
                     alertMsg.innerText = '⚠️ ' + (result.message || 'حدث خطأ أثناء التسجيل');
                     alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
                 }
             } catch (error) {
                 alertMsg.classList.remove('hidden');
-                alertMsg.innerText = '⚠️ لا يمكن الاتصال بالخادم الآن، يرجى المحاولة لاحقاً.';
+                alertMsg.innerText = '⚠️ لا يمكن الاتصال بالخادم الآن.';
                 alertMsg.className = 'text-xs font-bold text-center text-rose-600 bg-rose-50 py-2 rounded-lg mt-4';
             } finally {
-                // إعادة الزر لشكله الطبيعي
-                btnText.innerText = 'إنشاء الحساب';
-                btnIcon.className = 'fa-solid fa-rocket';
+                document.getElementById('regBtnText').innerText = 'إنشاء الحساب';
+                document.getElementById('regBtnIcon').className = 'fa-solid fa-rocket';
                 btn.disabled = false;
             }
         });
