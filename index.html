@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>رمال كونّكت | Remal Connect - إنترنت يطير بيك! 🚀</title>
+    
+    <!-- الخطوط -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            /* هوية الرمال مع لمسة رقمية */
+            --primary: #1f3a40;        
+            --accent-cyan: #00b4d8;    
+            --accent-coral: #ff595e;  
+            --accent-yellow: #ffca3a;
+            --bg-light: #f4f7f6;     
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+        }
+
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-light); color: var(--text-main); -webkit-tap-highlight-color: transparent; }
+        
+        /* تأثيرات بصرية جذابة */
+        .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.4); }
+        .hero-gradient { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); }
+        .brand-gradient { background: linear-gradient(90deg, var(--primary), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* أنيميشن ناعم للبطاقات */
+        .hover-card { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .hover-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0, 180, 216, 0.15); border-color: var(--accent-cyan); }
+        
+        /* شريط التمرير المخفي للدول */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* شريط التنقل السفلي */
+        .bottom-nav { padding-bottom: env(safe-area-inset-bottom, 15px); box-shadow: 0 -4px 20px rgba(0,0,0,0.06); }
+        
+        /* SVG Background Patterns */
+        .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300b4d8' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    </style>
+</head>
+<body class="bg-pattern pb-24 md:pb-0">
+
+    <!-- 🌟 شريط علوي (Header) نظيف واحترافي -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-200 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 md:h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2 md:gap-3 cursor-pointer">
+                <!-- أيقونة eSIM مميزة -->
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-[#1f3a40] to-[#00b4d8] rounded-xl md:rounded-2xl flex items-center justify-center shadow-md transform -rotate-3">
+                    <svg class="w-6 h-6 md:w-7 md:h-7 fill-white" viewBox="0 0 512 512"><path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"/></svg>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg md:text-2xl text-[#1f3a40] leading-none tracking-tight">رمال كونّكت</h1>
+                    <p class="text-[9px] md:text-xs font-bold text-[#00b4d8] uppercase tracking-widest mt-0.5">Remal Connect</p>
+                </div>
+            </div>
+
+            <!-- أزرار الديسكتوب -->
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#" class="font-bold text-slate-500 hover:text-[#00b4d8] transition-colors text-sm">الوجهات</a>
+                <a href="#" class="font-bold text-slate-500 hover:text-[#00b4d8] transition-colors text-sm">كيف تعمل؟</a>
+                <a href="#" class="font-bold text-slate-500 hover:text-[#00b4d8] transition-colors text-sm">باقات عالمية</a>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex bg-slate-100 rounded-full px-3 py-1.5 items-center gap-2 border border-slate-200">
+                    <span class="text-xs font-black text-slate-600">AED</span>
+                    <div class="w-px h-3 bg-slate-300"></div>
+                    <span class="text-xs font-black text-slate-600">AR</span>
+                </div>
+                <button class="bg-[#1f3a40] hover:bg-slate-800 text-white w-9 h-9 md:w-auto md:px-5 md:py-2.5 rounded-full font-bold flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 text-xs md:text-sm">
+                    <i class="fa-regular fa-user"></i>
+                    <span class="hidden md:inline">تسجيل الدخول</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 🌟 واجهة البحث السريع (Hero Section) -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-16 pb-12">
+        <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+            
+            <div class="w-full lg:w-1/2 text-center lg:text-right">
+                <div class="inline-flex items-center gap-2 bg-[#00b4d8]/10 text-[#007790] border border-[#00b4d8]/20 px-3 py-1.5 rounded-full text-[10px] md:text-xs font-black mb-4 md:mb-6">
+                    <i class="fa-solid fa-wifi animate-pulse"></i> إنترنت فوري في أكثر من 190 دولة
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#1f3a40] leading-[1.2] md:leading-[1.1] mb-4 md:mb-6">
+                    سافر، وامسح الـ QR.. <br>
+                    <span class="brand-gradient">وخلّك متصل فوراً! 🌍</span>
+                </h2>
+                <p class="text-sm md:text-lg font-bold text-slate-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    لا طوابير في المطارات، لا فواتير تجوال صادمة. اشترِ باقتك الآن، وحمّل شريحة الـ eSIM قبل رحلتك بثوانٍ.
+                </p>
+
+                <!-- شريط البحث السحري -->
+                <div class="bg-white p-2.5 md:p-3 rounded-2xl md:rounded-[2rem] shadow-[0_15px_35px_rgba(0,0,0,0.06)] border border-slate-100 flex items-center relative z-20 w-full max-w-lg mx-auto lg:mx-0">
+                    <i class="fa-solid fa-magnifying-glass text-slate-400 pl-3 md:pl-4 pr-2 text-sm md:text-lg"></i>
+                    <input type="text" placeholder="إلى أين تسافر؟ (مثال: تركيا، لندن...)" class="flex-1 bg-transparent border-none outline-none font-bold text-xs md:text-base text-[#1f3a40] placeholder:text-slate-300 placeholder:font-semibold h-10 md:h-12 w-full">
+                    <button class="bg-gradient-to-l from-[#00b4d8] to-[#007790] text-white px-5 md:px-8 h-10 md:h-12 rounded-xl md:rounded-full font-black text-xs md:text-sm shadow-md hover:shadow-lg transition-all active:scale-95 whitespace-nowrap">
+                        ابحث الآن
+                    </button>
+                </div>
+
+                <!-- الوجهات الشائعة (Quick Tags) -->
+                <div class="flex items-center justify-center lg:justify-start gap-2 mt-5 flex-wrap">
+                    <span class="text-[10px] md:text-xs font-bold text-slate-400">شائع:</span>
+                    <span class="bg-slate-50 border border-slate-200 px-3 py-1 rounded-full text-[10px] md:text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors">🇹🇷 تركيا</span>
+                    <span class="bg-slate-50 border border-slate-200 px-3 py-1 rounded-full text-[10px] md:text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors">🇹🇭 تايلاند</span>
+                    <span class="bg-slate-50 border border-slate-200 px-3 py-1 rounded-full text-[10px] md:text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors">🇪🇺 أوروبا (باقة موحدة)</span>
+                </div>
+            </div>
+
+            <!-- هاتف تخيلي يعرض واجهة الشراء -->
+            <div class="hidden sm:block w-full lg:w-1/2 relative perspective-1000">
+                <div class="relative w-[280px] md:w-[320px] mx-auto transform rotate-[-5deg] hover:rotate-0 transition-transform duration-500 ease-out">
+                    <!-- الإطار -->
+                    <div class="bg-slate-800 rounded-[2.5rem] p-3 shadow-2xl border-4 border-slate-700 relative z-10">
+                        <div class="bg-white w-full h-[550px] md:h-[600px] rounded-[1.8rem] overflow-hidden relative flex flex-col">
+                            <!-- نوتش الكاميرا -->
+                            <div class="absolute top-0 inset-x-0 h-6 bg-slate-800 rounded-b-xl w-32 mx-auto z-20"></div>
+                            
+                            <!-- محتوى الشاشة التخيلية -->
+                            <div class="bg-[#1f3a40] pt-12 pb-6 px-4 text-center rounded-b-[2rem]">
+                                <h4 class="text-white font-black text-xl mb-1">باقة أوروبا الموحدة 🇪🇺</h4>
+                                <p class="text-[#00b4d8] text-[10px] font-bold">تغطي 33 دولة</p>
+                            </div>
+                            
+                            <div class="flex-1 bg-slate-50 p-4 pt-6 space-y-4">
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-cyan-50 rounded-full flex items-center justify-center text-[#00b4d8]"><i class="fa-solid fa-database"></i></div>
+                                        <div class="text-right">
+                                            <span class="block text-[10px] text-slate-400 font-bold">البيانات</span>
+                                            <span class="block text-lg font-black text-slate-800">10 GB</span>
+                                        </div>
+                                    </div>
+                                    <i class="fa-solid fa-check-circle text-emerald-500 text-lg"></i>
+                                </div>
+                                
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center text-amber-500"><i class="fa-solid fa-calendar-days"></i></div>
+                                        <div class="text-right">
+                                            <span class="block text-[10px] text-slate-400 font-bold">الصلاحية</span>
+                                            <span class="block text-lg font-black text-slate-800">30 يوماً</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="w-full bg-[#1f3a40] text-white font-black py-3.5 rounded-xl shadow-lg mt-4 text-sm flex items-center justify-center gap-2">
+                                    شراء الآن - 65 AED <i class="fa-brands fa-apple text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ظلال وزينة -->
+                    <div class="absolute -right-12 -bottom-10 w-48 h-48 bg-[#00b4d8] rounded-full blur-[80px] opacity-30 z-0"></div>
+                    <div class="absolute -left-12 top-10 w-40 h-40 bg-[#ff595e] rounded-full blur-[80px] opacity-20 z-0"></div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- 🌟 قسم الوجهات والباقات (Packages) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        
+        <div class="flex items-end justify-between mb-6 md:mb-10">
+            <div>
+                <h3 class="text-xl md:text-3xl font-black text-[#1f3a40] mb-1.5 md:mb-2">الوجهات الأكثر طلباً 🔥</h3>
+                <p class="text-xs md:text-sm font-bold text-slate-500">اختر وجهتك، استلم الـ QR، وسافر مرتاح.</p>
+            </div>
+            <a href="#" class="hidden sm:flex text-[#00b4d8] font-bold text-sm items-center gap-1.5 hover:text-[#007790] transition-colors">عرض كل الدول <i class="fa-solid fa-arrow-left text-[10px]"></i></a>
+        </div>
+
+        <!-- تصفية سريعة (Tabs) -->
+        <div class="flex items-center gap-2 md:gap-3 overflow-x-auto hide-scrollbar pb-4 mb-2 md:mb-6 snap-x">
+            <button class="bg-[#1f3a40] text-white px-5 py-2 md:py-2.5 rounded-full font-bold text-xs md:text-sm whitespace-nowrap snap-start shadow-md">الباقات المحلية</button>
+            <button class="bg-white border border-slate-200 text-slate-600 hover:border-[#00b4d8] hover:text-[#00b4d8] px-5 py-2 md:py-2.5 rounded-full font-bold text-xs md:text-sm whitespace-nowrap transition-colors snap-start">باقات قارية (أوروبا/آسيا)</button>
+            <button class="bg-white border border-slate-200 text-slate-600 hover:border-[#00b4d8] hover:text-[#00b4d8] px-5 py-2 md:py-2.5 rounded-full font-bold text-xs md:text-sm whitespace-nowrap transition-colors snap-start">باقات عالمية (Global)</button>
+        </div>
+
+        <!-- شبكة الباقات (Grid) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+            
+            <!-- بطاقة باقة 1 -->
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-5 md:p-6 hover-card relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-rose-100 to-transparent rounded-bl-full opacity-50 z-0 pointer-events-none"></div>
+                
+                <div class="flex items-start justify-between mb-4 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <span class="text-4xl">🇹🇷</span>
+                        <div>
+                            <h4 class="font-black text-lg text-[#1f3a40]">تركيا</h4>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5">Turkey</span>
+                        </div>
+                    </div>
+                    <div class="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded-md text-[9px] font-black uppercase">عرض حصري</div>
+                </div>
+
+                <div class="space-y-3 mb-6 relative z-10 flex-1">
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-database text-slate-400 ml-1.5"></i>البيانات</span>
+                        <span class="font-black text-sm text-[#1f3a40] bg-white px-2 py-0.5 rounded shadow-sm border border-slate-100" dir="ltr">5 GB</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-calendar-days text-slate-400 ml-1.5"></i>الصلاحية</span>
+                        <span class="font-black text-sm text-[#1f3a40] bg-white px-2 py-0.5 rounded shadow-sm border border-slate-100">15 يوماً</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-auto border-t border-dashed border-slate-200 pt-4 relative z-10">
+                    <div class="text-right">
+                        <span class="block text-[10px] font-bold text-slate-400 mb-0.5">سعر الباقة</span>
+                        <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">35 <span class="text-xs text-slate-500">AED</span></span>
+                    </div>
+                    <button class="bg-[#1f3a40] hover:bg-slate-800 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all">
+                        <i class="fa-solid fa-plus text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- بطاقة باقة 2 -->
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-5 md:p-6 hover-card relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-100 to-transparent rounded-bl-full opacity-50 z-0 pointer-events-none"></div>
+                
+                <div class="flex items-start justify-between mb-4 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <span class="text-4xl">🇪🇺</span>
+                        <div>
+                            <h4 class="font-black text-lg text-[#1f3a40]">أوروبا الموحدة</h4>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5">33 Countries</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 mb-6 relative z-10 flex-1">
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-database text-slate-400 ml-1.5"></i>البيانات</span>
+                        <span class="font-black text-sm text-[#1f3a40] bg-white px-2 py-0.5 rounded shadow-sm border border-slate-100" dir="ltr">10 GB</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-calendar-days text-slate-400 ml-1.5"></i>الصلاحية</span>
+                        <span class="font-black text-sm text-[#1f3a40] bg-white px-2 py-0.5 rounded shadow-sm border border-slate-100">30 يوماً</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-auto border-t border-dashed border-slate-200 pt-4 relative z-10">
+                    <div class="text-right">
+                        <span class="block text-[10px] font-bold text-slate-400 mb-0.5">سعر الباقة</span>
+                        <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">85 <span class="text-xs text-slate-500">AED</span></span>
+                    </div>
+                    <button class="bg-[#1f3a40] hover:bg-slate-800 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all">
+                        <i class="fa-solid fa-plus text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- بطاقة باقة 3 -->
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-5 md:p-6 hover-card relative overflow-hidden flex flex-col hidden sm:flex">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-green-100 to-transparent rounded-bl-full opacity-50 z-0 pointer-events-none"></div>
+                
+                <div class="flex items-start justify-between mb-4 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <span class="text-4xl">🇸🇦</span>
+                        <div>
+                            <h4 class="font-black text-lg text-[#1f3a40]">السعودية</h4>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5">Saudi Arabia</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 mb-6 relative z-10 flex-1">
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-database text-slate-400 ml-1.5"></i>البيانات</span>
+                        <span class="font-black text-sm text-[#1f3a40] bg-white px-2 py-0.5 rounded shadow-sm border border-slate-100" dir="ltr">3 GB</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-calendar-days text-slate-400 ml-1.5"></i>الصلاحية</span>
+                        <span class="font-black text-sm text-[#1f3a40] bg-white px-2 py-0.5 rounded shadow-sm border border-slate-100">7 أيام</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mt-auto border-t border-dashed border-slate-200 pt-4 relative z-10">
+                    <div class="text-right">
+                        <span class="block text-[10px] font-bold text-slate-400 mb-0.5">سعر الباقة</span>
+                        <span class="block font-black text-xl text-[#00b4d8]" dir="ltr">25 <span class="text-xs text-slate-500">AED</span></span>
+                    </div>
+                    <button class="bg-[#1f3a40] hover:bg-slate-800 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all">
+                        <i class="fa-solid fa-plus text-sm"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- بطاقة كيف تعمل (How it works card) -->
+            <div class="bg-gradient-to-br from-[#1f3a40] to-[#2c5364] rounded-3xl border border-[#00b4d8]/30 shadow-[0_8px_30px_rgba(0,0,0,0.1)] p-5 md:p-6 relative overflow-hidden flex flex-col justify-center text-white hidden lg:flex">
+                <div class="absolute -right-4 -bottom-4 opacity-10">
+                    <i class="fa-solid fa-qrcode text-9xl"></i>
+                </div>
+                <div class="relative z-10 text-center">
+                    <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
+                        <i class="fa-solid fa-bolt text-[#00b4d8] text-xl"></i>
+                    </div>
+                    <h4 class="font-black text-xl mb-2">كيف تعمل؟</h4>
+                    <p class="text-xs text-slate-300 font-bold mb-5 leading-relaxed">
+                        1. اختر الباقة<br>
+                        2. ادفع أونلاين<br>
+                        3. امسح كود الـ QR للتشغيل!
+                    </p>
+                    <button class="bg-[#00b4d8] hover:bg-[#0096b4] text-white w-full py-2.5 rounded-xl font-black text-xs transition-colors shadow-lg">
+                        دليل الإعداد السريع
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        
+        <a href="#" class="sm:hidden block w-full bg-white border border-slate-200 text-center py-3 rounded-xl font-bold text-sm text-[#00b4d8] shadow-sm mt-5">عرض كل الدول</a>
+    </section>
+
+    <!-- 🌟 شريط التنقل السفلي للموبايل (Mobile Bottom Nav) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 bottom-nav flex justify-around items-center pt-2 z-[999]">
+        <a href="#" class="mobile-nav-item active flex flex-col items-center gap-1 px-3 py-1 text-[#00b4d8]">
+            <i class="fa-solid fa-globe text-lg"></i>
+            <span class="text-[10px] font-bold">الوجهات</span>
+        </a>
+        <a href="#" class="mobile-nav-item flex flex-col items-center gap-1 px-3 py-1 text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-qrcode text-lg"></i>
+            <span class="text-[10px] font-bold">شرائحي</span>
+        </a>
+        <a href="#" class="mobile-nav-item flex flex-col items-center gap-1 px-3 py-1 text-slate-400 hover:text-slate-600 relative">
+            <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white"></div>
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[10px] font-bold">المحفظة</span>
+        </a>
+        <a href="#" class="mobile-nav-item flex flex-col items-center gap-1 px-3 py-1 text-slate-400 hover:text-slate-600">
+            <i class="fa-regular fa-user text-lg"></i>
+            <span class="text-[10px] font-bold">حسابي</span>
+        </a>
+    </nav>
+
+</body>
+</html>
