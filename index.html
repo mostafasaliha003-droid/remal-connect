@@ -303,7 +303,7 @@
                 </button>
             </div>
 
-            <!-- 🛡️ نظام الأدرع الذكي والمكافآت (VIP Shield Tiers) - مصقول ومضبوط المسافات -->
+            <!-- 🛡️ نظام الأدرع الذكي والمكافآت (VIP Shield Tiers) -->
             <div id="tierBannerContainer" class="ambient-banner p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-slate-400">
                 <div class="glow-overlay top-0 right-0 bg-slate-400" id="tierGlow"></div>
                 <div class="flex items-center gap-5 w-full md:w-auto relative z-10">
@@ -333,7 +333,7 @@
                 </div>
             </div>
 
-            <!-- 🎁 بطاقة كود المشاركة الحصري بمسافات تنفس مريحة -->
+            <!-- 🎁 بطاقة كود المشاركة الحصري -->
             <div class="mb-10 w-full">
                 <div class="ambient-banner p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-emerald-500">
                     <div class="glow-overlay bg-emerald-500 bottom-0 right-0"></div>
@@ -942,7 +942,6 @@
             }
         }
 
-        // تم ضبط محاذاة أزرار الشراء والأسهم لتدعم الاتجاه العربي الصحيح (RTL)
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
             if (!container) return;
@@ -1001,7 +1000,6 @@
                                 <span class="text-[10px] font-black text-[#00b4d8]">AED</span>
                             </div>
                         </div>
-                        <!-- تم تعديل السهم ليتوافق مع اتجاه الـ RTL -->
                         <button onclick="openCheckoutModalByIndex(${index})" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-5 py-2.5 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer border-none shadow-[0_0_20px_rgba(0,180,216,0.35)]">
                             شراء وتفعيل <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </button>
@@ -1421,7 +1419,7 @@
                                 </div>
                                 <div class="bg-black/30 border border-white/5 p-3 rounded-xl flex-1 min-w-[100px]">
                                      <span class="block text-[9px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-clock text-[#00b4d8] ml-1"></i>الصلاحية المتبقية</span>
-                                     <span class="block font-black text-sm text-emerald-400">14 يوماً</span>
+                                     <span class="block font-black text-sm text-emerald-400">30 يوماً</span>
                                 </div>
                             </div>
                         </div>
@@ -1476,17 +1474,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.perspective-container');
-            const phone = document.getElementById('phoneMockup');
-            if (container && phone) {
-                container.addEventListener('mousemove', (e) => {
-                    const rect = container.getBoundingClientRect();
-                    const rotateX = (((e.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * -15; 
-                    const rotateY = (((e.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 15;
-                    phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                });
-                container.addEventListener('mouseleave', () => { phone.style.transform = `rotateX(0deg) rotateY(0deg)`; });
-            }
             updateAuthUI();
             fetchPackages();
             verifyPaymentAndFulfill(); 
