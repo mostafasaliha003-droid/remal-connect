@@ -159,12 +159,12 @@
     <!-- ========================================== -->
     <div id="homeView" class="block transition-opacity duration-300">
         <main class="pt-28 md:pt-36 pb-16 md:pb-24 relative z-10 overflow-hidden">
-            <!-- توهج خلفي ناعم في العمق لكسر السواد وإبراز المحتوى -->
-            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[350px] bg-gradient-to-tr from-[#00b4d8]/15 via-cyan-500/5 to-transparent blur-[140px] rounded-full pointer-events-none"></div>
+            <!-- توهج خلفي في العمق -->
+            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] bg-gradient-to-tr from-[#00b4d8]/15 via-cyan-500/5 to-transparent blur-[150px] rounded-full pointer-events-none"></div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 relative z-10">
                 
-                <!-- الجانب التسويقي (Punchy Masterstroke Copy) -->
+                <!-- الجانب التسويقي -->
                 <div class="w-full lg:w-7/12 text-center lg:text-right">
                     <div class="inline-flex items-center gap-2.5 bg-gradient-to-r from-[#00b4d8]/15 to-transparent border border-[#00b4d8]/30 px-4 py-1.5 rounded-full text-xs font-black text-[#00b4d8] mb-6 backdrop-blur-md shadow-[0_0_20px_rgba(0,180,216,0.15)]">
                         <span class="flex h-2 w-2 relative">
@@ -174,7 +174,7 @@
                         تغطية 5G حقيقية وفورية في أكثر من 150 دولة 🌐
                     </div>
                     
-                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] tracking-tight text-white drop-shadow-2xl">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.15] tracking-tight text-white drop-shadow-2xl">
                         اهبط متصلاً.. <br/>
                         <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#00b4d8] via-cyan-200 to-white filter drop-shadow-[0_0_25px_rgba(0,180,216,0.4)]">قبل أن يفك الركاب أحزمة الأمان! ✈️</span>
                     </h1>
@@ -183,13 +183,13 @@
                         وداعاً لطوابير أكشاك المطارات وفواتير التجوال الصادمة عند عودتك. اختر وجهتك، امسح كود الـ QR بكاميرا هاتفك، وانطلق بإنترنت 5G فوري بدون الحاجة لتبديل شريحتك الفعلية.
                     </p>
 
-                    <!-- محرك البحث المصمم بدقة لمنع قطع النصوص -->
-                    <form id="searchForm" class="bg-[#111c22]/90 border border-white/10 hover:border-[#00b4d8]/40 p-2 rounded-2xl max-w-xl mx-auto lg:mx-0 flex flex-col sm:flex-row items-center gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.6)] focus-within:border-[#00b4d8] focus-within:shadow-[0_0_30px_rgba(0,180,216,0.2)] transition-all backdrop-blur-xl">
-                        <div class="flex items-center w-full px-3 gap-3">
+                    <!-- محرك البحث المتناسق بالكامل بدون اقتطاع -->
+                    <form id="searchForm" class="bg-[#111c22]/90 border border-white/10 hover:border-[#00b4d8]/50 p-2 rounded-2xl max-w-xl mx-auto lg:mx-0 flex flex-col sm:flex-row items-center gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.6)] focus-within:border-[#00b4d8] focus-within:shadow-[0_0_30px_rgba(0,180,216,0.2)] transition-all backdrop-blur-xl">
+                        <div class="flex items-center flex-1 w-full px-3 gap-3">
                             <i class="fa-solid fa-earth-americas text-[#00b4d8] text-lg"></i>
                             <input type="text" id="searchInput" placeholder="إلى أين وجهتك القادمة؟ (مثال: الإمارات، تركيا، أمريكا...)" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white placeholder-slate-500 h-11">
                         </div>
-                        <button type="submit" id="searchBtn" class="w-full sm:w-auto bg-[#00b4d8] hover:bg-cyan-400 text-slate-950 font-black py-3 px-8 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.35)] text-sm active:scale-95 shrink-0 border-none">
+                        <button type="submit" id="searchBtn" class="w-full sm:w-auto bg-[#00b4d8] hover:bg-cyan-400 text-slate-950 font-black py-3 px-8 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.35)] text-sm active:scale-95 shrink-0 border-none whitespace-nowrap">
                             انطلق بالإنترنت ⚡
                         </button>
                     </form>
@@ -203,24 +203,24 @@
                         <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇪🇺 أوروبا الموحدة</button>
                     </div>
 
-                    <!-- مؤشرات الثقة (Social Proof) -->
-                    <div class="grid grid-cols-3 gap-4 border-t border-white/5 pt-6 mt-8 max-w-lg mx-auto lg:mx-0">
+                    <!-- إحصائيات الثقة بتنظيم بصري متزن -->
+                    <div class="grid grid-cols-3 gap-6 border-t border-white/5 pt-6 mt-8 max-w-xl mx-auto lg:mx-0">
                         <div class="text-right">
-                            <span class="block text-lg font-black text-white">+10,000</span>
+                            <span class="block text-xl font-black text-white">+10,000</span>
                             <span class="text-[11px] font-semibold text-slate-400">شريحة مفعلة</span>
                         </div>
-                        <div class="text-right border-r border-white/5 pr-4">
-                            <span class="block text-lg font-black text-[#00b4d8]">5G / LTE</span>
+                        <div class="text-right border-r border-white/10 pr-6">
+                            <span class="block text-xl font-black text-[#00b4d8]">5G / LTE</span>
                             <span class="text-[11px] font-semibold text-slate-400">شبكات معتمدة</span>
                         </div>
-                        <div class="text-right border-r border-white/5 pr-4">
-                            <span class="block text-lg font-black text-amber-400">4.9 ★</span>
-                            <span class="text-[11px] font-semibold text-slate-400">رضا المسافرين</span>
+                        <div class="text-right border-r border-white/10 pr-6">
+                            <span class="block text-xl font-black text-amber-400">4.9 ★</span>
+                            <span class="text-[11px] font-semibold text-slate-400">تقييم المسافرين</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- 🚀 3D Phone Mockup يحاكي اتصالاً حياً وشاشة قفل مسافر حقيقية -->
+                <!-- 🚀 3D Phone Mockup مع العلم الحقيقي والتصميم الواقعي -->
                 <div class="w-full lg:w-5/12 flex items-center justify-center relative">
                     <div class="absolute inset-0 bg-[#00b4d8]/10 blur-[80px] rounded-full"></div>
 
@@ -229,7 +229,6 @@
                             
                             <div class="bg-[#091016] rounded-[2.6rem] overflow-hidden border border-white/10 h-[560px] flex flex-col justify-between relative shadow-inner">
                                 
-                                <!-- الجزيرة الديناميكية (Dynamic Island) -->
                                 <div class="pt-3 flex justify-center z-20">
                                     <div class="bg-black w-24 h-5 rounded-full flex items-center justify-between px-3">
                                         <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
@@ -237,10 +236,7 @@
                                     </div>
                                 </div>
 
-                                <!-- شاشة الهاتف: بطاقة الإشعار الحي والشريحة المفعلة -->
                                 <div class="p-5 space-y-4 my-auto">
-                                    
-                                    <!-- إشعار تفعيل الشريحة الفوري -->
                                     <div class="bg-[#111c22]/90 border border-emerald-500/30 p-4 rounded-2xl backdrop-blur-md shadow-lg text-right">
                                         <div class="flex items-center gap-2 mb-2">
                                             <div class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs">
@@ -253,10 +249,9 @@
                                         </p>
                                     </div>
 
-                                    <!-- بطاقة الشريحة النشطة داخل الهاتف -->
                                     <div class="bg-gradient-to-br from-[#1a2c35] to-[#0d171d] border border-[#00b4d8]/40 p-4 rounded-2xl shadow-xl text-right">
                                         <div class="flex items-center justify-between mb-3">
-                                            <span class="text-2xl">🇦🇪</span>
+                                            <span class="text-3xl filter drop-shadow">🇦🇪</span>
                                             <span class="bg-[#00b4d8]/20 text-[#00b4d8] text-[9px] font-black px-2 py-0.5 rounded-md border border-[#00b4d8]/30">الخط الأساسي</span>
                                         </div>
                                         <h4 class="text-base font-black text-white mb-0.5">باقة الإمارات العربية</h4>
@@ -270,14 +265,11 @@
                                             <span class="text-emerald-400">نشط الآن ⚡</span>
                                         </div>
                                     </div>
-
                                 </div>
 
-                                <!-- شريط السحب السفلي -->
                                 <div class="pb-3 flex justify-center">
                                     <div class="w-28 h-1 bg-white/30 rounded-full"></div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -318,7 +310,7 @@
                 </button>
             </div>
 
-            <!-- 🛡️ نظام الأدرع الذكي والمكافآت الواقعي (VIP Shield Tiers) -->
+            <!-- 🛡️ نظام الأدرع الذكي والمكافآت (VIP Shield Tiers) -->
             <div id="tierBannerContainer" class="ambient-banner p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-8 border-t-[3px] border-slate-400">
                 <div class="glow-overlay top-0 right-0 bg-slate-400" id="tierGlow"></div>
                 <div class="flex items-center gap-5 w-full md:w-auto relative z-10">
@@ -348,7 +340,7 @@
                 </div>
             </div>
 
-            <!-- 🎁 بطاقة كود المشاركة الحصري الخاص بكل عميل (تم حذف كرت الفنادق) -->
+            <!-- 🎁 بطاقة كود المشاركة الحصري الخاص بكل عميل -->
             <div class="mb-10 w-full">
                 <div class="ambient-banner p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-emerald-500">
                     <div class="glow-overlay bg-emerald-500 bottom-0 right-0"></div>
@@ -476,10 +468,10 @@
     </footer>
 
     <!-- ========================================== -->
-    <!-- 🌟 Modals (Checkout with Wallet Cashback, Top-up, Compatibility) -->
+    <!-- 🌟 Modals (Checkout with Wallet, Top-up, Compatibility) -->
     <!-- ========================================== -->
 
-    <!-- 🚀 Checkout Modal (مع ميزة خصم رصيد الكاش باك) -->
+    <!-- 🚀 Checkout Modal -->
     <div id="checkoutModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-[#091016]/80 backdrop-blur-md cursor-pointer" onclick="closeCheckoutModal()"></div>
         <div class="checkout-modal w-[90%] max-w-md p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300" id="checkoutContent">
@@ -528,7 +520,7 @@
         </div>
     </div>
 
-    <!-- 🚀 Top-Up Modal (المدفوع حقيقياً عبر Ziina) -->
+    <!-- 🚀 Top-Up Modal -->
     <div id="topupModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-[#091016]/80 backdrop-blur-md cursor-pointer" onclick="closeTopupModal()"></div>
         <div class="checkout-modal w-[90%] max-w-md p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 border-t-[4px] border-[#00b4d8]" id="topupContent">
@@ -899,7 +891,7 @@
             const desc = document.getElementById('tierProgressDesc');
             if (desc) desc.innerText = tier.desc;
 
-            // تحديث كود المشاركة الخاص بالعميل (توليده تلقائياً إن لم يتوفر)
+            // تحديث كود المشاركة الخاص بالعميل
             const refCodeEl = document.getElementById('referralCode');
             if (refCodeEl) {
                 if (!user.referralCode) {
@@ -1000,7 +992,6 @@
             }
         }
 
-        // تم تحسين تصميم الكروت لمنع التكرار الرتيب وإبراز الهوية البصرية والقيمة
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
             if (!container) return;
@@ -1030,7 +1021,6 @@
                             ${hotBadge}
                         </div>
 
-                        <!-- شبكة تفاصيل السعة والمدة بتصميم عالمي بارز -->
                         <div class="grid grid-cols-2 gap-2.5 mb-5 relative z-10">
                             <div class="bg-black/40 border border-white/5 p-3 rounded-2xl flex flex-col items-center justify-center text-center group-hover:border-[#00b4d8]/30 transition-colors">
                                 <span class="text-[10px] font-bold text-slate-400 mb-1 flex items-center gap-1">
@@ -1046,7 +1036,6 @@
                             </div>
                         </div>
 
-                        <!-- مؤشر الكاش باك الترويجي المغري -->
                         <div class="mb-5 bg-emerald-950/25 border border-emerald-500/20 py-1.5 px-3 rounded-xl flex items-center justify-between text-[11px] font-bold text-emerald-300">
                             <span>كاش باك فوري لمحفظتك</span>
                             <span class="font-black text-emerald-400">حتى 3% 💰</span>
