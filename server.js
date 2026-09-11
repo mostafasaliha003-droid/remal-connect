@@ -12,7 +12,7 @@ const path = require('path');
 const app = express();
 
 // ==========================================
-// طباعة الـ IP الخارجي للتأكيد
+// طباعة الـ IP الخارجي للسيرفر
 // ==========================================
 axios.get('https://api.ipify.org?format=json')
   .then(response => {
@@ -21,7 +21,7 @@ axios.get('https://api.ipify.org?format=json')
   .catch(() => console.log('تعذر جلب الـ IP'));
 
 // ==========================================
-// إعدادات الحماية والوصول
+// إعدادات الحماية والوصول (Middleware)
 // ==========================================
 app.use(express.json());
 app.use(cors()); 
@@ -89,7 +89,7 @@ app.post('/api/register', async (req, res) => {
     try {
         const { fullName, email, whatsapp, password } = req.body;
         const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ success: false, message: 'البريد مسجل مسبقاً' });
+        if (existingUser) return res.status(400).json({ success: false, message: 'البريد مسجل بالفعل' });
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -149,63 +149,69 @@ async function getAiraloToken() {
     return airaloAccessToken;
 }
 
-// جلب وتنسيق الباقات لتتوافق مع واجهة العرض
+// تفكيك واستخراج الباقات من مصفوفة المشغلين والدول
 app.get('/api/airalo/packages', async (req, res) => {
     let formattedPackages = [];
     try {
         const token = await getAiraloToken();
+        
+        const apiParams = { limit: 50 };
+        if (req.query.country) {
+            apiParams['filter[country]'] = req.query.country;
+        }
+
         const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
             headers: { 
                 'Accept': 'application/json', 
                 'Authorization': `Bearer ${token}` 
             },
-            params: { 'limit': 50 }
+            params: apiParams
         });
         
-        const rawData = response.data?.data || [];
+        const rawCountries = response.data?.data || [];
 
-        rawData.forEach(item => {
-            // معالجة الرد في حال كانت الباقات متداخلة داخل مصفوفة الدولة
-            if (item.packages && Array.isArray(item.packages)) {
-                item.packages.forEach(subPkg => {
-                    const usd = subPkg.price || subPkg.net_price || 5;
-                    const aed = (usd * 3.67).toFixed(2);
-                    formattedPackages.push({
-                        id: subPkg.id,
-                        country: item.title || 'السعودية',
-                        country_code: item.country_code || 'SA',
-                        data: subPkg.data || (subPkg.amount ? `${Math.round(subPkg.amount / 1024)} GB` : 'غير محدد'),
-                        validity: subPkg.validity || (subPkg.day ? `${subPkg.day} أيام` : 'غير محدد'),
-                        price: aed,
-                        type: subPkg.type || 'local'
-                    });
-                });
-            } else {
-                // معالجة الرد في حال كانت الباقات مصفوفة مباشرة
-                const usd = item.price || item.net_price || 5;
-                const aed = (usd * 3.67).toFixed(2);
-                formattedPackages.push({
-                    id: item.id || item.package_id,
-                    country: item.country || 'السعودية',
-                    country_code: item.country_code || 'SA',
-                    data: item.data || (item.amount ? `${Math.round(item.amount / 1024)} GB` : 'غير محدد'),
-                    validity: item.validity || (item.day ? `${item.day} أيام` : 'غير محدد'),
-                    price: aed,
-                    type: item.type || 'local'
+        // التعمق في هيكل Airalo: الدول -> المشغلين -> الباقات الفعلية
+        rawCountries.forEach(country => {
+            const countryTitle = country.title || 'السعودية';
+            const countryCode = country.country_code || 'SA';
+
+            if (country.operators && Array.isArray(country.operators)) {
+                country.operators.forEach(operator => {
+                    if (operator.packages && Array.isArray(operator.packages)) {
+                        operator.packages.forEach(pkg => {
+                            // حساب السعر وتحويله من الدولار إلى الدرهم الإماراتي (1 USD ≈ 3.67 AED)
+                            const usdPrice = pkg.price || pkg.net_price || pkg.prices?.recommended_retail_price?.USD || 5;
+                            const aedPrice = (usdPrice * 3.67).toFixed(2);
+
+                            formattedPackages.push({
+                                id: pkg.id,
+                                package_id: pkg.id,
+                                country: countryTitle,
+                                country_code: countryCode,
+                                operator: operator.title,
+                                data: pkg.data || (pkg.amount ? `${Math.round(pkg.amount / 1024)} GB` : 'غير محدد'),
+                                validity: pkg.day ? `${pkg.day} أيام` : '7 أيام',
+                                price: aedPrice,
+                                sellingPrice: aedPrice,
+                                type: operator.type || 'local'
+                            });
+                        });
+                    }
                 });
             }
         });
 
     } catch (error) {
-        console.log('⚠️ خطأ في جلب باقات Airalo:', error.response?.status, error.response?.data || error.message);
+        console.log('⚠️ خطأ في استخراج باقات Airalo:', error.response?.status, error.response?.data || error.message);
     }
 
+    // باقات الطوارئ الاحتياطية بأسعار سليمة
     if (formattedPackages.length === 0) {
         formattedPackages = [
-            { id: "mock_1", country: "السعودية", country_code: "SA", data: "3 GB", validity: "7 أيام", price: "25.00", type: "local" },
-            { id: "mock_2", country: "السعودية", country_code: "SA", data: "5 GB", validity: "15 يوماً", price: "40.00", type: "local" },
-            { id: "mock_3", country: "السعودية", country_code: "SA", data: "10 GB", validity: "30 يوماً", price: "75.00", type: "local" },
-            { id: "mock_global", country: "عالمية", country_code: "GLOBAL", data: "20 GB", validity: "365 يوماً", price: "150.00", type: "global", isHot: true }
+            { id: "mock_1", package_id: "mock_1", country: "السعودية", country_code: "SA", data: "3 GB", validity: "7 أيام", price: "25.00", sellingPrice: "25.00", type: "local" },
+            { id: "mock_2", package_id: "mock_2", country: "السعودية", country_code: "SA", data: "5 GB", validity: "15 يوماً", price: "40.00", sellingPrice: "40.00", type: "local" },
+            { id: "mock_3", package_id: "mock_3", country: "السعودية", country_code: "SA", data: "10 GB", validity: "30 يوماً", price: "75.00", sellingPrice: "75.00", type: "local" },
+            { id: "mock_global", package_id: "mock_global", country: "عالمية", country_code: "GLOBAL", data: "20 GB", validity: "365 يوماً", price: "150.00", sellingPrice: "150.00", type: "global", isHot: true }
         ];
     }
 
@@ -218,7 +224,7 @@ app.get('/api/airalo/packages', async (req, res) => {
 app.post('/api/checkout', async (req, res) => {
     let { packageId, price, customerEmail } = req.body;
     
-    // تأمين تحويل السعر إلى رقم ومنع أخطاء Mongoose
+    // تأكيد تحويل السعر لرقم لمنع أخطاء التحقق
     price = parseFloat(price);
     if (isNaN(price) || price <= 0) {
         price = 35.00;
@@ -229,7 +235,7 @@ app.post('/api/checkout', async (req, res) => {
             referenceId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
             customerEmail: customerEmail || 'guest@remaltourismllc.com', 
             type: 'b2c', 
-            packageId,
+            packageId: packageId || 'package_default',
             sellingPrice: price, 
             apiCost: 0, 
             status: 'pending_payment'
