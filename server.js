@@ -346,6 +346,47 @@ cron.schedule('0 * * * *', async () => {
     }
 });
 
+// ==========================================
+// مسار استقبال إشعارات الـ Webhook من Airalo
+// ==========================================
+app.post('/api/airalo/webhook', async (req, res) => {
+    const payload = req.body;
+    const signature = req.headers['airalo-signature'];
+
+    console.log('🔔 تم استلام إشعار Webhook من Airalo:', { payload, signature });
+
+    try {
+        const requestId = payload.request_id || payload.referenceId;
+        const tx = await Transaction.findOne({ referenceId: requestId });
+
+        if (!tx) {
+            console.error('⚠️ لم يتم العثور على الطلب المرتبط بـ webhook:', requestId);
+            return res.status(200).json({ status: 'Order not found but acknowledged' });
+        }
+
+        if (payload.reason && (!payload.sims || payload.sims.length === 0)) {
+            console.log('⚠️ خطأ غير قابل للإعادة من Airalo:', payload.reason);
+            tx.status = 'failed';
+            await tx.save();
+            return res.status(200).json({ status: 'processed with error acknowledged' });
+        }
+
+        if (payload.sims && payload.sims.length > 0) {
+            const simDetails = payload.sims[0];
+            tx.status = 'success';
+            tx.iccid = simDetails.iccid;
+            await tx.save();
+            console.log(`✅ تم إتمام معالجة الطلب عبر الـ Webhook بنجاح للشريحة: ${simDetails.iccid}`);
+        }
+
+        return res.status(200).json({ status: 'processed' });
+
+    } catch (e) {
+        console.error('❌ خطأ في معالجة إشعار الـ Webhook:', e.message);
+        return res.status(422).json({ error: 'Processing error' });
+    }
+});
+
 app.get('/api/airalo/packages', async (req, res) => {
     let formattedPackages = [];
     try {
