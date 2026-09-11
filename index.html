@@ -29,7 +29,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 🚀 خلفية شبكية سينمائية ناعمة جداً */
         .cyber-grid {
             background-color: var(--bg-dark);
             background-image: 
@@ -39,7 +38,6 @@
             background-position: center center;
         }
 
-        /* 🚀 الزجاج التقني الفاخر (بدون حدود قاسية) */
         .glass-panel {
             background: rgba(17, 28, 34, 0.65);
             backdrop-filter: blur(24px);
@@ -49,7 +47,6 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* 🚀 بطاقات الباقات (Home) */
         .premium-card {
             background: linear-gradient(160deg, rgba(25, 40, 50, 0.8), rgba(9, 16, 22, 0.95));
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -65,7 +62,6 @@
             box-shadow: 0 25px 50px rgba(0, 180, 216, 0.15);
         }
 
-        /* 🚀 Masterstroke: تصميم "تذكرة الشريحة" بدلاً من الصناديق */
         .esim-ticket {
             background: linear-gradient(135deg, rgba(17, 28, 34, 0.9), rgba(9, 16, 22, 0.98));
             border: 1px solid rgba(255, 255, 255, 0.03);
@@ -79,7 +75,6 @@
             background: linear-gradient(90deg, transparent, var(--primary-cyan), transparent);
         }
 
-        /* 🚀 إطار الـ QR Code الذكي */
         .qr-frame {
             background: white;
             padding: 10px;
@@ -93,7 +88,6 @@
             border-radius: 26px; pointer-events: none;
         }
 
-        /* 🚀 البانرات المتوهجة (بدلاً من الألوان المصمتة) */
         .ambient-banner {
             background: rgba(17, 28, 34, 0.8);
             backdrop-filter: blur(20px);
@@ -107,7 +101,6 @@
             pointer-events: none; z-index: 0;
         }
 
-        /* 🚀 نافذة الدفع السلسة */
         .checkout-modal {
             background: rgba(17, 28, 34, 0.95);
             backdrop-filter: blur(30px);
@@ -117,7 +110,6 @@
             border-radius: 32px;
         }
 
-        /* Utilities */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
         .animate-float { animation: float 6s ease-in-out infinite; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -262,7 +254,7 @@
             </div>
             
             <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-                <!-- Data injected via JS -->
+                <!-- يتم حقن الباقات تلقائياً هنا -->
             </div>
         </section>
     </div>
@@ -360,7 +352,7 @@
     </nav>
 
     <!-- ========================================== -->
-    <!-- 🌟 الفوتر الفاخر (Footer & Trust Signals) -->
+    <!-- 🌟 الفوتر (Footer & Trust Signals) -->
     <!-- ========================================== -->
     <footer class="relative bg-[#091016] border-t border-white/5 pt-16 pb-24 md:pb-8 mt-12 overflow-hidden z-10">
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-[#00b4d8] rounded-full blur-[120px] opacity-10 pointer-events-none"></div>
@@ -426,7 +418,7 @@
 
             <div class="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="text-[10px] text-slate-500 font-bold text-center md:text-right">
-                    © 2026 جميع الحقوق محفوظة لـ <span class="text-white font-black">شركة الرمال الدولية</span>. مدعوم بأحدث تقنيات الاتصال.
+                    © 2026 جميع الحقوق محفوظة لـ <span class="text-white font-black">شركة الرمال الدولية</span>.
                 </div>
                 <div class="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
                     <div class="bg-white/10 px-2 py-1.5 rounded-lg border border-white/5 flex items-center gap-1.5" title="مدفوعات آمنة عبر Ziina">
@@ -479,7 +471,7 @@
                     </div>
                     <div class="flex justify-between items-center mt-4">
                         <span class="text-xs font-bold text-slate-400">المبلغ الإجمالي:</span>
-                        <span class="text-3xl font-black text-white" dir="ltr"><span id="modalPrice">0</span> <span class="text-[10px] text-[#00b4d8]">AED</span></span>
+                        <span class="text-3xl font-black text-white" dir="ltr"><span id="modalPrice">0.00</span> <span class="text-[10px] text-[#00b4d8]">AED</span></span>
                     </div>
                 </div>
             </div>
@@ -547,18 +539,19 @@
         </div>
     </div>
 
-    <!-- 🚀 الجافاسكربت المركزي -->
+    <!-- 🚀 الجافاسكربت المركزي المحدث والمنقح -->
     <script>
-        // 💡 السيرفر السحابي الديناميكي: سيعمل تلقائياً من أي مكان (محلياً أو على Render)
         const API_URL = '';
-        
+        window.allPackages = []; // مصفوفة آمنة لحفظ الباقات
+
         // --- 🚀 PWA Install Logic ---
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('pwaInstallBanner').classList.remove('hidden');
-            document.getElementById('pwaInstallBanner').classList.add('flex');
+            const banner = document.getElementById('pwaInstallBanner');
+            banner.classList.remove('hidden');
+            banner.classList.add('flex');
         });
 
         document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
@@ -699,7 +692,7 @@
             document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
         });
 
-        async function fetchPackages(query = '') {
+        async function fetchPackages(query = '', retryCount = 0) {
             const container = document.getElementById('packagesContainer');
             const title = document.getElementById('resultsTitle');
             const btn = document.getElementById('searchBtn');
@@ -721,42 +714,59 @@
             let countryInfo = countryMap[searchKey] || { code: 'SA', flag: '🌍', name: searchKey || 'الوجهات المتوفرة' };
 
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
-            container.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-20"><div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-6"></div><p class="text-slate-400 font-bold text-sm">جاري الاتصال بالخادم لجلب أسرع الشبكات...</p></div>`;
+            container.innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-6"></div>
+                    <p class="text-slate-400 font-bold text-sm">جاري الاتصال بالخادم السحابي وجلب الباقات...</p>
+                    <p class="text-slate-500 font-semibold text-xs mt-2">إذا كان السيرفر في وضع السكون، فقد يستغرق ثوانٍ معدودة للاستيقاظ.</p>
+                </div>`;
 
             try {
-                // 🚀 استدعاء المسار الحقيقي المتصل بالسيرفر (بدون localhost)
                 const response = await fetch(`${API_URL}/api/airalo/packages?country=${countryInfo.code}`);
+                
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+
                 const data = await response.json();
                 
-                if (data.success && data.packages.length > 0) {
+                if (data.success && data.packages && data.packages.length > 0) {
                     title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8]">${countryInfo.name}</span>` : 'الوجهات المتوفرة حالياً 🔥';
                     
-                    const formattedPackages = data.packages.map(pkg => {
-                        let priceInAED = pkg.price;
-                        if (pkg.price && !pkg.price.toString().includes('.')) {
-                             priceInAED = parseFloat(pkg.price).toFixed(2);
-                        } else if (pkg.price && parseFloat(pkg.price) < 150 && !pkg.id.includes('mock')) {
-                             priceInAED = (parseFloat(pkg.price) * 3.67).toFixed(2);
-                        }
-
+                    window.allPackages = data.packages.map((pkg) => {
+                        let finalPrice = parseFloat(pkg.sellingPrice || pkg.price || 35.00).toFixed(2);
                         return {
-                            id: pkg.id,
-                            country: countryInfo.name,
-                            flag: countryInfo.flag,
-                            data: pkg.data || pkg.voice || 'غير محدد',
-                            validity: pkg.validity || 'غير محدد',
-                            price: priceInAED,
+                            id: pkg.id || pkg.package_id || 'pkg_default',
+                            country: pkg.country || countryInfo.name,
+                            flag: countryInfo.flag || '🌍',
+                            data: pkg.data || 'غير محدد',
+                            validity: pkg.validity || '7 أيام',
+                            price: finalPrice,
                             type: pkg.type || 'local',
                             isHot: pkg.isHot || false
                         };
                     });
                     
-                    renderPackages(formattedPackages);
+                    renderPackages(window.allPackages);
                 } else {
                     container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">عذراً، لم نتمكن من العثور على باقات لهذه الوجهة حالياً.</div>`;
                 }
             } catch (error) {
-                container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم. تأكد من أن السيرفر يعمل في الخلفية.</div>`;
+                console.error("Packages Fetch Error:", error);
+                // إعادة المحاولة التلقائية إذا كان Render في مرحلة الإقلاع
+                if (retryCount < 2) {
+                    container.innerHTML = `
+                        <div class="col-span-full flex flex-col items-center justify-center py-20">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-amber-400 mb-6"></div>
+                            <p class="text-amber-400 font-bold text-sm">السيرفر يستيقظ الآن من وضع السكون.. جاري إعادة المحاولة تلقائياً (${retryCount + 1}/2)...</p>
+                        </div>`;
+                    setTimeout(() => fetchPackages(query, retryCount + 1), 4000);
+                    return;
+                }
+                container.innerHTML = `
+                    <div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">
+                        حدث خطأ أثناء تحميل الباقات. يرجى التأكد من اكتمال نشر السيرفر (Deploy) في Render ثم تحديث الصفحة.
+                    </div>`;
             } finally {
                 btn.innerHTML = originalBtnHtml; btn.disabled = false;
             }
@@ -771,7 +781,7 @@
 
             let html = '';
             packages.forEach((pkg, index) => {
-                const delay = index * 100;
+                const delay = index * 80;
                 const hotBadge = pkg.isHot ? `<span class="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded text-[10px] font-bold shadow-[0_0_10px_rgba(244,63,94,0.2)]">🔥 الأكثر مبيعاً</span>` : '';
                 
                 html += `
@@ -806,8 +816,8 @@
                             <span class="block font-black text-2xl text-white price-val drop-shadow-md" data-aed="${pkg.price}" dir="ltr">${pkg.price} <span class="text-xs text-[#00b4d8]">AED</span></span>
                         </div>
                         <div class="flex gap-2.5">
-                            <button onclick="openCheckoutModal('${pkg.id}', '${pkg.country}', '${pkg.flag}', '${pkg.data}', ${pkg.price}, true)" class="bg-white/10 hover:bg-amber-500 hover:text-white text-slate-300 w-11 h-11 rounded-xl flex items-center justify-center transition-all border border-white/10 cursor-pointer shadow-sm" title="إرسال كهدية"><i class="fa-solid fa-gift"></i></button>
-                            <button onclick="openCheckoutModal('${pkg.id}', '${pkg.country}', '${pkg.flag}', '${pkg.data}', ${pkg.price}, false)" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-6 py-2.5 rounded-xl font-black text-sm transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer border-none shadow-[0_0_15px_rgba(0,180,216,0.4)]">
+                            <button onclick="openCheckoutModalByIndex(${index}, true)" class="bg-white/10 hover:bg-amber-500 hover:text-white text-slate-300 w-11 h-11 rounded-xl flex items-center justify-center transition-all border border-white/10 cursor-pointer shadow-sm" title="إرسال كهدية"><i class="fa-solid fa-gift"></i></button>
+                            <button onclick="openCheckoutModalByIndex(${index}, false)" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-6 py-2.5 rounded-xl font-black text-sm transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer border-none shadow-[0_0_15px_rgba(0,180,216,0.4)]">
                                 شراء
                             </button>
                         </div>
@@ -822,15 +832,18 @@
         let currentSelectedPackage = null;
         let isGiftPurchase = false;
 
-        function openCheckoutModal(pkgId, country, flag, data, price, isGift = false) {
-            currentSelectedPackage = { pkgId, country, flag, data, price };
+        function openCheckoutModalByIndex(index, isGift = false) {
+            const pkg = window.allPackages[index];
+            if (!pkg) return;
+            
+            currentSelectedPackage = pkg;
             isGiftPurchase = isGift;
             
-            document.getElementById('modalCountry').innerText = `${country} ${flag}`;
-            document.getElementById('modalBgFlag').innerText = flag;
-            document.getElementById('modalData').innerText = data;
+            document.getElementById('modalCountry').innerText = `${pkg.country} ${pkg.flag}`;
+            document.getElementById('modalBgFlag').innerText = pkg.flag;
+            document.getElementById('modalData').innerText = pkg.data;
             
-            const priceVal = (price * exchangeRates[currentCurrency]).toFixed(2);
+            const priceVal = (parseFloat(pkg.price) * exchangeRates[currentCurrency]).toFixed(2);
             document.getElementById('modalPrice').innerHTML = `${priceVal} <span class="text-[10px] text-[#00b4d8]">${currentCurrency}</span>`;
 
             if(isGift) {
@@ -874,12 +887,17 @@
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
-        // 🛡️ الحارس الأمني 1: توجيه العميل لبوابة الدفع Ziina
+        // 🛡️ توجيه العميل لبوابة Ziina
         async function processSecurePayment() {
             const btn = document.getElementById('payNowBtn');
             const originalText = btn.innerHTML;
             
-            let targetEmail = JSON.parse(localStorage.getItem('rimal_current_user')).email;
+            let targetEmail = 'guest@remaltourismllc.com';
+            const userStr = localStorage.getItem('rimal_current_user');
+            if (userStr) {
+                targetEmail = JSON.parse(userStr).email || targetEmail;
+            }
+
             if(isGiftPurchase) {
                 const giftMail = document.getElementById('giftEmailInput').value.trim();
                 if(!giftMail || !giftMail.includes('@')) { showToast('الرجاء كتابة إيميل المستلم بشكل صحيح', true); return; }
@@ -890,28 +908,32 @@
             btn.disabled = true; btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             try {
-                // حفظ الباقة مؤقتاً بالمتصفح لإظهارها بعد الدفع
                 localStorage.setItem('pending_esim_package', JSON.stringify(currentSelectedPackage));
                 
                 const response = await fetch(`${API_URL}/api/checkout`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ packageId: currentSelectedPackage.pkgId, price: currentSelectedPackage.price, customerEmail: targetEmail })
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        packageId: currentSelectedPackage.id, 
+                        price: parseFloat(currentSelectedPackage.price), 
+                        customerEmail: targetEmail 
+                    })
                 });
                 const data = await response.json();
 
                 if (data.success && data.paymentUrl) {
-                    window.location.href = data.paymentUrl; // 🚀 الانطلاق الفعلي إلى بوابة Ziina الآمنة
+                    window.location.href = data.paymentUrl;
                 } else {
                     showToast(data.message || 'فشل في تهيئة الدفع', true);
-                    btn.innerHTML = originalText; btn.disabled = false;
+                    btn.innerHTML = originalText; btn.disabled = false; btn.classList.remove('opacity-80', 'cursor-not-allowed');
                 }
             } catch (error) {
                 showToast('حدث خطأ في الاتصال بالخادم.', true);
-                btn.innerHTML = originalText; btn.disabled = false;
+                btn.innerHTML = originalText; btn.disabled = false; btn.classList.remove('opacity-80', 'cursor-not-allowed');
             }
         }
 
-        // 🛡️ الحارس الأمني 2: استقبال العميل بعد العودة من الدفع واستخراج الشريحة
+        // 🛡️ استخراج الشريحة بعد العودة من الدفع
         async function verifyPaymentAndFulfill() {
             const urlParams = new URLSearchParams(window.location.search);
             const paymentStatus = urlParams.get('payment');
@@ -919,25 +941,28 @@
 
             if (paymentStatus === 'success' && referenceId) {
                 switchView('dashboardView');
-                showToast('✅ تم تأكيد الدفع! جاري استخراج الشريحة من المورد...');
+                showToast('✅ تم تأكيد الدفع! جاري استخراج الشريحة...');
                 
                 try {
-                    // السيرفر هنا يذهب لـ Airalo ويشتري الشريحة فعلياً
                     const res = await fetch(`${API_URL}/api/fulfill-esim`, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ referenceId })
                     });
                     const data = await res.json();
                     
                     if (data.success) {
                         const pendingPkgStr = localStorage.getItem('pending_esim_package');
-                        const pendingPkg = pendingPkgStr ? JSON.parse(pendingPkgStr) : { country: 'Global', flag: '🌍', data: 'N/A' };
+                        const pendingPkg = pendingPkgStr ? JSON.parse(pendingPkgStr) : { country: 'Global', flag: '🌍', data: '3 GB' };
                         
                         saveEsimLocally({
                             ...pendingPkg,
-                            iccid: data.iccid, qrUrl: data.qr_code_url, lpa: data.lpa || `LPA:1$smdp.io$${data.iccid}`,
+                            iccid: data.iccid, 
+                            qrUrl: data.qr_code_url, 
+                            lpa: data.lpa || `LPA:1$smdp.io$${data.iccid}`,
                             date: new Date().toLocaleDateString('ar-AE'),
-                            totalBytes: parseInt(pendingPkg.data) * 1024, usedBytes: 0 
+                            totalBytes: (parseInt(pendingPkg.data) || 3) * 1024, 
+                            usedBytes: 0 
                         });
                         
                         showToast('🎉 تمت إضافة الشريحة لمحفظتك بنجاح!');
@@ -948,7 +973,6 @@
                 } catch (err) {
                     showToast('خطأ في الاتصال أثناء تسليم الشريحة', true);
                 } finally {
-                    // تنظيف الرابط لمنع التكرار والحماية
                     window.history.replaceState({}, document.title, window.location.pathname);
                     localStorage.removeItem('pending_esim_package');
                 }
@@ -1002,11 +1026,10 @@
             }, 1500);
         }
 
-        // --- 🚀 Wallet & Family Share ---
+        // --- 🚀 Wallet & Helpers ---
         function addToWallet(iccid) { showToast('جاري تحضير البطاقة... سيتم فتح المحفظة قريباً!'); }
         function shareFamilyData(iccid) { showToast('تم فتح واجهة توزيع البيانات العائلية 👨‍👩‍👧‍👦'); }
 
-        // --- 🚀 Dashboard UI (eSIM Ticket Style) ---
         function copyReferralCode() {
             const code = document.getElementById('referralCode').innerText;
             navigator.clipboard.writeText(code).then(() => { showToast('تم نسخ كود الإحالة!'); });
@@ -1045,8 +1068,8 @@
 
             let html = '';
             esims.forEach((esim) => {
-                const lpaString = `LPA:1$smdp.io$${esim.iccid}`;
-                let totalMB = esim.totalBytes || (parseInt(esim.data) * 1024);
+                const lpaString = esim.lpa || `LPA:1$smdp.io$${esim.iccid}`;
+                let totalMB = esim.totalBytes || 3072;
                 let usedMB = esim.usedBytes || 0;
                 let percentage = (usedMB / totalMB) * 100;
                 let progressColor = percentage > 85 ? 'from-rose-500 to-red-600' : 'from-[#00b4d8] to-[#007790]';
@@ -1056,7 +1079,6 @@
                 
                 html += `
                 <div class="esim-ticket p-6 md:p-8 flex flex-col md:flex-row gap-8">
-                    <!-- Right/Top Side: Details & Progress -->
                     <div class="w-full md:w-3/5 flex flex-col justify-between relative z-10">
                         <div>
                             <div class="flex justify-between items-start mb-6">
@@ -1102,7 +1124,6 @@
                         </div>
                     </div>
 
-                    <!-- Left/Bottom Side: QR Scanner Look -->
                     <div class="w-full md:w-2/5 flex flex-col items-center justify-center border-t md:border-t-0 md:border-r border-white/5 pt-6 md:pt-0 md:pr-6 relative">
                         <div class="qr-frame mb-4 w-44 h-44 z-10">
                             <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
@@ -1167,8 +1188,6 @@
             }
             updateAuthUI();
             fetchPackages();
-            
-            // 🛡️ تشغيل الحارس الأمني للتحقق من العودة من الدفع
             verifyPaymentAndFulfill(); 
         });
     </script>
