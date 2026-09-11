@@ -567,6 +567,38 @@ app.post('/api/fulfill-esim', async (req, res) => {
     }
 });
 
+// ==========================================
+// مسار إضافي لجلب إرشادات التثبيت (Step 4: Get Installation Instructions)
+// ==========================================
+app.get('/api/airalo/instructions/:iccid', async (req, res) => {
+    try {
+        const { iccid } = req.params;
+        const lang = req.query.lang || 'en';
+        
+        const token = await getAiraloToken();
+
+        const response = await axios.get(`https://partners-api.airalo.com/v2/sims/${iccid}/instructions`, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept-Language': lang
+            }
+        });
+
+        res.json({
+            success: true,
+            instructions: response.data?.data || response.data
+        });
+
+    } catch (error) {
+        console.error('Instructions Error:', error.response?.data || error.message);
+        res.status(500).json({ 
+            success: false, 
+            message: 'تعذر جلب إرشادات التثبيت الخاصة بالشريحة' 
+        });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`✅ Remal Connect API is running seamlessly on port ${PORT} 🚀`);
