@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "API server for Remal Connect eSIM integration",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "author": "",
+  "author": "Remal Tourism LLC",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.8",
