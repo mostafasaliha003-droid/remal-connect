@@ -438,7 +438,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// مسار تسليم الشريحة المطابق لـ POST /v2/orders (multipart / form-urlencoded)
+// مسار تسليم الشريحة المطابق تماماً لـ Submit Order (200)
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
@@ -474,7 +474,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
         let airaloOrder = null;
 
         try {
-            // إرسال الطلب مطابقاً لمعيار POST /v2/orders عبر form-urlencoded (multipart/form-data support)
             const orderFormData = new URLSearchParams();
             orderFormData.append('package_id', tx.packageId);
             orderFormData.append('quantity', 1);
@@ -489,8 +488,12 @@ app.post('/api/fulfill-esim', async (req, res) => {
                 }
             });
             
-            airaloOrder = orderResponse.data?.data || orderResponse.data;
-            tx.apiCost = airaloOrder.price || 0;
+            // استخراج بيانات الـ data والـ sims من نموذج الاستجابة المحدث
+            const responseData = orderResponse.data?.data || orderResponse.data;
+            airaloOrder = responseData;
+            
+            // حفظ تكلفة الـ API الفعلية المسترجعة من استجابة الـ 200
+            tx.apiCost = responseData.price || 0;
             tx.status = 'success';
             await tx.save();
 
@@ -537,12 +540,16 @@ app.post('/api/fulfill-esim', async (req, res) => {
             await buyer.save();
         }
 
-        const simDetails = airaloOrder.sims ? airaloOrder.sims[0] : airaloOrder;
+        // استخراج أول شريحة من مصفوفة sims بالتوافق مع النموذج الجديد
+        const simsArray = airaloOrder.sims || [];
+        const simDetails = simsArray.length > 0 ? simsArray[0] : airaloOrder;
+
         res.json({
             success: true,
             iccid: simDetails.iccid,
-            qr_code_url: simDetails.qrcode_url || simDetails.qr_code,
-            lpa: simDetails.lpa,
+            qr_code_url: simDetails.qrcode_url || simDetails.qrcode || '',
+            lpa: simDetails.lpa || '',
+            direct_apple_installation_url: simDetails.direct_apple_installation_url || '',
             earnedCashback,
             newWalletBalance: buyer ? buyer.walletBalance : 0,
             newPurchasesCount: buyer ? buyer.purchasesCount : 0
