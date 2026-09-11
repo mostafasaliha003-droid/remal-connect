@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
+const crypto = require('crypto');
 const path = require('path');
 
 const app = express();
@@ -347,29 +348,50 @@ cron.schedule('0 * * * *', async () => {
 });
 
 // ==========================================
-// مسار استقبال إشعارات الـ Webhook من Airalo (Async Orders, Low Data, Credit Limit)
+// مسار استقبال إشعارات الـ Webhook من Airalo (يدعم HEAD للتحقق + HMAC-SHA512 Verification)
 // ==========================================
-app.post('/api/airalo/webhook', async (req, res) => {
-    const payload = req.body;
-    const signature = req.headers['airalo-signature'];
+app.all('/api/airalo/webhook', async (req, res) => {
+    // 1. استجابة لطلب التحقق HEAD (أثناء عملية الـ Opt-in من Airalo)
+    if (req.method === 'HEAD') {
+        return res.status(200).send();
+    }
 
-    console.log('🔔 تم استلام إشعار Webhook من Airalo:', { payload, signature });
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const payload = req.body;
+    const airaloSignature = req.headers['airalo-signature'];
+    const apiSecret = process.env.AIRALO_WEBHOOK_SECRET || process.env.AIRALO_CLIENT_SECRET;
+
+    // 2. التحقق من توقيع الـ HMAC-SHA512 (لضمان أمان وموثوقية الطلب)
+    if (airaloSignature && apiSecret) {
+        const payloadString = typeof payload === 'object' ? JSON.stringify(payload) : payload;
+        const expectedSignature = crypto.createHmac('sha512', apiSecret).update(payloadString).digest('hex');
+        
+        if (expectedSignature !== airaloSignature) {
+            console.warn('⚠️ محاولة ويبهوك مشبوهة أو توقيع غير مطابق من Airalo!');
+            return res.status(401).json({ error: 'Invalid signature' });
+        }
+    }
+
+    console.log('🔔 تم استلام وتوثيق إشعار Webhook من Airalo بنجاح:', payload);
 
     try {
-        // التعامل مع تنبيهات استنفاد رصيد الائتمان (Credit Limit Webhook)
+        // أ. تنبيهات استنفاد رصيد الائتمان (Credit Limit Webhook)
         if (payload.event === 'credit_limit' || payload.type === 'credit_limit') {
             console.warn('⚠️ تنبيه هام: لقد اقتربت من الحد الائتماني لشراء شرائح eSIM في حساب Airalo!');
             return res.status(200).json({ status: 'Credit limit warning acknowledged' });
         }
 
-        // التعامل مع تنبيهات انخفاض البيانات للشريحة (Low Data / Expiry Webhook)
+        // ب. تنبيهات انخفاض البيانات للشريحة (Low Data / Expiry Notification)
         if (payload.event === 'low_data' || payload.type === 'low_data' || payload.iccid) {
             const iccid = payload.iccid || payload.data?.iccid;
             console.log(`📊 تنبيه انخفاض بيانات للشريحة ICCID: ${iccid}`);
             return res.status(200).json({ status: 'Low data warning acknowledged' });
         }
 
-        // التعامل مع الطلبات غير المتزامنة (Async Orders / Completed / Failed)
+        // ج. معالجة الطلبات غير المتزامنة (Async Orders)
         const requestId = payload.request_id || payload.referenceId || payload.data?.request_id;
         if (requestId) {
             const tx = await Transaction.findOne({ referenceId: requestId });
@@ -648,7 +670,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
                 if (buyer.referredBy) {
                     const referrer = await User.findOne({ referralCode: buyer.referredBy });
                     if (referrer) {
-                        referrer.walletBalance = parseFloat(((referrer.walletBalance || 0) + 1.00).toFixed(2));
+                        referrer.walletBalance = parseFloat(((referrer.walletBadge || referrer.walletBalance || 0) + 1.00).toFixed(2));
                         await referrer.save();
                         console.log(`🎁 تم منح 1 درهم للمُحيل (${referrer.email}) لاشتراك صديقه (${buyer.email}) لأول مرة!`);
                     }
