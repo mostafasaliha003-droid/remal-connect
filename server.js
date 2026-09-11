@@ -167,7 +167,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// 5. تكامل واجهة Airalo الحقيقية + (نظام الطوارئ المدرّع)
+// 5. تكامل واجهة Airalo الحقيقية (نظام الشركاء B2B)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -175,8 +175,8 @@ let tokenExpirationTime = null;
 async function getAiraloToken() {
     if (airaloAccessToken && tokenExpirationTime && Date.now() < (tokenExpirationTime - 300000)) return airaloAccessToken;
     
-    // 🚀 تم تغيير الرابط إلى الإنتاج (Live/Production) - الرابط الرسمي
-    const response = await axios.post('https://api.airalo.com/v2/token', {
+    // 🚀 تم التعديل إلى رابط شركاء Airalo الصحيح
+    const response = await axios.post('https://partners-api.airalo.com/v2/token', {
         client_id: process.env.AIRALO_CLIENT_ID,
         client_secret: process.env.AIRALO_CLIENT_SECRET,
         grant_type: 'client_credentials'
@@ -193,8 +193,8 @@ app.get('/api/airalo/packages', async (req, res) => {
     
     try {
         const token = await getAiraloToken();
-        // 🚀 تم تغيير الرابط إلى الإنتاج (Live/Production) - الرابط الرسمي
-        const response = await axios.get('https://api.airalo.com/v2/packages', {
+        // 🚀 تم التعديل إلى رابط شركاء Airalo الصحيح
+        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
             params: { 'limit': 20 }
         });
@@ -245,7 +245,7 @@ app.post('/api/checkout', async (req, res) => {
             test: false // الدفع الحقيقي
         };
 
-        // 3. الاتصال ببوابة Ziina عبر الرابط الرسمي الجديد
+        // 3. الاتصال ببوابة Ziina
         const ziinaResponse = await axios.post('https://api-v2.ziina.com/api/payment_intent', ziinaPayload, {
             headers: { 
                 'Authorization': `Bearer ${process.env.ZIINA_API_KEY}`, 
@@ -281,8 +281,8 @@ app.post('/api/fulfill-esim', async (req, res) => {
         let airaloOrder = null;
 
         try {
-            // 🚀 تم تغيير الرابط إلى الإنتاج (Live/Production) - الرابط الرسمي
-            const orderResponse = await axios.post('https://api.airalo.com/v2/orders', {
+            // 🚀 تم التعديل إلى رابط شركاء Airalo الصحيح
+            const orderResponse = await axios.post('https://partners-api.airalo.com/v2/orders', {
                 package_id: tx.packageId,
                 quantity: 1,
                 type: 'transaction'
