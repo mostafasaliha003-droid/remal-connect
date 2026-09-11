@@ -91,24 +91,30 @@ const Transaction = mongoose.model('Transaction', transactionSchema);
 app.post('/api/register', async (req, res) => {
     try {
         const { fullName, email, whatsapp, password } = req.body;
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email: email.trim().toLowerCase() });
         if (existingUser) return res.status(400).json({ success: false, message: 'البريد مسجل بالفعل' });
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = new User({ fullName, email, whatsapp, password: hashedPassword, role: 'customer' });
+        const newUser = new User({ 
+            fullName, 
+            email: email.trim().toLowerCase(), 
+            whatsapp, 
+            password: hashedPassword, 
+            role: 'customer' 
+        });
         await newUser.save();
         res.status(201).json({ success: true, message: 'تم إنشاء الحساب بنجاح' });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'خطأ داخلي' });
+        res.status(500).json({ success: false, message: 'خطأ داخلي في الخادم' });
     }
 });
 
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email.trim().toLowerCase() });
         if (!user) return res.status(400).json({ success: false, message: 'بيانات الدخول غير صحيحة' });
         
         const isMatch = await bcrypt.compare(password, user.password);
@@ -119,7 +125,56 @@ app.post('/api/login', async (req, res) => {
             user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, walletBalance: user.walletBalance }
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'خطأ داخلي' });
+        res.status(500).json({ success: false, message: 'خطأ داخلي في الخادم' });
+    }
+});
+
+// مسار استعادة كلمة المرور
+app.post('/api/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'يرجى إدخال البريد الإلكتروني' });
+        }
+
+        const cleanEmail = email.trim().toLowerCase();
+        const user = await User.findOne({ email: cleanEmail });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'البريد الإلكتروني غير مسجل لدينا' });
+        }
+
+        // توليد كلمة مرور مؤقتة وتحديثها في قاعدة البيانات
+        const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(tempPassword, salt);
+        await user.save();
+
+        // إرسال كلمة المرور إلى بريد المستخدم
+        const mailOptions = {
+            from: `"Remal Connect" <${process.env.EMAIL_USER}>`,
+            to: user.email,
+            subject: 'استعادة كلمة المرور - Remal Connect',
+            html: `
+                <div dir="rtl" style="font-family: Arial, sans-serif; padding: 25px; background: #0f172a; color: #f8fafc; border-radius: 10px; max-width: 500px; margin: auto;">
+                    <h2 style="color: #38bdf8; text-align: center;">Remal Connect</h2>
+                    <p>مرحباً <strong>${user.fullName}</strong>،</p>
+                    <p>لقد استلمنا طلباً لاستعادة كلمة المرور الخاصة بحسابك المسجل لدينا.</p>
+                    <p>كلمة المرور المؤقتة الجديدة الخاصة بك هي:</p>
+                    <div style="background: #1e293b; padding: 14px; text-align: center; border-radius: 8px; font-size: 20px; font-weight: bold; color: #38bdf8; letter-spacing: 2px; border: 1px dashed #38bdf8; margin: 15px 0;">
+                        ${tempPassword}
+                    </div>
+                    <p style="font-size: 13px; color: #94a3b8;">يمكنك استخدام كلمة المرور هذه لتسجيل الدخول فوراً، ونوصي بتغييرها من حسابك لضمان الأمان.</p>
+                </div>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: 'تم إرسال كلمة المرور المؤقتة إلى بريدك بنجاح' });
+
+    } catch (error) {
+        console.error('Password Reset Error:', error.message);
+        res.status(500).json({ success: false, message: 'تعذر إرسال البريد الإلكتروني، يرجى المحاولة لاحقاً' });
     }
 });
 
@@ -227,7 +282,6 @@ app.get('/api/airalo/packages', async (req, res) => {
 app.post('/api/checkout', async (req, res) => {
     let { packageId, price, customerEmail } = req.body;
     
-    // تأكيد تحويل السعر لرقم لمنع أخطاء التحقق
     price = parseFloat(price);
     if (isNaN(price) || price <= 0) {
         price = 35.00;
