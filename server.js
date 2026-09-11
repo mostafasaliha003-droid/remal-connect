@@ -232,18 +232,18 @@ app.post('/api/checkout', async (req, res) => {
         });
         await newTx.save();
 
-        // 2. إعداد بيانات الدفع لـ Ziina
+        // 2. إعداد بيانات الدفع لـ Ziina (تم تحديثها للنسخة الجديدة v2)
         const ziinaPayload = {
             amount: Math.round(price * 100), // Ziina تتعامل بالفلوس (1 درهم = 100 فلس)
             currency_code: 'AED',
+            message: newTx.referenceId, // حفظ رقم الطلب كرسالة للتعرف عليه لاحقاً
             success_url: `https://remal-connect.onrender.com/index.html?payment=success&ref=${newTx.referenceId}`,
             cancel_url: `https://remal-connect.onrender.com/index.html?payment=failed`,
-            test: false, // الدفع الحقيقي
-            reference_id: newTx.referenceId
+            test: false // الدفع الحقيقي
         };
 
-        // 3. الاتصال ببوابة Ziina
-        const ziinaResponse = await axios.post('https://api.ziina.com/v1/payment_intent', ziinaPayload, {
+        // 3. الاتصال ببوابة Ziina عبر الرابط الرسمي الجديد
+        const ziinaResponse = await axios.post('https://api-v2.ziina.com/api/payment_intent', ziinaPayload, {
             headers: { 
                 'Authorization': `Bearer ${process.env.ZIINA_API_KEY}`, 
                 'Content-Type': 'application/json' 
