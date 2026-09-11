@@ -121,7 +121,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد (مع تصحيح استخراج التوكن)
+// تكامل Airalo الموحد
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -142,17 +142,16 @@ async function getAiraloToken() {
         } 
     });
 
-    // 🔧 الإصلاح الجذري: استخراج التوكن سواء كان مغلفاً داخل data أو بشكل مباشر
     airaloAccessToken = response.data?.data?.access_token || response.data?.access_token;
     const expiresIn = response.data?.data?.expires_in || response.data?.expires_in || 3600;
     tokenExpirationTime = Date.now() + (expiresIn * 1000); 
 
-    console.log(`✅ تم استخراج التوكن الفعلي بنجاح (طول المفتاح: ${airaloAccessToken ? airaloAccessToken.length : 0})`);
     return airaloAccessToken;
 }
 
+// جلب وتنسيق الباقات لتتوافق مع واجهة العرض
 app.get('/api/airalo/packages', async (req, res) => {
-    let packages = [];
+    let formattedPackages = [];
     try {
         const token = await getAiraloToken();
         const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
@@ -162,30 +161,73 @@ app.get('/api/airalo/packages', async (req, res) => {
             },
             params: { 'limit': 50 }
         });
-        packages = response.data?.data || [];
+        
+        const rawData = response.data?.data || [];
+
+        rawData.forEach(item => {
+            // معالجة الرد في حال كانت الباقات متداخلة داخل مصفوفة الدولة
+            if (item.packages && Array.isArray(item.packages)) {
+                item.packages.forEach(subPkg => {
+                    const usd = subPkg.price || subPkg.net_price || 5;
+                    const aed = (usd * 3.67).toFixed(2);
+                    formattedPackages.push({
+                        id: subPkg.id,
+                        country: item.title || 'السعودية',
+                        country_code: item.country_code || 'SA',
+                        data: subPkg.data || (subPkg.amount ? `${Math.round(subPkg.amount / 1024)} GB` : 'غير محدد'),
+                        validity: subPkg.validity || (subPkg.day ? `${subPkg.day} أيام` : 'غير محدد'),
+                        price: aed,
+                        type: subPkg.type || 'local'
+                    });
+                });
+            } else {
+                // معالجة الرد في حال كانت الباقات مصفوفة مباشرة
+                const usd = item.price || item.net_price || 5;
+                const aed = (usd * 3.67).toFixed(2);
+                formattedPackages.push({
+                    id: item.id || item.package_id,
+                    country: item.country || 'السعودية',
+                    country_code: item.country_code || 'SA',
+                    data: item.data || (item.amount ? `${Math.round(item.amount / 1024)} GB` : 'غير محدد'),
+                    validity: item.validity || (item.day ? `${item.day} أيام` : 'غير محدد'),
+                    price: aed,
+                    type: item.type || 'local'
+                });
+            }
+        });
+
     } catch (error) {
-        console.log('⚠️ خطأ في الاتصال بباقات Airalo:', error.response?.status, error.response?.data || error.message);
+        console.log('⚠️ خطأ في جلب باقات Airalo:', error.response?.status, error.response?.data || error.message);
     }
 
-    if (packages.length === 0) {
-        packages = [
-            { id: "mock_1", data: "3 GB", validity: "7 أيام", price: "5.50", type: "local" },
-            { id: "mock_2", data: "5 GB", validity: "15 يوماً", price: "9.00", type: "local" }
+    if (formattedPackages.length === 0) {
+        formattedPackages = [
+            { id: "mock_1", country: "السعودية", country_code: "SA", data: "3 GB", validity: "7 أيام", price: "25.00", type: "local" },
+            { id: "mock_2", country: "السعودية", country_code: "SA", data: "5 GB", validity: "15 يوماً", price: "40.00", type: "local" },
+            { id: "mock_3", country: "السعودية", country_code: "SA", data: "10 GB", validity: "30 يوماً", price: "75.00", type: "local" },
+            { id: "mock_global", country: "عالمية", country_code: "GLOBAL", data: "20 GB", validity: "365 يوماً", price: "150.00", type: "global", isHot: true }
         ];
     }
 
-    res.json({ success: true, count: packages.length, packages });
+    res.json({ success: true, count: formattedPackages.length, packages: formattedPackages });
 });
 
 // ==========================================
 // مسارات الدفع (Ziina) وتسليم الشريحة
 // ==========================================
 app.post('/api/checkout', async (req, res) => {
-    const { packageId, price, customerEmail } = req.body;
+    let { packageId, price, customerEmail } = req.body;
+    
+    // تأمين تحويل السعر إلى رقم ومنع أخطاء Mongoose
+    price = parseFloat(price);
+    if (isNaN(price) || price <= 0) {
+        price = 35.00;
+    }
+
     try {
         const newTx = new Transaction({
             referenceId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-            customerEmail, 
+            customerEmail: customerEmail || 'guest@remaltourismllc.com', 
             type: 'b2c', 
             packageId,
             sellingPrice: price, 
