@@ -438,7 +438,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// مسار تسليم الشريحة المتوافق مع Submit Order (200 / 422 Handling)
+// مسار تسليم الشريحة المطابق لـ Submit Order (200 / 422 Handling)
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
