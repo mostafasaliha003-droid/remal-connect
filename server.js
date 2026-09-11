@@ -1,12 +1,12 @@
-require('dotenv').config(); 
+require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios'); 
-const mongoose = require('mongoose'); 
-const bcrypt = require('bcryptjs'); 
-const multer = require('multer'); 
-const nodemailer = require('nodemailer'); 
+const axios = require('axios');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const multer = require('multer');
+const nodemailer = require('nodemailer');
 const path = require('path');
 
 const app = express();
@@ -27,7 +27,7 @@ axios.get('https://api.ipify.org?format=json')
 // إعدادات الحماية والوصول (Middleware)
 // ==========================================
 app.use(express.json());
-app.use(cors()); 
+app.use(cors());
 app.use(express.static(__dirname));
 
 // ==========================================
@@ -42,13 +42,13 @@ const upload = multer({ storage: multer.memoryStorage() });
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, 
-    auth: { 
-        user: process.env.EMAIL_USER, 
-        pass: process.env.EMAIL_PASS 
+    secure: true,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     },
     tls: {
-        rejectUnauthorized: false 
+        rejectUnauthorized: false
     }
 });
 
@@ -75,18 +75,18 @@ const transactionSchema = new mongoose.Schema({
     customerEmail: { type: String },
     type: { type: String, enum: ['b2c', 'b2b', 'topup'], default: 'b2c' },
     packageId: { type: String },
-    iccid: { type: String }, 
-    apiCost: { type: Number, default: 0 }, 
-    sellingPrice: { type: Number, required: true }, 
+    iccid: { type: String },
+    apiCost: { type: Number, default: 0 },
+    sellingPrice: { type: Number, required: true },
     walletDeducted: { type: Number, default: 0 }, // المبلغ المخصوم من المحفظة
-    netMargin: { type: Number }, 
+    netMargin: { type: Number },
     whatsappDelivered: { type: Boolean, default: false },
     status: { type: String, enum: ['pending_payment', 'pending_fulfillment', 'success', 'failed', 'refunded'], default: 'pending_payment' }
 }, { timestamps: true });
 
 transactionSchema.pre('save', function(next) {
-    if (this.sellingPrice !== undefined && this.apiCost !== undefined) { 
-        this.netMargin = this.sellingPrice - this.apiCost; 
+    if (this.sellingPrice !== undefined && this.apiCost !== undefined) {
+        this.netMargin = this.sellingPrice - this.apiCost;
     }
     next();
 });
@@ -116,11 +116,11 @@ app.post('/api/register', async (req, res) => {
             exists = await User.findOne({ referralCode: generatedRefCode });
         }
 
-        const newUser = new User({ 
-            fullName, 
-            email: cleanEmail, 
-            whatsapp, 
-            password: hashedPassword, 
+        const newUser = new User({
+            fullName,
+            email: cleanEmail,
+            whatsapp,
+            password: hashedPassword,
             role: 'customer',
             walletBalance: 0,
             purchasesCount: 0,
@@ -129,8 +129,8 @@ app.post('/api/register', async (req, res) => {
         });
         await newUser.save();
 
-        res.status(201).json({ 
-            success: true, 
+        res.status(201).json({
+            success: true,
             message: 'تم إنشاء الحساب بنجاح',
             user: {
                 id: newUser._id,
@@ -163,13 +163,13 @@ app.post('/api/login', async (req, res) => {
             await user.save();
         }
 
-        res.status(200).json({ 
-            success: true, 
-            user: { 
-                id: user._id, 
-                fullName: user.fullName, 
-                email: user.email, 
-                role: user.role, 
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                role: user.role,
                 walletBalance: user.walletBalance || 0,
                 purchasesCount: user.purchasesCount || 0,
                 referralCode: user.referralCode
@@ -381,12 +381,12 @@ app.post('/api/checkout', async (req, res) => {
             });
             await newTx.save();
 
-            return res.json({ 
-                success: true, 
-                walletPaid: true, 
+            return res.json({
+                success: true,
+                walletPaid: true,
                 paymentUrl: `${APP_URL}/index.html?payment=success&ref=${referenceId}`,
                 referenceId,
-                message: 'تم خصم المبلغ من المحفظة بنجاح' 
+                message: 'تم خصم المبلغ من المحفظة بنجاح'
             });
         } catch (err) {
             return res.status(500).json({ success: false, message: 'تعذر الدفع عبر المحفظة' });
@@ -424,9 +424,9 @@ app.post('/api/checkout', async (req, res) => {
         };
 
         const ziinaResponse = await axios.post('https://api-v2.ziina.com/api/payment_intent', ziinaPayload, {
-            headers: { 
-                'Authorization': `Bearer ${process.env.ZIINA_API_KEY}`, 
-                'Content-Type': 'application/json' 
+            headers: {
+                'Authorization': `Bearer ${process.env.ZIINA_API_KEY}`,
+                'Content-Type': 'application/json'
             }
         });
 
@@ -479,16 +479,16 @@ app.post('/api/fulfill-esim', async (req, res) => {
                 quantity: 1,
                 type: 'transaction'
             }, {
-                headers: { 
-                    'Accept': 'application/json', 
-                    'Authorization': `Bearer ${token}` 
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             });
             
             airaloOrder = orderResponse.data?.data || orderResponse.data;
             tx.apiCost = airaloOrder.price || 0;
             tx.status = 'success';
-            await tx.save(); 
+            await tx.save();
 
         } catch (airaloError) {
             console.log('⚠️ خطأ إصدار الشريحة من Airalo:', airaloError.response?.status, airaloError.response?.data || airaloError.message);
