@@ -38,12 +38,12 @@
             background-position: center center;
         }
 
-        .glass-panel {
-            background: rgba(17, 28, 34, 0.65);
-            backdrop-filter: blur(24px);
+        .glass-panel { 
+            background: rgba(17, 28, 34, 0.65); 
+            backdrop-filter: blur(24px); 
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border); 
+            border-top: 1px solid rgba(255, 255, 255, 0.1); 
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
@@ -124,8 +124,8 @@
     <!-- 🚀 PWA Install Banner -->
     <div id="pwaInstallBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[10001] bg-gradient-to-r from-[#111c22] to-[#00b4d8] text-white px-5 py-2.5 rounded-full font-bold text-xs shadow-2xl items-center gap-3 hidden border border-[#00b4d8]/30">
         <i class="fa-solid fa-arrow-down-to-bracket animate-bounce text-[#00b4d8] bg-white p-1.5 rounded-full"></i>
-        <span>أضف التطبيق لشاشتك للوصول بدون إنترنت!</span>
-        <button id="pwaInstallBtn" class="bg-white text-[#091016] px-4 py-1.5 rounded-full text-[10px] ml-2 active:scale-95 transition-transform border-none cursor-pointer shadow-md">تثبيت</button>
+        <span>أضف التطبيق لشاشتك للوصول السريع!</span>
+        <button id="pwaInstallBtn" class="bg-white text-[#091016] px-4 py-1.5 rounded-full text-[10px] ml-2 active:scale-95 transition-transform border-none cursor-pointer shadow-md font-bold">تثبيت</button>
         <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" class="text-white/60 hover:text-white bg-transparent border-none cursor-pointer ml-1"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
 
@@ -338,21 +338,21 @@
         </main>
     </div>
 
-    <!-- 🚀 شريط التنقل السفلي للموبايل بطبقة زجاجية -->
+    <!-- 🚀 شريط التنقل السفلي للموبايل المحدث -->
     <nav class="md:hidden fixed bottom-4 left-4 right-4 glass-panel rounded-2xl flex justify-around items-center py-2 z-[999] shadow-lg border border-white/10 bg-[#091016]/90">
-        <a href="#" onclick="switchView('homeView')" class="flex flex-col items-center gap-1 text-[#00b4d8] w-16 text-decoration-none">
+        <a href="#" onclick="switchView('homeView'); return false;" class="flex flex-col items-center gap-1 text-[#00b4d8] w-16 text-decoration-none">
             <i class="fa-solid fa-globe text-lg"></i><span class="text-[9px] font-bold">الوجهات</span>
         </a>
-        <a href="#" onclick="switchView('dashboardView')" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16 text-decoration-none">
+        <a href="#" onclick="switchView('dashboardView'); return false;" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16 text-decoration-none">
             <i class="fa-solid fa-layer-group text-lg"></i><span class="text-[9px] font-bold">شرائحي</span>
         </a>
-        <a href="register.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16 text-decoration-none">
-            <i class="fa-regular fa-user text-lg"></i><span class="text-[9px] font-bold">حسابي</span>
+        <a href="#" id="mobileAccountTab" onclick="handleMobileAccountNav(event)" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white transition-colors w-16 text-decoration-none">
+            <i class="fa-regular fa-user text-lg"></i><span class="text-[9px] font-bold" id="mobileAccountLabel">حسابي</span>
         </a>
     </nav>
 
     <!-- ========================================== -->
-    <!-- 🌟 الفوتر (Footer & Trust Signals) -->
+    <!-- 🌟 الفوتر (Footer) -->
     <!-- ========================================== -->
     <footer class="relative bg-[#091016] border-t border-white/5 pt-16 pb-24 md:pb-8 mt-12 overflow-hidden z-10">
         <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-[#00b4d8] rounded-full blur-[120px] opacity-10 pointer-events-none"></div>
@@ -542,7 +542,52 @@
     <!-- 🚀 الجافاسكربت المركزي المحدث والمنقح -->
     <script>
         const API_URL = '';
-        window.allPackages = []; // مصفوفة آمنة لحفظ الباقات
+        window.allPackages = [];
+
+        // ==========================================
+        // 🛡️ نظام حفظ واسترجاع بيانات العميل الدائم (Cookie + LocalStorage)
+        // ==========================================
+        function getSavedUser() {
+            let data = localStorage.getItem('rimal_current_user');
+            if (!data) {
+                const match = document.cookie.match(new RegExp('(^| )rimal_current_user=([^;]+)'));
+                if (match) {
+                    try {
+                        data = decodeURIComponent(match[2]);
+                        localStorage.setItem('rimal_current_user', data);
+                    } catch(e) {}
+                }
+            }
+            try {
+                return data ? JSON.parse(data) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function saveUserPersistent(userObj) {
+            const str = JSON.stringify(userObj);
+            localStorage.setItem('rimal_current_user', str);
+            // كوكي صالح لمدة 365 يوماً لضمان عدم مسح الجلسة في متصفحات الموبايل
+            document.cookie = `rimal_current_user=${encodeURIComponent(str)}; path=/; max-age=31536000; SameSite=Lax`;
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('rimal_current_user');
+            document.cookie = "rimal_current_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            showToast('تم تسجيل الخروج بنجاح 👋');
+            setTimeout(() => { window.location.reload(); }, 600);
+        }
+
+        function handleMobileAccountNav(e) {
+            if (e) e.preventDefault();
+            const user = getSavedUser();
+            if (user) {
+                switchView('dashboardView');
+            } else {
+                window.location.href = 'register.html';
+            }
+        }
 
         // --- 🚀 PWA Install Logic ---
         let deferredPrompt;
@@ -550,29 +595,36 @@
             e.preventDefault();
             deferredPrompt = e;
             const banner = document.getElementById('pwaInstallBanner');
-            banner.classList.remove('hidden');
-            banner.classList.add('flex');
-        });
-
-        document.getElementById('pwaInstallBtn').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') { document.getElementById('pwaInstallBanner').style.display = 'none'; }
-                deferredPrompt = null;
+            if (banner) {
+                banner.classList.remove('hidden');
+                banner.classList.add('flex');
             }
         });
+
+        const pwaBtn = document.getElementById('pwaInstallBtn');
+        if (pwaBtn) {
+            pwaBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') { document.getElementById('pwaInstallBanner').style.display = 'none'; }
+                    deferredPrompt = null;
+                }
+            });
+        }
 
         // --- 🚀 Currency Converter ---
         const exchangeRates = { 'AED': 1, 'SAR': 1.02, 'USD': 0.27, 'EUR': 0.25 };
         let currentCurrency = 'AED';
 
         function convertCurrency() {
-            currentCurrency = document.getElementById('currencySelector').value;
+            const selector = document.getElementById('currencySelector');
+            if (selector) currentCurrency = selector.value;
+            
             const priceElements = document.querySelectorAll('.price-val');
             priceElements.forEach(el => {
                 const baseAED = parseFloat(el.getAttribute('data-aed'));
-                if(baseAED) {
+                if (baseAED) {
                     const converted = (baseAED * exchangeRates[currentCurrency]).toFixed(2);
                     el.innerHTML = `${converted} <span class="text-[10px] text-[#00b4d8]">${currentCurrency}</span>`;
                 }
@@ -583,10 +635,15 @@
         function showToast(message, isError = false) {
             const toast = document.getElementById('toastMsg');
             const icon = document.getElementById('toastIcon');
+            if (!toast || !icon) return;
+
             document.getElementById('toastText').innerText = message;
             
-            if(isError) { icon.className = 'fa-solid fa-circle-xmark text-[#ff595e] text-xl'; } 
-            else { icon.className = 'fa-solid fa-circle-check text-[#00b4d8] text-xl'; }
+            if (isError) { 
+                icon.className = 'fa-solid fa-circle-xmark text-[#ff595e] text-xl'; 
+            } else { 
+                icon.className = 'fa-solid fa-circle-check text-[#00b4d8] text-xl'; 
+            }
 
             toast.classList.remove('opacity-0', '-translate-y-32');
             toast.classList.add('opacity-100', 'translate-y-0');
@@ -596,14 +653,22 @@
             }, 3000);
         }
 
-        // --- 🚀 Header UI ---
+        // --- 🚀 Header & Bottom Nav UI Update ---
         function updateAuthUI() {
             const authArea = document.getElementById('headerAuthArea');
-            const currentUserStr = localStorage.getItem('rimal_current_user');
+            const user = getSavedUser();
             
-            if (currentUserStr) {
-                const user = JSON.parse(currentUserStr);
+            // تحديث شريط الموبايل
+            const mobileLabel = document.getElementById('mobileAccountLabel');
+            if (mobileLabel) {
+                mobileLabel.innerText = user ? (user.fullName ? user.fullName.split(' ')[0] : 'لوحتي') : 'حسابي';
+            }
+
+            if (user && authArea) {
+                saveUserPersistent(user); // تأكيد تجديد الكوكي
                 const walletBalance = user.points ? (user.points / 10).toFixed(2) : '50.00'; 
+                const initialLetter = user.fullName ? user.fullName.trim().charAt(0).toUpperCase() : 'U';
+                const firstName = user.fullName ? user.fullName.split(' ')[0] : 'حسابي';
                 
                 authArea.innerHTML = `
                     <button onclick="showToast('بوابة الوكلاء (B2B) سيتم تفعيلها قريباً')" class="hidden lg:flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors bg-transparent border-none cursor-pointer">
@@ -624,10 +689,16 @@
                         <span class="text-[11px] font-black tracking-widest" dir="ltr">${walletBalance} AED</span>
                     </div>
 
-                    <a href="register.html" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all flex items-center gap-2 text-decoration-none shadow-[0_0_15px_rgba(0,180,216,0.3)]">
-                        <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-[#091016] text-xs shrink-0 font-black">${user.fullName ? user.fullName.charAt(0) : 'U'}</div>
-                        <span class="hidden md:inline">${user.fullName ? user.fullName.split(' ')[0] : 'حسابي'}</span>
-                    </a>
+                    <!-- قائمة الحساب الذكية -->
+                    <div class="flex items-center gap-1.5 ml-1">
+                        <button onclick="switchView('dashboardView')" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[11px] md:text-sm font-black transition-all flex items-center gap-2 border-none cursor-pointer shadow-[0_0_15px_rgba(0,180,216,0.3)]">
+                            <div class="w-6 h-6 bg-white/25 rounded-full flex items-center justify-center text-[#091016] text-xs shrink-0 font-black">${initialLetter}</div>
+                            <span class="hidden sm:inline">${firstName}</span>
+                        </button>
+                        <button onclick="logoutUser()" title="تسجيل الخروج" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 flex items-center justify-center transition cursor-pointer">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+                        </button>
+                    </div>
                 `;
                 if(document.getElementById('currencySelector')) document.getElementById('currencySelector').value = currentCurrency;
             }
@@ -651,9 +722,8 @@
 
         // --- 🚀 VIP Tier System Logic ---
         function updateDashboardVIP() {
-            const currentUserStr = localStorage.getItem('rimal_current_user');
-            if (currentUserStr) {
-                const user = JSON.parse(currentUserStr);
+            const user = getSavedUser();
+            if (user) {
                 const points = user.points || 150; 
                 const balance = (points / 10).toFixed(2);
                 let tierName = "مسافر"; let nextTier = "مستكشف"; let progress = 0; let msg = "";
@@ -707,22 +777,22 @@
                 'الإمارات': { code: 'AE', flag: '🇦🇪', name: 'الإمارات' },
                 'مصر': { code: 'EG', flag: '🇪🇬', name: 'مصر' },
                 'بريطانيا': { code: 'GB', flag: '🇬🇧', name: 'بريطانيا' },
-                '': { code: 'SA', flag: '🇸🇦', name: 'السعودية' } 
+                '': { code: '', flag: '🌍', name: 'الوجهات المتوفرة' } 
             };
             
             let searchKey = query.trim();
-            let countryInfo = countryMap[searchKey] || { code: 'SA', flag: '🌍', name: searchKey || 'الوجهات المتوفرة' };
+            let countryInfo = countryMap[searchKey] || { code: '', flag: '🌍', name: searchKey || 'الوجهات المتوفرة' };
 
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
             container.innerHTML = `
                 <div class="col-span-full flex flex-col items-center justify-center py-20">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-6"></div>
-                    <p class="text-slate-400 font-bold text-sm">جاري الاتصال بالخادم السحابي وجلب الباقات...</p>
-                    <p class="text-slate-500 font-semibold text-xs mt-2">إذا كان السيرفر في وضع السكون، فقد يستغرق ثوانٍ معدودة للاستيقاظ.</p>
+                    <p class="text-slate-400 font-bold text-sm">جاري الاتصال بقاعدة بيانات Airalo وجلب الباقات الحية...</p>
                 </div>`;
 
             try {
-                const response = await fetch(`${API_URL}/api/airalo/packages?country=${countryInfo.code}`);
+                const queryParam = countryInfo.code ? `?country=${countryInfo.code}` : '';
+                const response = await fetch(`${API_URL}/api/airalo/packages${queryParam}`);
                 
                 if (!response.ok) {
                     throw new Error(`Server returned ${response.status}`);
@@ -753,19 +823,18 @@
                 }
             } catch (error) {
                 console.error("Packages Fetch Error:", error);
-                // إعادة المحاولة التلقائية إذا كان Render في مرحلة الإقلاع
                 if (retryCount < 2) {
                     container.innerHTML = `
                         <div class="col-span-full flex flex-col items-center justify-center py-20">
                             <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-amber-400 mb-6"></div>
-                            <p class="text-amber-400 font-bold text-sm">السيرفر يستيقظ الآن من وضع السكون.. جاري إعادة المحاولة تلقائياً (${retryCount + 1}/2)...</p>
+                            <p class="text-amber-400 font-bold text-sm">جاري محاولة الاتصال مجدداً (${retryCount + 1}/2)...</p>
                         </div>`;
-                    setTimeout(() => fetchPackages(query, retryCount + 1), 4000);
+                    setTimeout(() => fetchPackages(query, retryCount + 1), 3000);
                     return;
                 }
                 container.innerHTML = `
                     <div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">
-                        حدث خطأ أثناء تحميل الباقات. يرجى التأكد من اكتمال نشر السيرفر (Deploy) في Render ثم تحديث الصفحة.
+                        تعذر جلب الباقات حالياً. يرجى التأكد من تشغيل السيرفر وتحديث الصفحة.
                     </div>`;
             } finally {
                 btn.innerHTML = originalBtnHtml; btn.disabled = false;
@@ -774,6 +843,8 @@
 
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
+            if (!container) return;
+
             if (packages.length === 0) {
                 container.innerHTML = `<div class="col-span-full text-center py-16 premium-card"><i class="fa-solid fa-earth-americas text-5xl text-slate-500 mb-4 block"></i><p class="text-white font-black text-xl">لا توجد نتائج مطابقة.</p></div>`;
                 return;
@@ -781,7 +852,7 @@
 
             let html = '';
             packages.forEach((pkg, index) => {
-                const delay = index * 80;
+                const delay = index * 60;
                 const hotBadge = pkg.isHot ? `<span class="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded text-[10px] font-bold shadow-[0_0_10px_rgba(244,63,94,0.2)]">🔥 الأكثر مبيعاً</span>` : '';
                 
                 html += `
@@ -846,7 +917,7 @@
             const priceVal = (parseFloat(pkg.price) * exchangeRates[currentCurrency]).toFixed(2);
             document.getElementById('modalPrice').innerHTML = `${priceVal} <span class="text-[10px] text-[#00b4d8]">${currentCurrency}</span>`;
 
-            if(isGift) {
+            if (isGift) {
                 document.getElementById('modalMainTitle').innerText = 'إرسال باقة كهدية 🎁';
                 document.getElementById('modalIconContainer').className = 'w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-400 border border-amber-500/20';
                 document.getElementById('modalMainIcon').className = 'fa-solid fa-gift text-3xl';
@@ -858,7 +929,7 @@
                 document.getElementById('giftEmailSection').style.display = 'none';
             }
 
-            const currentUser = localStorage.getItem('rimal_current_user');
+            const currentUser = getSavedUser();
             const actionArea = document.getElementById('checkoutActionArea');
 
             if (currentUser) {
@@ -871,7 +942,12 @@
                     </button>
                 `;
             } else {
-                actionArea.innerHTML = `<div class="text-center mb-4"><span class="text-xs font-bold text-slate-400">يجب تسجيل الدخول لإتمام العملية</span></div><a href="register.html" class="w-full bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] font-black py-4 rounded-xl shadow-[0_0_15px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">تسجيل الدخول / حساب جديد <i class="fa-regular fa-user"></i></a>`;
+                actionArea.innerHTML = `
+                    <div class="text-center mb-4"><span class="text-xs font-bold text-slate-400">يجب تسجيل الدخول لإتمام العملية واستلام كود الشريحة</span></div>
+                    <a href="register.html" class="w-full bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] font-black py-4 rounded-xl shadow-[0_0_15px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">
+                        تسجيل الدخول / حساب جديد <i class="fa-regular fa-user"></i>
+                    </a>
+                `;
             }
 
             const modal = document.getElementById('checkoutModal');
@@ -893,14 +969,14 @@
             const originalText = btn.innerHTML;
             
             let targetEmail = 'guest@remaltourismllc.com';
-            const userStr = localStorage.getItem('rimal_current_user');
-            if (userStr) {
-                targetEmail = JSON.parse(userStr).email || targetEmail;
+            const user = getSavedUser();
+            if (user) {
+                targetEmail = user.email || targetEmail;
             }
 
-            if(isGiftPurchase) {
+            if (isGiftPurchase) {
                 const giftMail = document.getElementById('giftEmailInput').value.trim();
-                if(!giftMail || !giftMail.includes('@')) { showToast('الرجاء كتابة إيميل المستلم بشكل صحيح', true); return; }
+                if (!giftMail || !giftMail.includes('@')) { showToast('الرجاء كتابة إيميل المستلم بشكل صحيح', true); return; }
                 targetEmail = giftMail;
             }
 
@@ -1026,7 +1102,7 @@
             }, 1500);
         }
 
-        // --- 🚀 Wallet & Helpers ---
+        // --- 🚀 Helpers ---
         function addToWallet(iccid) { showToast('جاري تحضير البطاقة... سيتم فتح المحفظة قريباً!'); }
         function shareFamilyData(iccid) { showToast('تم فتح واجهة توزيع البيانات العائلية 👨‍👩‍👧‍👦'); }
 
