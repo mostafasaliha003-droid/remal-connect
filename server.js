@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
+const cron = require('node-cron');
 const path = require('path');
 
 const app = express();
@@ -325,6 +326,25 @@ async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEn
         throw error;
     }
 }
+
+// ==========================================
+// نظام المزامنة الدورية للباقات (Hourly Sync)
+// ==========================================
+cron.schedule('0 * * * *', async () => {
+    try {
+        console.log('🔄 جاري بدء مزامنة باقات Airalo الدورية (Hourly Sync)...');
+        const token = await getAiraloToken();
+        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
+            headers: { 
+                'Accept': 'application/json', 
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+        console.log(`✅ تمت مزامنة الكتالوج بنجاح. إجمالي الوجهات المحدثة: ${response.data?.data?.length || 0}`);
+    } catch (error) {
+        console.error('❌ فشل عملية المزامنة الدورية للباقات:', error.response?.data || error.message);
+    }
+});
 
 app.get('/api/airalo/packages', async (req, res) => {
     let formattedPackages = [];
