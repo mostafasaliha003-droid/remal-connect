@@ -535,7 +535,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
 
         const simDetails = airaloOrder.sims ? airaloOrder.sims[0] : airaloOrder;
         res.json({
-            success: codeSuccess = true,
+            success: true,
             iccid: simDetails.iccid,
             qr_code_url: simDetails.qrcode_url || simDetails.qr_code,
             lpa: simDetails.lpa,
