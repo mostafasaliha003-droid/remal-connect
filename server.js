@@ -252,7 +252,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد
+// تكامل Airalo الموحد (محدث لـ x-www-form-urlencoded)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -262,19 +262,20 @@ async function getAiraloToken() {
         return airaloAccessToken;
     }
     
-    const response = await axios.post('https://partners-api.airalo.com/v2/token', {
-        client_id: process.env.AIRALO_CLIENT_ID,
-        client_secret: process.env.AIRALO_CLIENT_SECRET,
-        grant_type: 'client_credentials'
-    }, { 
+    const params = new URLSearchParams();
+    params.append('client_id', process.env.AIRALO_CLIENT_ID);
+    params.append('client_secret', process.env.AIRALO_CLIENT_SECRET);
+    params.append('grant_type', 'client_credentials');
+
+    const response = await axios.post('https://partners-api.airalo.com/v2/token', params, {
         headers: { 
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         } 
     });
 
     airaloAccessToken = response.data?.data?.access_token || response.data?.access_token;
-    const expiresIn = response.data?.data?.expires_in || response.data?.expires_in || 3600;
+    const expiresIn = response.data?.data?.expires_in || response.data?.expires_in || 86400;
     tokenExpirationTime = Date.now() + (expiresIn * 1000); 
 
     return airaloAccessToken;
