@@ -549,8 +549,8 @@
 
     <!-- 🚀 الجافاسكربت المركزي -->
     <script>
-        // 💡 مسار السيرفر المحلي الخاص بك
-        const API_URL = 'http://localhost:3000';
+        // 💡 السيرفر السحابي الديناميكي: سيعمل تلقائياً من أي مكان (محلياً أو على Render)
+        const API_URL = '';
         
         // --- 🚀 PWA Install Logic ---
         let deferredPrompt;
@@ -724,7 +724,7 @@
             container.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-20"><div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-6"></div><p class="text-slate-400 font-bold text-sm">جاري الاتصال بالخادم لجلب أسرع الشبكات...</p></div>`;
 
             try {
-                // 🚀 استدعاء المسار الحقيقي المتصل بسيرفرك المحلي
+                // 🚀 استدعاء المسار الحقيقي المتصل بالسيرفر (بدون localhost)
                 const response = await fetch(`${API_URL}/api/airalo/packages?country=${countryInfo.code}`);
                 const data = await response.json();
                 
@@ -732,10 +732,8 @@
                     title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8]">${countryInfo.name}</span>` : 'الوجهات المتوفرة حالياً 🔥';
                     
                     const formattedPackages = data.packages.map(pkg => {
-                        // دعم الأسعار سواء جاءت بالدولار من Airalo أو كقيمة درهم مباشرة من الطوارئ
                         let priceInAED = pkg.price;
                         if (pkg.price && !pkg.price.toString().includes('.')) {
-                             // تحوط إضافي
                              priceInAED = parseFloat(pkg.price).toFixed(2);
                         } else if (pkg.price && parseFloat(pkg.price) < 150 && !pkg.id.includes('mock')) {
                              priceInAED = (parseFloat(pkg.price) * 3.67).toFixed(2);
@@ -758,7 +756,7 @@
                     container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">عذراً، لم نتمكن من العثور على باقات لهذه الوجهة حالياً.</div>`;
                 }
             } catch (error) {
-                container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم. تأكد من أن ملف server.js يعمل في الخلفية.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم. تأكد من أن السيرفر يعمل في الخلفية.</div>`;
             } finally {
                 btn.innerHTML = originalBtnHtml; btn.disabled = false;
             }
