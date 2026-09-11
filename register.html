@@ -37,7 +37,7 @@
         }
         
         /* 🚀 حقول الإدخال */
-        .input-group { position: relative; display: flex; items-center; }
+        .input-group { position: relative; display: flex; align-items: center; }
         .input-icon-right { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; transition: 0.3s; }
         .input-action-left { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #64748b; cursor: pointer; transition: 0.3s; padding: 5px; }
         .input-action-left:hover { color: var(--primary-cyan); }
@@ -49,7 +49,7 @@
             color: white; 
             padding: 0.875rem 3rem 0.875rem 1rem; 
             border-radius: 0.75rem;
-            font-size: 0.875rem;
+            font-size: 0.875rem; 
             font-weight: 700;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -198,7 +198,7 @@
 
                 <!-- 🌟 شاشة استعادة كلمة المرور -->
                 <div id="forgotPasswordView" class="view-section">
-                    <button type="button" onclick="switchView('loginView')" class="absolute top-0 right-0 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors border-none cursor-pointer">
+                    <button type="button" onclick="switchView('loginView')" class="absolute top-5 right-5 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors border-none cursor-pointer">
                         <i class="fa-solid fa-arrow-right text-xs"></i>
                     </button>
                     
@@ -207,7 +207,7 @@
                     </div>
                     
                     <h2 class="text-xl font-black mb-1 text-center text-white">استعادة كلمة المرور 🔐</h2>
-                    <p class="text-slate-400 text-xs text-center mb-6 font-semibold leading-relaxed">أدخل بريدك الإلكتروني المسجل لدينا، وسنرسل لك رابطاً لإنشاء كلمة مرور جديدة.</p>
+                    <p class="text-slate-400 text-xs text-center mb-6 font-semibold leading-relaxed">أدخل بريدك الإلكتروني المسجل لدينا، وسنرسل لك كلمة مرور مؤقتة للوصول لحسابك فوراً.</p>
                     
                     <form id="forgotForm" onsubmit="handleForgotPassword(event)">
                         <div class="input-group mb-6">
@@ -216,7 +216,7 @@
                         </div>
 
                         <button type="submit" id="forgotBtn" class="w-full btn-primary font-black py-3.5 rounded-xl flex justify-center items-center gap-2 border-none cursor-pointer text-sm">
-                            إرسال رابط الاستعادة <i class="fa-regular fa-paper-plane"></i>
+                            إرسال كلمة المرور المؤقتة <i class="fa-regular fa-paper-plane"></i>
                         </button>
                     </form>
                 </div>
@@ -226,7 +226,7 @@
     </main>
 
     <script>
-        // 🚀 السيرفر السحابي الديناميكي: تم التعديل ليعمل من أي مكان
+        // 🚀 السيرفر السحابي الديناميكي: مسار نسبي ليعمل تلقائياً مع أي نطاق
         const API_URL = '';
 
         function showToast(message, type = 'success') {
@@ -251,7 +251,7 @@
             setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
                 toast.classList.add('opacity-0', '-translate-y-32');
-            }, 4000);
+            }, 4500);
         }
 
         function togglePassword(inputId, iconContainer) {
@@ -287,9 +287,9 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري إنشاء الحساب...';
             btn.disabled = true;
 
-            const fullName = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const whatsapp = document.getElementById('regPhone').value;
+            const fullName = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const whatsapp = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPassword').value;
 
             try {
@@ -302,17 +302,17 @@
 
                 if (data.success) {
                     showToast('تم إنشاء الحساب بنجاح! 🚀 جاري الدخول...', 'success');
-                    localStorage.setItem('rimal_current_user', JSON.stringify({ fullName, email, role: 'customer', points: 150 }));
+                    localStorage.setItem('rimal_current_user', JSON.stringify({ fullName, email, role: 'customer' }));
                     setTimeout(() => window.location.href = 'index.html', 1500);
                 } else {
-                    if(data.message.includes('مسجل بالفعل')) {
+                    if (data.message && data.message.includes('مسجل بالفعل')) {
                         showToast(`هذا البريد مسجل مسبقاً. <button onclick="switchView('loginView')" class="underline bg-transparent border-none text-white cursor-pointer ml-1">سجل دخولك هنا</button>`, 'error');
                     } else {
                         showToast(data.message || 'حدث خطأ أثناء التسجيل', 'error');
                     }
                 }
             } catch (error) {
-                showToast('خطأ في الاتصال بالخادم. تأكد من تشغيل الخادم.', 'error');
+                showToast('خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.', 'error');
             } finally {
                 btn.innerHTML = originalHtml;
                 btn.disabled = false;
@@ -326,7 +326,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...';
             btn.disabled = true;
 
-            const email = document.getElementById('logEmail').value;
+            const email = document.getElementById('logEmail').value.trim().toLowerCase();
             const password = document.getElementById('logPassword').value;
 
             try {
@@ -345,21 +345,21 @@
                     showToast(data.message || 'بيانات الدخول غير صحيحة', 'error');
                 }
             } catch (error) {
-                showToast('خطأ في الاتصال بالخادم. تأكد من تشغيل الخادم.', 'error');
+                showToast('خطأ في الاتصال بالخادم. يرجى المحاولة لاحقاً.', 'error');
             } finally {
                 btn.innerHTML = originalHtml;
                 btn.disabled = false;
             }
         }
 
-        // 🚀 الاتصال الحقيقي بخادمك لإرسال إيميل الاستعادة
+        // 🚀 إرسال طلب كلمة المرور المؤقتة إلى السيرفر
         async function handleForgotPassword(e) {
             e.preventDefault();
             const btn = document.getElementById('forgotBtn');
-            const email = document.getElementById('forgotEmail').value;
+            const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
             const originalHtml = btn.innerHTML;
             
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري الإرسال...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري المعالجة والإرسال...';
             btn.disabled = true;
 
             try {
@@ -376,10 +376,10 @@
                     document.getElementById('forgotEmail').value = '';
                     setTimeout(() => switchView('loginView'), 2500);
                 } else {
-                    showToast(data.message, 'error');
+                    showToast(data.message || 'تعذر العثور على الحساب', 'error');
                 }
             } catch (error) {
-                showToast('خطأ في الاتصال بالخادم. تأكد من تشغيل الخادم.', 'error');
+                showToast('تعذر إتمام العملية. تأكد من اتصالك أو حاول لاحقاً.', 'error');
             } finally {
                 btn.innerHTML = originalHtml;
                 btn.disabled = false;
