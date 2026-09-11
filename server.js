@@ -249,7 +249,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد (مع المصادقة عبر x-www-form-urlencoded، Pagination، و معالجة أخطاء 422)
+// تكامل Airalo الموحد (دعم شامل للمحليات، العالمية، Pagination، وTop-up)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -283,8 +283,12 @@ app.get('/api/airalo/packages', async (req, res) => {
     try {
         const token = await getAiraloToken();
         const apiParams = { limit: 50, include: 'topup' };
+        
         if (req.query.country) {
             apiParams['filter[country]'] = req.query.country;
+        }
+        if (req.query.type) {
+            apiParams['filter[type]'] = req.query.type; // local أو global
         }
         if (req.query.page) {
             apiParams['page'] = req.query.page;
@@ -301,8 +305,8 @@ app.get('/api/airalo/packages', async (req, res) => {
         const rawData = response.data?.data || [];
 
         rawData.forEach(item => {
-            const countryTitle = item.title || 'وجهة محلية وعالمية';
-            const countryCode = item.country_code || 'GLOBAL';
+            const countryTitle = item.title || 'وجهة عالمية / إقليمية';
+            const countryCode = item.country_code || (item.slug === 'world' ? 'GLOBAL' : 'REGIONAL');
 
             if (item.operators && Array.isArray(item.operators)) {
                 item.operators.forEach(operator => {
@@ -331,7 +335,7 @@ app.get('/api/airalo/packages', async (req, res) => {
         });
     } catch (error) {
         const errorData = error.response?.data;
-        console.log('⚠️ خطأ استجابة Airalo (Packages/422):', error.response?.status, errorData?.meta?.message || error.message);
+        console.log('⚠️ خطأ استجابة Airalo (Packages/Global):', error.response?.status, errorData?.meta?.message || error.message);
     }
 
     if (formattedPackages.length === 0) {
