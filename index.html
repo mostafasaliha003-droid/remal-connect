@@ -6,8 +6,19 @@
     <meta name="theme-color" content="#091016">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Remal Connect | إنترنت عالمي ذكي 🌍</title>
     
+    <!-- 🚀 SEO & Open Graph (Social Sharing) -->
+    <title>Remal Connect | إنترنت عالمي ذكي 🌍</title>
+    <meta name="description" content="بوابتك الذكية للإنترنت العالمي. تخلص من رسوم التجوال وانطلق بإنترنت 5G فوري في أكثر من 150 دولة عبر تقنية الـ eSIM.">
+    <meta property="og:title" content="Remal Connect | إنترنت عالمي ذكي 🌍">
+    <meta property="og:description" content="احصل على شريحة eSIM الإلكترونية الخاصة بك في ثوانٍ. إنترنت 5G لا محدود في رحلتك القادمة.">
+    <meta property="og:image" content="https://remalsim.com/assets/og-cover.jpg">
+    <meta property="og:url" content="https://remalsim.com">
+    <meta property="og:type" content="website">
+    
+    <!-- 🚀 PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
     <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -142,7 +153,7 @@
                 </div>
 
                 <div class="flex items-center gap-2 md:gap-4" id="headerAuthArea">
-                    <select id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-white/5 border border-white/10 text-slate-300 hover:text-white text-xs font-bold py-1.5 px-3 rounded-lg outline-none cursor-pointer transition-colors">
+                    <select id="currencySelector" aria-label="اختيار العملة" onchange="convertCurrency()" class="hidden md:block bg-white/5 border border-white/10 text-slate-300 hover:text-white text-xs font-bold py-1.5 px-3 rounded-lg outline-none cursor-pointer transition-colors">
                         <option value="AED" class="text-black">AED</option><option value="SAR" class="text-black">SAR</option><option value="USD" class="text-black">USD</option><option value="EUR" class="text-black">EUR</option>
                     </select>
 
@@ -184,19 +195,19 @@
                     <form id="searchForm" class="bg-[#111c22]/90 border border-white/10 hover:border-[#00b4d8]/50 p-2 rounded-2xl max-w-xl mx-auto lg:mx-0 flex flex-col sm:flex-row items-center gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.6)] focus-within:border-[#00b4d8] focus-within:shadow-[0_0_30px_rgba(0,180,216,0.2)] transition-all backdrop-blur-xl">
                         <div class="flex items-center flex-1 w-full px-3 gap-3">
                             <i class="fa-solid fa-earth-americas text-[#00b4d8] text-lg"></i>
-                            <input type="text" id="searchInput" placeholder="إلى أين وجهتك القادمة؟ (مثال: الإمارات، تركيا، أمريكا...)" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white placeholder-slate-500 h-11">
+                            <input type="text" id="searchInput" aria-label="البحث عن الوجهات" placeholder="إلى أين وجهتك القادمة؟ (مثال: الإمارات، تركيا، أمريكا...)" class="w-full bg-transparent border-none outline-none text-sm font-bold text-white placeholder-slate-500 h-11">
                         </div>
-                        <button type="submit" id="searchBtn" class="w-full sm:w-auto bg-[#00b4d8] hover:bg-cyan-400 text-slate-950 font-black py-3 px-8 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.35)] text-sm active:scale-95 shrink-0 border-none whitespace-nowrap">
+                        <button type="submit" id="searchBtn" aria-label="بحث" class="w-full sm:w-auto bg-[#00b4d8] hover:bg-cyan-400 text-slate-950 font-black py-3 px-8 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.35)] text-sm active:scale-95 shrink-0 border-none whitespace-nowrap">
                             انطلق بالإنترنت ⚡
                         </button>
                     </form>
 
                     <div class="flex items-center justify-center lg:justify-start gap-2 mt-5 flex-wrap">
                         <span class="text-xs font-black text-slate-400">وجهات يفضلها المسافرون:</span>
-                        <button type="button" onclick="quickSearch('الإمارات')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇦🇪 الإمارات</button>
-                        <button type="button" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇸🇦 السعودية</button>
-                        <button type="button" onclick="quickSearch('تركيا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇹🇷 تركيا</button>
-                        <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇪🇺 أوروبا الموحدة</button>
+                        <button type="button" aria-label="بحث الإمارات" onclick="quickSearch('الإمارات')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇦🇪 الإمارات</button>
+                        <button type="button" aria-label="بحث السعودية" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇸🇦 السعودية</button>
+                        <button type="button" aria-label="بحث تركيا" onclick="quickSearch('تركيا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇹🇷 تركيا</button>
+                        <button type="button" aria-label="بحث أوروبا" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 hover:border-[#00b4d8]/40 px-3 py-1 rounded-xl text-xs font-bold text-slate-200 transition-all cursor-pointer">🇪🇺 أوروبا الموحدة</button>
                     </div>
 
                     <div class="grid grid-cols-3 gap-6 border-t border-white/5 pt-6 mt-8 max-w-xl mx-auto lg:mx-0">
@@ -215,10 +226,11 @@
                     </div>
                 </div>
 
-                <div class="w-full lg:w-5/12 flex items-center justify-center relative">
+                <!-- 🚀 3D Perspective Container -->
+                <div class="w-full lg:w-5/12 flex items-center justify-center relative perspective-container" style="perspective: 1000px;">
                     <div class="absolute inset-0 bg-[#00b4d8]/10 blur-[80px] rounded-full"></div>
 
-                    <div class="relative w-[310px] sm:w-[330px] animate-float phone-3d" id="phoneMockup">
+                    <div class="relative w-[310px] sm:w-[330px] animate-float phone-3d transition-transform duration-200 ease-out" id="phoneMockup">
                         <div class="bg-gradient-to-b from-slate-700 via-slate-800 to-slate-950 p-3 rounded-[3.2rem] shadow-[0_25px_60px_rgba(0,0,0,0.85)] border-[5px] border-slate-600/40 relative z-10">
                             
                             <div class="bg-[#091016] rounded-[2.6rem] overflow-hidden border border-white/10 h-[560px] flex flex-col justify-between relative shadow-inner">
@@ -278,12 +290,13 @@
                     <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md" id="resultsTitle">الوجهات الأكثر طلباً 🔥</h3>
                     <p class="text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR في ثوانٍ، وانطلق في رحلتك دون أي انتظار.</p>
                 </div>
-                <button type="button" onclick="openCompatibilityModal()" class="text-xs md:text-sm text-[#00b4d8] hover:text-white font-bold bg-[#00b4d8]/10 hover:bg-[#00b4d8]/20 border border-[#00b4d8]/30 px-5 py-2.5 rounded-full transition-colors cursor-pointer backdrop-blur-sm flex items-center gap-2">
+                <button type="button" aria-label="فحص توافق الهاتف" onclick="openCompatibilityModal()" class="text-xs md:text-sm text-[#00b4d8] hover:text-white font-bold bg-[#00b4d8]/10 hover:bg-[#00b4d8]/20 border border-[#00b4d8]/30 px-5 py-2.5 rounded-full transition-colors cursor-pointer backdrop-blur-sm flex items-center gap-2">
                     <i class="fa-solid fa-mobile-screen"></i> فحص توافق جهازي
                 </button>
             </div>
             
             <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                <!-- Data will be loaded here -->
             </div>
         </section>
     </div>
@@ -298,12 +311,12 @@
                     <h2 class="text-3xl md:text-4xl font-black text-white mb-2">حقيبة سفرك الرقمية 🧳⚡</h2>
                     <p class="text-slate-400 text-sm font-bold">إدارة الباقات، تتبع الاستهلاك، وتثبيت الشرائح الذكي.</p>
                 </div>
-                <button onclick="switchView('homeView')" class="bg-white/5 hover:bg-white/10 text-white px-5 py-2.5 rounded-full text-xs font-bold transition-colors border border-white/10 cursor-pointer backdrop-blur-sm flex items-center gap-1.5">
+                <button aria-label="عودة للرئيسية" onclick="switchView('homeView')" class="bg-white/5 hover:bg-white/10 text-white px-5 py-2.5 rounded-full text-xs font-bold transition-colors border border-white/10 cursor-pointer backdrop-blur-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-arrow-right"></i> عودة للرئيسية
                 </button>
             </div>
 
-            <!-- 🛡️ نظام الأدرع الذكي والمكافآت (VIP Shield Tiers) - مصقول ومضبوط المسافات -->
+            <!-- 🛡️ نظام الأدرع الذكي والمكافآت -->
             <div id="tierBannerContainer" class="ambient-banner p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-slate-400">
                 <div class="glow-overlay top-0 right-0 bg-slate-400" id="tierGlow"></div>
                 <div class="flex items-center gap-5 w-full md:w-auto relative z-10">
@@ -333,7 +346,7 @@
                 </div>
             </div>
 
-            <!-- 🎁 بطاقة كود المشاركة الحصري بمسافات تنفس مريحة -->
+            <!-- 🎁 بطاقة كود المشاركة الحصري -->
             <div class="mb-10 w-full">
                 <div class="ambient-banner p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-emerald-500">
                     <div class="glow-overlay bg-emerald-500 bottom-0 right-0"></div>
@@ -353,7 +366,7 @@
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">كود المشاركة الخاص بك</span>
                             <span class="text-xl md:text-2xl font-black text-emerald-400 tracking-widest select-all font-mono" dir="ltr" id="referralCode">--</span>
                         </div>
-                        <button onclick="copyReferralCode()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer border-none transition-all active:scale-95 shrink-0" title="نسخ الكود">
+                        <button aria-label="نسخ الكود" onclick="copyReferralCode()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer border-none transition-all active:scale-95 shrink-0" title="نسخ الكود">
                             <i class="fa-regular fa-copy" id="copyRefIcon"></i>
                         </button>
                     </div>
@@ -400,7 +413,7 @@
                         بوابتك الذكية للإنترنت العالمي. إحدى خدمات <span class="text-white font-bold">شركة الرمال الدولية</span>، نقدم لك أسرع تقنيات الـ eSIM لتسافر براحة وأمان دون مفاجآت الفواتير.
                     </p>
                     <div class="flex gap-3">
-                        <a href="https://instagram.com/remaltourism" target="_blank" class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-gradient-to-tr hover:from-[#f09433] hover:to-[#bc1888] hover:text-white transition-all shadow-sm"><i class="fa-brands fa-instagram text-lg"></i></a>
+                        <a href="https://instagram.com/remaltourism" aria-label="انستجرام" target="_blank" class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-gradient-to-tr hover:from-[#f09433] hover:to-[#bc1888] hover:text-white transition-all shadow-sm"><i class="fa-brands fa-instagram text-lg"></i></a>
                     </div>
                 </div>
 
@@ -466,7 +479,7 @@
     <div id="checkoutModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-[#091016]/80 backdrop-blur-md cursor-pointer" onclick="closeCheckoutModal()"></div>
         <div class="checkout-modal w-[90%] max-w-md p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300" id="checkoutContent">
-            <button onclick="closeCheckoutModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <button aria-label="إغلاق" onclick="closeCheckoutModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
             <div class="w-16 h-16 bg-[#00b4d8]/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-[#00b4d8] border border-[#00b4d8]/20">
                 <i class="fa-solid fa-cart-arrow-down text-3xl"></i>
             </div>
@@ -514,7 +527,7 @@
     <div id="topupModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-[#091016]/80 backdrop-blur-md cursor-pointer" onclick="closeTopupModal()"></div>
         <div class="checkout-modal w-[90%] max-w-md p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 border-t-[4px] border-[#00b4d8]" id="topupContent">
-            <button onclick="closeTopupModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors border-none cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <button aria-label="إغلاق" onclick="closeTopupModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors border-none cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
             <div class="w-16 h-16 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-2xl flex items-center justify-center mx-auto mb-4 text-white shadow-[0_0_20px_rgba(0,180,216,0.3)]">
                 <i class="fa-solid fa-bolt text-2xl"></i>
             </div>
@@ -555,7 +568,7 @@
     <div id="compatibilityModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-[#091016]/80 backdrop-blur-md cursor-pointer" onclick="closeCompatibilityModal()"></div>
         <div class="checkout-modal w-[90%] max-w-sm p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 border-t-[4px] border-white/20" id="compatibilityContent">
-            <button onclick="closeCompatibilityModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <button aria-label="إغلاق" onclick="closeCompatibilityModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
             <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-5 text-white border border-white/10"><i class="fa-solid fa-mobile-screen text-3xl"></i></div>
             <h3 class="text-xl font-black text-white mb-2 text-center">هل هاتفك يدعم الـ eSIM؟</h3>
             <p class="text-xs text-slate-400 font-semibold text-center mb-6 leading-relaxed">ابحث عن نوع هاتفك أدناه للتأكد من توافقه.</p>
@@ -570,10 +583,38 @@
         </div>
     </div>
 
+    <!-- 🚀 Instructions Modal -->
+    <div id="instructionsModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-[#091016]/80 backdrop-blur-md cursor-pointer" onclick="closeInstructionsModal()"></div>
+        <div class="checkout-modal w-[90%] max-w-xl p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 max-h-[85vh] overflow-y-auto" id="instructionsContent">
+            <button aria-label="إغلاق" onclick="closeInstructionsModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-14 h-14 bg-[#00b4d8]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00b4d8] border border-[#00b4d8]/20">
+                <i class="fa-solid fa-book-open text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-2 text-center">إرشادات التثبيت الرسمية 📖</h3>
+            <p class="text-center text-xs font-bold text-slate-400 mb-6 border-b border-white/5 pb-4">تعليمات مفصلة خطوة بخطوة لجهازك</p>
+            
+            <div id="instructionsBody" class="space-y-4 text-right text-sm text-slate-200">
+                <div class="flex justify-center py-10">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00b4d8]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 🚀 الجافاسكربت المركزي -->
     <script>
         const API_URL = '';
         window.allPackages = [];
+
+        // تسجيل Service Worker لتمكين PWA والتخزين المؤقت للسرعة
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => {
+                    console.log('SW registration failed: ', err);
+                });
+            });
+        }
 
         const SHIELD_SVGS = {
             silver: `
@@ -657,7 +698,7 @@
             } else if (count <= 20) {
                 return {
                     name: "الدرع البلاتيني", key: "platinum", rate: 0.02, rateText: "كاش باك 2%",
-                    tagClass: "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+                    tagClass: "bg-[#00b4d8]/20 text-[#00b4d8] border-[#00b4d8]/30",
                     borderClass: "border-[#00b4d8]", glowColor: "bg-[#00b4d8]",
                     progressGrad: "bg-gradient-to-l from-cyan-300 to-[#00b4d8]",
                     nextTier: "الدرع الماسي VIP (21 شراء)", progress: Math.min(((count - 10) / 10) * 100, 100),
@@ -755,7 +796,7 @@
                 const walletBalance = parseFloat(user.walletBalance || 0).toFixed(2);
                 
                 authArea.innerHTML = `
-                    <select id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-white/5 border border-white/10 text-slate-300 hover:text-white text-xs font-bold py-1.5 px-3 rounded-lg outline-none cursor-pointer transition-colors">
+                    <select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-white/5 border border-white/10 text-slate-300 hover:text-white text-xs font-bold py-1.5 px-3 rounded-lg outline-none cursor-pointer transition-colors">
                         <option value="AED" class="text-black">AED</option><option value="SAR" class="text-black">SAR</option><option value="USD" class="text-black">USD</option><option value="EUR" class="text-black">EUR</option>
                     </select>
 
@@ -773,7 +814,7 @@
                             <div class="w-6 h-6 bg-white/25 rounded-full flex items-center justify-center text-[#091016] text-xs shrink-0 font-black">${initialLetter}</div>
                             <span class="hidden sm:inline">${firstName}</span>
                         </button>
-                        <button onclick="logoutUser()" title="تسجيل الخروج" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 flex items-center justify-center transition cursor-pointer">
+                        <button onclick="logoutUser()" title="تسجيل الخروج" aria-label="تسجيل الخروج" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 flex items-center justify-center transition cursor-pointer">
                             <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
                         </button>
                     </div>
@@ -903,11 +944,28 @@
             let countryInfo = countryMap[searchKey] || { code: '', flag: '🌍', name: searchKey || 'الوجهات المتوفرة' };
 
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
-            container.innerHTML = `
-                <div class="col-span-full flex flex-col items-center justify-center py-20">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-6"></div>
-                    <p class="text-slate-400 font-bold text-sm">جاري جلب الباقات المحدثة...</p>
+            
+            // إضافة السكيليتون السلس بدل الـ Spinner المزعج
+            let skeletons = '';
+            for(let i=0; i<4; i++) {
+                skeletons += `
+                <div class="premium-card p-6 animate-pulse flex flex-col justify-between h-64 border border-white/5">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-2xl"></div>
+                        <div class="w-20 h-5 bg-white/10 rounded-full"></div>
+                    </div>
+                    <div class="space-y-3 mb-4">
+                        <div class="h-4 bg-white/10 rounded w-3/4"></div>
+                        <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5 mb-4">
+                        <div class="h-12 bg-black/20 rounded-2xl"></div>
+                        <div class="h-12 bg-black/20 rounded-2xl"></div>
+                    </div>
+                    <div class="h-10 bg-[#00b4d8]/20 rounded-xl w-full"></div>
                 </div>`;
+            }
+            container.innerHTML = skeletons;
 
             try {
                 const queryParam = countryInfo.code ? `?country=${countryInfo.code}` : '';
@@ -942,7 +1000,6 @@
             }
         }
 
-        // تم ضبط محاذاة أزرار الشراء والأسهم لتدعم الاتجاه العربي الصحيح (RTL)
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
             if (!container) return;
@@ -1001,8 +1058,7 @@
                                 <span class="text-[10px] font-black text-[#00b4d8]">AED</span>
                             </div>
                         </div>
-                        <!-- تم تعديل السهم ليتوافق مع اتجاه الـ RTL -->
-                        <button onclick="openCheckoutModalByIndex(${index})" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-5 py-2.5 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer border-none shadow-[0_0_20px_rgba(0,180,216,0.35)]">
+                        <button aria-label="شراء الباقة" onclick="openCheckoutModalByIndex(${index})" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-5 py-2.5 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer border-none shadow-[0_0_20px_rgba(0,180,216,0.35)]">
                             شراء وتفعيل <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </button>
                     </div>
@@ -1089,7 +1145,7 @@
                     <div class="flex items-center justify-center gap-2 mb-3 text-[11px] text-emerald-400 font-black bg-emerald-950/40 py-2 rounded-xl border border-emerald-500/30">
                         <i class="fa-solid fa-circle-check"></i> رصيد الكاش باك يغطي كامل قيمة الباقة!
                     </div>
-                    <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(52,211,153,0.4)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                    <button id="payNowBtn" aria-label="شراء من المحفظة" onclick="processSecurePayment()" class="w-full bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(52,211,153,0.4)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
                         إتمام الشراء مجاناً من المحفظة <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 `;
@@ -1098,7 +1154,7 @@
                     <div class="flex items-center justify-center gap-2 mb-3 text-[10px] text-emerald-400 font-bold bg-emerald-900/30 py-2 rounded-xl border border-emerald-500/30">
                         <i class="fa-solid fa-lock"></i> دفع إلكتروني آمن عبر Ziina
                     </div>
-                    <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                    <button id="payNowBtn" aria-label="الدفع" onclick="processSecurePayment()" class="w-full bg-[#00b4d8] hover:bg-[#0096b4] text-[#091016] font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
                         دفع ${finalAmount.toFixed(2)} AED الآن <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 `;
@@ -1121,6 +1177,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري معالجة الطلب...';
             btn.disabled = true;
 
+            // Security Note: Backend must re-verify the real package price. 
             localStorage.setItem('pending_esim_package', JSON.stringify({
                 ...currentSelectedPackage,
                 walletDeducted: walletDeductionAED,
@@ -1349,6 +1406,72 @@
             `);
         }
 
+        async function fetchInstructions(iccid) {
+            const modal = document.getElementById('instructionsModal');
+            const content = document.getElementById('instructionsContent');
+            const body = document.getElementById('instructionsBody');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
+            
+            body.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-10">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00b4d8] mb-3"></div>
+                    <p class="text-xs text-slate-400">جاري جلب إرشادات التثبيت من Airalo...</p>
+                </div>`;
+
+            try {
+                const res = await fetch(`${API_URL}/api/airalo/instructions/${iccid}?lang=ar`);
+                const data = await res.json();
+
+                if (data.success && data.instructions) {
+                    let html = '';
+                    const inst = data.instructions;
+                    
+                    if (inst.ios && inst.ios.length > 0) {
+                        html += `<div class="mb-4"><h4 class="text-[#00b4d8] font-bold mb-2">🍎 إرشادات أجهزة أبل (iOS):</h4>`;
+                        inst.ios.forEach((item, idx) => {
+                            if (item.installation_manual && item.installation_manual.steps) {
+                                html += `<div class="bg-black/30 p-3 rounded-xl mb-2 text-xs">`;
+                                Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => {
+                                    html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`;
+                                });
+                                html += `</div>`;
+                            }
+                        });
+                        html += `</div>`;
+                    }
+
+                    if (inst.android && inst.android.length > 0) {
+                        html += `<div><h4 class="text-emerald-400 font-bold mb-2">🤖 إرشادات أجهزة أندرويد (Android):</h4>`;
+                        inst.android.forEach((item, idx) => {
+                            if (item.installation_manual && item.installation_manual.steps) {
+                                html += `<div class="bg-black/30 p-3 rounded-xl mb-2 text-xs">`;
+                                Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => {
+                                    html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`;
+                                });
+                                html += `</div>`;
+                            }
+                        });
+                        html += `</div>`;
+                    }
+
+                    body.innerHTML = html || '<p class="text-center text-slate-400">لا توجد إرشادات تفصيلية متاحة لهذه الشريحة حالياً.</p>';
+                } else {
+                    body.innerHTML = '<p class="text-center text-rose-400">تعذر تحميل الإرشادات في الوقت الحالي.</p>';
+                }
+            } catch (err) {
+                body.innerHTML = '<p class="text-center text-rose-400">حدث خطأ في الاتصال بالخادم.</p>';
+            }
+        }
+
+        function closeInstructionsModal() {
+            const modal = document.getElementById('instructionsModal');
+            const content = document.getElementById('instructionsContent');
+            modal.classList.add('opacity-0'); content.classList.add('translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
         function copyToClipboard(text, btnElement) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast('تم نسخ رمز التثبيت بنجاح!');
@@ -1371,7 +1494,7 @@
                         <div class="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 text-[#00b4d8] text-4xl shadow-inner border border-white/10"><i class="fa-solid fa-box-open"></i></div>
                         <p class="text-white font-black text-2xl mb-3">حقيبة السفر الرقمية فارغة حالياً</p>
                         <p class="text-slate-400 font-bold text-sm mb-8 max-w-md mx-auto">اشترِ باقتك الأولى وسنقوم بحفظها هنا للوصول السريع حتى في وضع الطيران!</p>
-                        <button onclick="switchView('homeView')" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-10 py-4 rounded-xl font-black text-sm transition-transform active:scale-95 border-none cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.3)]">تصفح الباقات العالمية</button>
+                        <button onclick="switchView('homeView')" class="bg-[#00b4d8] hover:bg-[#0096b4] text-[#0f172a] px-10 py-4 rounded-xl font-black text-sm transition-transform active:scale-95 border-none cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.3)]">تصفح الباقات العالمية</button>
                     </div>`;
                 return;
             }
@@ -1382,7 +1505,7 @@
                 let totalMB = esim.totalBytes || 3072;
                 let usedMB = esim.usedBytes || 0;
                 let percentage = (usedMB / totalMB) * 100;
-                let progressColor = percentage > 85 ? 'from-rose-500 to-red-600' : 'from-[#00b4d8] to-[#007790]';
+                let progressColor = percentage > 85 ? 'from-rose-500 to-red-600' : 'from-[#00b4d8] to-emerald-400';
                 
                 html += `
                 <div class="esim-ticket p-6 md:p-8 flex flex-col md:flex-row gap-8">
@@ -1404,12 +1527,15 @@
                                     <span class="text-slate-300">الاستهلاك المباشر</span>
                                     <span class="text-white bg-black/40 px-2.5 py-1 rounded-md border border-white/5" dir="ltr">${(usedMB/1024).toFixed(2)} GB / ${(totalMB/1024).toFixed(2)} GB</span>
                                 </div>
-                                <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-white/5 shadow-inner">
-                                    <div class="bg-gradient-to-l ${progressColor} h-3 rounded-full progress-bar-fill shadow-[0_0_10px_rgba(0,180,216,0.8)]" style="width: 0%" data-width="${percentage}%"></div>
+                                <div class="w-full bg-[#050B14] rounded-full h-3 overflow-hidden border border-white/5 shadow-inner">
+                                    <div class="bg-gradient-to-r ${progressColor} h-3 rounded-full progress-bar-fill shadow-[0_0_10px_rgba(0,180,216,0.6)]" style="width: 0%" data-width="${percentage}%"></div>
                                 </div>
                                 <div class="mt-4 flex flex-wrap gap-2.5">
-                                    <button onclick="openTopupModal('${esim.iccid}')" class="bg-white hover:bg-slate-200 text-[#091016] px-5 py-2 rounded-lg text-xs font-black transition-colors cursor-pointer flex items-center gap-2 shadow-md border-none">
+                                    <button aria-label="شحن الرصيد" onclick="openTopupModal('${esim.iccid}')" class="bg-white hover:bg-slate-200 text-[#091016] px-5 py-2 rounded-lg text-xs font-black transition-colors cursor-pointer flex items-center gap-2 shadow-md border-none">
                                         <i class="fa-solid fa-bolt text-[#00b4d8]"></i> شحن الرصيد
+                                    </button>
+                                    <button aria-label="إرشادات التثبيت" onclick="fetchInstructions('${esim.iccid}')" class="bg-white/5 hover:bg-white/10 text-[#00b4d8] border border-[#00b4d8]/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5">
+                                        <i class="fa-solid fa-book-open"></i> إرشادات التثبيت
                                     </button>
                                 </div>
                             </div>
@@ -1432,11 +1558,11 @@
                             <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
                         </div>
                         
-                        <button onclick="installSmartEsim('${lpaString}')" class="w-full bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] py-3 rounded-xl font-black text-xs shadow-[0_0_15px_rgba(0,180,216,0.3)] flex items-center justify-center gap-2 border-none cursor-pointer transition-colors relative z-10 mb-2.5">
+                        <button aria-label="تثبيت ذكي" onclick="installSmartEsim('${lpaString}')" class="w-full bg-[#00b4d8] hover:bg-[#0096b4] text-[#091016] py-3 rounded-xl font-black text-xs shadow-[0_0_15px_rgba(0,180,216,0.3)] flex items-center justify-center gap-2 border-none cursor-pointer transition-colors relative z-10 mb-2.5">
                             <i class="fa-solid fa-mobile-button text-sm"></i> تثبيت تلقائي (ذكي)
                         </button>
                         
-                        <button onclick="downloadQrCode('${esim.qrUrl}', '${esim.country}')" class="w-full bg-black hover:bg-slate-900 text-white py-2.5 rounded-xl font-black text-[11px] flex items-center justify-center gap-2 border border-slate-700 cursor-pointer transition-colors relative z-10 mb-4 shadow-sm">
+                        <button aria-label="تحميل QR" onclick="downloadQrCode('${esim.qrUrl}', '${esim.country}')" class="w-full bg-black hover:bg-[#0A101C] text-white py-2.5 rounded-xl font-black text-[11px] flex items-center justify-center gap-2 border border-slate-700 cursor-pointer transition-colors relative z-10 mb-4 shadow-sm">
                             <i class="fa-solid fa-download text-[#00b4d8]"></i> حفظ رمز QR في الصور
                         </button>
 
@@ -1444,7 +1570,7 @@
                             <p class="text-[9px] text-amber-400 font-bold mb-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> رمز التثبيت اليدوي (LPA):</p>
                             <div class="flex justify-between items-center bg-black/40 p-2 rounded-lg border border-amber-500/20 cursor-pointer hover:border-amber-400 transition-colors" onclick="copyToClipboard('${lpaString}', this)">
                                 <span class="text-[9px] font-black text-slate-300 truncate mr-1 flex-1" dir="ltr">${lpaString}</span>
-                                <button class="bg-amber-500 text-slate-900 w-6 h-6 rounded flex items-center justify-center border-none cursor-pointer pointer-events-none shrink-0"><i class="fa-regular fa-copy text-[10px]"></i></button>
+                                <button aria-label="نسخ رمز التثبيت" class="bg-amber-500 text-slate-900 w-6 h-6 rounded flex items-center justify-center border-none cursor-pointer pointer-events-none shrink-0"><i class="fa-regular fa-copy text-[10px]"></i></button>
                             </div>
                         </div>
                     </div>
