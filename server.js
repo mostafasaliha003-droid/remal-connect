@@ -249,39 +249,86 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد (دعم شامل للمحليات، العالمية، Pagination، وTop-up)
+// إدارة توكن Airalo مع التجديد التلقائي وحماية انتهاء الصلاحية
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
 
 async function getAiraloToken() {
-    if (airaloAccessToken && tokenExpirationTime && Date.now() < (tokenExpirationTime - 300000)) {
+    if (airaloAccessToken && tokenExpirationTime && Date.now() < tokenExpirationTime) {
         return airaloAccessToken;
     }
     
-    const params = new URLSearchParams();
-    params.append('client_id', process.env.AIRALO_CLIENT_ID);
-    params.append('client_secret', process.env.AIRALO_CLIENT_SECRET);
-    params.append('grant_type', 'client_credentials');
+    try {
+        const params = new URLSearchParams();
+        params.append('client_id', process.env.AIRALO_CLIENT_ID);
+        params.append('client_secret', process.env.AIRALO_CLIENT_SECRET);
+        params.append('grant_type', 'client_credentials');
 
-    const response = await axios.post('https://partners-api.airalo.com/v2/token', params, {
-        headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded'
-        } 
-    });
+        const response = await axios.post('https://partners-api.airalo.com/v2/token', params, {
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            } 
+        });
 
-    airaloAccessToken = response.data?.data?.access_token || response.data?.access_token;
-    const expiresIn = response.data?.data?.expires_in || response.data?.expires_in || 86400;
-    tokenExpirationTime = Date.now() + (expiresIn * 1000); 
+        airaloAccessToken = response.data?.data?.access_token || response.data?.access_token;
+        const expiresIn = response.data?.data?.expires_in || response.data?.expires_in || 86400;
+        
+        // خصم 5 دقائق (300,000 ملي ثانية) كاحتياطي أمان لضمان تجنب أي رفض مفاجئ
+        tokenExpirationTime = Date.now() + (expiresIn * 1000) - 300000; 
 
-    return airaloAccessToken;
+        console.log('🔑 تم تحديث وتخزين توكن Airalo بنجاح');
+        return airaloAccessToken;
+    } catch (error) {
+        console.error('❌ خطأ في جلب توكن Airalo:', error.response?.data || error.message);
+        throw new Error('فشل المصادقة مع مزود الخدمة');
+    }
+}
+
+// دالة تنفيذ طلبات Airalo مع إعادة المصادقة التلقائية عند الخطأ 401
+async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEncoded = false) {
+    let token = await getAiraloToken();
+    const url = `https://partners-api.airalo.com/v2${endpoint}`;
+
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': isFormUrlEncoded ? 'application/x-www-form-urlencoded' : 'application/json'
+    };
+
+    try {
+        const config = { method, url, headers };
+        if (method.toLowerCase() === 'get') {
+            config.params = dataOrParams;
+        } else {
+            config.data = dataOrParams;
+        }
+        return await axios(config);
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            console.log('🔄 انتهى توكن Airalo (401)، جاري إعادة المصادقة وتكرار الطلب...');
+            airaloAccessToken = null;
+            tokenExpirationTime = null;
+            
+            token = await getAiraloToken();
+            headers['Authorization'] = `Bearer ${token}`;
+            
+            const retryConfig = { method, url, headers };
+            if (method.toLowerCase() === 'get') {
+                retryConfig.params = dataOrParams;
+            } else {
+                retryConfig.data = dataOrParams;
+            }
+            return await axios(retryConfig);
+        }
+        throw error;
+    }
 }
 
 app.get('/api/airalo/packages', async (req, res) => {
     let formattedPackages = [];
     try {
-        const token = await getAiraloToken();
         const apiParams = { limit: 50, include: 'topup' };
         
         if (req.query.country) {
@@ -294,14 +341,7 @@ app.get('/api/airalo/packages', async (req, res) => {
             apiParams['page'] = req.query.page;
         }
 
-        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
-            headers: { 
-                'Accept': 'application/json', 
-                'Authorization': `Bearer ${token}` 
-            },
-            params: apiParams
-        });
-        
+        const response = await airaloApiRequest('get', '/packages', apiParams, false);
         const rawData = response.data?.data || [];
 
         rawData.forEach(item => {
@@ -470,7 +510,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
             }
         }
 
-        const token = await getAiraloToken();
         let airaloOrder = null;
 
         try {
@@ -480,13 +519,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
             orderFormData.append('type', 'sim');
             orderFormData.append('description', `Order reference: ${tx.referenceId}`);
 
-            const orderResponse = await axios.post('https://partners-api.airalo.com/v2/orders', orderFormData, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            });
+            const orderResponse = await airaloApiRequest('post', '/orders', orderFormData.toString(), true);
             
             const responseData = orderResponse.data?.data || orderResponse.data;
             airaloOrder = responseData;
@@ -574,16 +607,9 @@ app.get('/api/airalo/instructions/:iccid', async (req, res) => {
     try {
         const { iccid } = req.params;
         const lang = req.query.lang || 'en';
-        
-        const token = await getAiraloToken();
 
-        const response = await axios.get(`https://partners-api.airalo.com/v2/sims/${iccid}/instructions`, {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                'Accept-Language': lang
-            }
-        });
+        const response = await airaloApiRequest('get', `/sims/${iccid}/instructions`, {}, false);
+        response.config.headers['Accept-Language'] = lang;
 
         res.json({
             success: true,
