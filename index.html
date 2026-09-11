@@ -124,7 +124,7 @@
         .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
-        #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 10000; }
     </style>
 </head>
 <body class="cyber-grid min-h-screen flex flex-col pb-20 md:pb-0">
@@ -138,7 +138,7 @@
     </div>
 
     <!-- 🚀 Toast -->
-    <div id="toastMsg" class="fixed top-24 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 z-[10000] bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none">
+    <div id="toastMsg" class="fixed top-24 left-1/2 -translate-x-1/2 -translate-y-32 opacity-0 bg-[#111c22] text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,0,0,0.8)] border border-[#00b4d8]/40 flex items-center gap-3 pointer-events-none">
         <i class="fa-solid fa-circle-check text-[#00b4d8] text-xl" id="toastIcon"></i>
         <span id="toastText" class="tracking-wide">تمت العملية بنجاح</span>
     </div>
@@ -162,12 +162,11 @@
                         <i class="fa-solid fa-briefcase"></i> بوابة الوكلاء
                     </button>
                     <div class="h-4 w-px bg-white/10 hidden lg:block mx-2"></div>
+                    
                     <select id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-white/5 border border-white/10 text-slate-300 hover:text-white text-xs font-bold py-1.5 px-3 rounded-lg outline-none cursor-pointer transition-colors">
-                        <option value="AED" class="text-black">AED</option>
-                        <option value="SAR" class="text-black">SAR</option>
-                        <option value="USD" class="text-black">USD</option>
-                        <option value="EUR" class="text-black">EUR</option>
+                        <option value="AED" class="text-black">AED</option><option value="SAR" class="text-black">SAR</option><option value="USD" class="text-black">USD</option><option value="EUR" class="text-black">EUR</option>
                     </select>
+
                     <a href="register.html" class="bg-white/5 hover:bg-[#00b4d8] text-white px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95 text-decoration-none border border-white/10 hover:border-[#00b4d8] ml-1">
                         <i class="fa-regular fa-user text-[#00b4d8] hover:text-white"></i> <span class="hidden md:inline">دخول / تسجيل</span>
                     </a>
@@ -202,7 +201,7 @@
                         <div class="pl-4 pr-3 flex items-center justify-center">
                             <i class="fa-solid fa-location-dot text-[#00b4d8] text-lg"></i>
                         </div>
-                        <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: تركيا، لندن...)" class="flex-1 bg-transparent border-none outline-none text-sm md:text-base font-bold text-white placeholder-slate-500 h-12 w-full">
+                        <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: تركيا، بريطانيا...)" class="flex-1 bg-transparent border-none outline-none text-sm md:text-base font-bold text-white placeholder-slate-500 h-12 w-full">
                         <button type="submit" id="searchBtn" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] font-black py-3 md:py-3.5 px-6 md:px-8 rounded-full transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.4)] shrink-0 text-sm active:scale-95 border-none">
                             ابحث <i class="fa-solid fa-arrow-left hidden sm:inline"></i>
                         </button>
@@ -283,7 +282,7 @@
                 </button>
             </div>
 
-            <!-- 🚀 Masterstroke: VIP Tier Banner -->
+            <!-- VIP Tier Banner -->
             <div class="ambient-banner p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-8 border-t-[3px] border-amber-400">
                 <div class="glow-overlay bg-amber-400 top-0 right-0"></div>
                 <div class="flex items-center gap-5 w-full md:w-auto relative z-10">
@@ -309,7 +308,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-                <!-- 🚀 Referral Banner -->
+                <!-- Referral Banner -->
                 <div class="ambient-banner p-6 md:p-8 flex flex-col justify-between border-t-[3px] border-orange-500">
                     <div class="glow-overlay bg-orange-500 bottom-0 right-0"></div>
                     <div class="relative z-10 text-white mb-6">
@@ -324,7 +323,7 @@
                     </div>
                 </div>
 
-                <!-- 🚀 Cross-Sell Hotel Banner -->
+                <!-- Cross-Sell Hotel Banner -->
                 <div class="ambient-banner p-6 md:p-8 flex flex-col justify-between border-t-[3px] border-[#4f46e5]">
                     <div class="glow-overlay bg-[#4f46e5] bottom-0 left-0"></div>
                     <div class="relative z-10 text-white mb-6">
@@ -401,7 +400,6 @@
                             <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-[#00b4d8] group-hover:text-white transition-colors">
                                 <i class="fa-regular fa-envelope text-sm"></i>
                             </div>
-                            <!-- 🚀 تم تحديث الإيميل هنا بناءً على طلبك -->
                             <span>connect@remaltourismllc.com</span>
                         </li>
                     </ul>
@@ -476,7 +474,7 @@
                         </label>
                     </div>
                     <div class="flex justify-between items-center mt-3 pb-3 border-b border-white/5" id="giftEmailSection" style="display:none;">
-                        <span class="text-xs font-bold text-slate-400">إرسال הهدية إلى:</span>
+                        <span class="text-xs font-bold text-slate-400">إرسال الهدية إلى:</span>
                         <input type="email" id="giftEmailInput" placeholder="إيميل صديقك" class="bg-black/50 border border-white/10 rounded-lg p-2 text-xs text-left outline-none w-40 text-white focus:border-[#00b4d8] transition-colors" dir="ltr">
                     </div>
                     <div class="flex justify-between items-center mt-4">
@@ -551,7 +549,8 @@
 
     <!-- 🚀 الجافاسكربت المركزي -->
     <script>
-        const API_URL = 'https://remal-connect.onrender.com';
+        // 💡 مسار السيرفر المحلي الخاص بك
+        const API_URL = 'http://localhost:3000';
         
         // --- 🚀 PWA Install Logic ---
         let deferredPrompt;
@@ -687,7 +686,7 @@
             }
         }
 
-        // --- 🚀 Packages & Search ---
+        // --- 🚀 Live Airalo Packages & Search ---
         function quickSearch(country) {
             document.getElementById('searchInput').value = country;
             fetchPackages(country);
@@ -705,21 +704,61 @@
             const title = document.getElementById('resultsTitle');
             const btn = document.getElementById('searchBtn');
             const originalBtnHtml = btn.innerHTML;
+            
+            const countryMap = {
+                'تركيا': { code: 'TR', flag: '🇹🇷', name: 'تركيا' },
+                'السعودية': { code: 'SA', flag: '🇸🇦', name: 'السعودية' },
+                'أوروبا': { code: 'EU', flag: '🇪🇺', name: 'أوروبا الموحدة' },
+                'اوروبا': { code: 'EU', flag: '🇪🇺', name: 'أوروبا الموحدة' },
+                'الامارات': { code: 'AE', flag: '🇦🇪', name: 'الإمارات' },
+                'الإمارات': { code: 'AE', flag: '🇦🇪', name: 'الإمارات' },
+                'مصر': { code: 'EG', flag: '🇪🇬', name: 'مصر' },
+                'بريطانيا': { code: 'GB', flag: '🇬🇧', name: 'بريطانيا' },
+                '': { code: 'SA', flag: '🇸🇦', name: 'السعودية' } 
+            };
+            
+            let searchKey = query.trim();
+            let countryInfo = countryMap[searchKey] || { code: 'SA', flag: '🌍', name: searchKey || 'الوجهات المتوفرة' };
 
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
-            container.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-20"><div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-6"></div><p class="text-slate-400 font-bold text-sm">جاري جلب أسرع الشبكات...</p></div>`;
+            container.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-20"><div class="animate-spin rounded-full h-12 w-12 border-b-4 border-[#00b4d8] mb-6"></div><p class="text-slate-400 font-bold text-sm">جاري الاتصال بالخادم لجلب أسرع الشبكات...</p></div>`;
 
             try {
-                const response = await fetch(`${API_URL}/api/search-packages?q=${encodeURIComponent(query)}`);
+                // 🚀 استدعاء المسار الحقيقي المتصل بسيرفرك المحلي
+                const response = await fetch(`${API_URL}/api/airalo/packages?country=${countryInfo.code}`);
                 const data = await response.json();
-                if (data.success) {
-                    title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8]">${query}</span>` : 'الوجهات الأكثر طلباً 🔥';
-                    renderPackages(data.packages);
+                
+                if (data.success && data.packages.length > 0) {
+                    title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8]">${countryInfo.name}</span>` : 'الوجهات المتوفرة حالياً 🔥';
+                    
+                    const formattedPackages = data.packages.map(pkg => {
+                        // دعم الأسعار سواء جاءت بالدولار من Airalo أو كقيمة درهم مباشرة من الطوارئ
+                        let priceInAED = pkg.price;
+                        if (pkg.price && !pkg.price.toString().includes('.')) {
+                             // تحوط إضافي
+                             priceInAED = parseFloat(pkg.price).toFixed(2);
+                        } else if (pkg.price && parseFloat(pkg.price) < 150 && !pkg.id.includes('mock')) {
+                             priceInAED = (parseFloat(pkg.price) * 3.67).toFixed(2);
+                        }
+
+                        return {
+                            id: pkg.id,
+                            country: countryInfo.name,
+                            flag: countryInfo.flag,
+                            data: pkg.data || pkg.voice || 'غير محدد',
+                            validity: pkg.validity || 'غير محدد',
+                            price: priceInAED,
+                            type: pkg.type || 'local',
+                            isHot: pkg.isHot || false
+                        };
+                    });
+                    
+                    renderPackages(formattedPackages);
                 } else {
-                    container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">${data.message}</div>`;
+                    container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">عذراً، لم نتمكن من العثور على باقات لهذه الوجهة حالياً.</div>`;
                 }
             } catch (error) {
-                container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center text-[#ff595e] font-bold py-10 bg-red-500/10 rounded-2xl border border-red-500/20">حدث خطأ في الاتصال بالخادم. تأكد من أن ملف server.js يعمل في الخلفية.</div>`;
             } finally {
                 btn.innerHTML = originalBtnHtml; btn.disabled = false;
             }
@@ -778,7 +817,7 @@
                 </div>`;
             });
             container.innerHTML = html;
-            convertCurrency();
+            convertCurrency(); 
         }
 
         // --- 🚀 Checkout System ---
@@ -816,7 +855,7 @@
                     <div class="flex items-center justify-center gap-2 mb-4 text-[10px] text-emerald-400 font-bold bg-emerald-900/30 py-2 rounded-xl border border-emerald-500/30">
                         <i class="fa-solid fa-lock"></i> دفع إلكتروني آمن عبر Ziina
                     </div>
-                    <button id="payNowBtn" onclick="processPayment()" class="w-full bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                    <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
                         دفع ${priceVal} ${currentCurrency} الآن <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 `;
@@ -837,7 +876,8 @@
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
-        async function processPayment() {
+        // 🛡️ الحارس الأمني 1: توجيه العميل لبوابة الدفع Ziina
+        async function processSecurePayment() {
             const btn = document.getElementById('payNowBtn');
             const originalText = btn.innerHTML;
             
@@ -848,52 +888,75 @@
                 targetEmail = giftMail;
             }
 
-            const isWhatsapp = document.getElementById('whatsappDelivery').checked;
-
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري الاتصال بالبوابة...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> جاري التحويل لبوابة الدفع...';
             btn.disabled = true; btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             try {
-                const response = await fetch(`${API_URL}/api/purchase-esim`, {
+                // حفظ الباقة مؤقتاً بالمتصفح لإظهارها بعد الدفع
+                localStorage.setItem('pending_esim_package', JSON.stringify(currentSelectedPackage));
+                
+                const response = await fetch(`${API_URL}/api/checkout`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ packageId: currentSelectedPackage.pkgId, customerEmail: targetEmail })
+                    body: JSON.stringify({ packageId: currentSelectedPackage.pkgId, price: currentSelectedPackage.price, customerEmail: targetEmail })
                 });
                 const data = await response.json();
 
-                if (data.success) {
-                    btn.innerHTML = '<i class="fa-solid fa-check-circle text-lg"></i> تمت العملية بنجاح!';
-                    btn.classList.replace('bg-[#00b4d8]', 'bg-emerald-500'); btn.classList.replace('text-[#091016]', 'text-white');
-                    
-                    if(!isGiftPurchase) {
-                        saveEsimLocally({
-                            ...currentSelectedPackage,
-                            iccid: data.iccid || "89" + Math.floor(Math.random() * 1000000000000000),
-                            qrUrl: data.qr_code_url || `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=SM-DP+Address:LPA:1$smdp.io$${data.iccid}`,
-                            date: new Date().toLocaleDateString('ar-AE'),
-                            totalBytes: parseInt(currentSelectedPackage.data) * 1024,
-                            usedBytes: Math.floor(Math.random() > 0.5 ? (parseInt(currentSelectedPackage.data) * 1024 * 0.95) : 1024) 
-                        });
-                        
-                        setTimeout(() => { 
-                            closeCheckoutModal(); 
-                            switchView('dashboardView'); 
-                            if(isWhatsapp) showToast('تمت إضافة الشريحة وإرسالها للواتساب ✅');
-                            else showToast('تمت إضافة الشريحة للوحة التحكم'); 
-                        }, 1200);
-                    } else {
-                        setTimeout(() => { 
-                            closeCheckoutModal(); 
-                            if(isWhatsapp) showToast('تم إرسال الهدية عبر الواتساب! 🎁');
-                            else showToast('تم إرسال الهدية للإيميل! 🎁');
-                        }, 1200);
-                    }
+                if (data.success && data.paymentUrl) {
+                    window.location.href = data.paymentUrl; // 🚀 الانطلاق الفعلي إلى بوابة Ziina الآمنة
                 } else {
-                    showToast(data.message || 'فشل في العملية', true);
+                    showToast(data.message || 'فشل في تهيئة الدفع', true);
                     btn.innerHTML = originalText; btn.disabled = false;
                 }
             } catch (error) {
                 showToast('حدث خطأ في الاتصال بالخادم.', true);
                 btn.innerHTML = originalText; btn.disabled = false;
+            }
+        }
+
+        // 🛡️ الحارس الأمني 2: استقبال العميل بعد العودة من الدفع واستخراج الشريحة
+        async function verifyPaymentAndFulfill() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentStatus = urlParams.get('payment');
+            const referenceId = urlParams.get('ref');
+
+            if (paymentStatus === 'success' && referenceId) {
+                switchView('dashboardView');
+                showToast('✅ تم تأكيد الدفع! جاري استخراج الشريحة من المورد...');
+                
+                try {
+                    // السيرفر هنا يذهب لـ Airalo ويشتري الشريحة فعلياً
+                    const res = await fetch(`${API_URL}/api/fulfill-esim`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ referenceId })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        const pendingPkgStr = localStorage.getItem('pending_esim_package');
+                        const pendingPkg = pendingPkgStr ? JSON.parse(pendingPkgStr) : { country: 'Global', flag: '🌍', data: 'N/A' };
+                        
+                        saveEsimLocally({
+                            ...pendingPkg,
+                            iccid: data.iccid, qrUrl: data.qr_code_url, lpa: data.lpa || `LPA:1$smdp.io$${data.iccid}`,
+                            date: new Date().toLocaleDateString('ar-AE'),
+                            totalBytes: parseInt(pendingPkg.data) * 1024, usedBytes: 0 
+                        });
+                        
+                        showToast('🎉 تمت إضافة الشريحة لمحفظتك بنجاح!');
+                        renderMyEsims();
+                    } else {
+                        showToast(data.message || 'حدث خطأ أثناء استخراج الشريحة', true);
+                    }
+                } catch (err) {
+                    showToast('خطأ في الاتصال أثناء تسليم الشريحة', true);
+                } finally {
+                    // تنظيف الرابط لمنع التكرار والحماية
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    localStorage.removeItem('pending_esim_package');
+                }
+            } else if (paymentStatus === 'failed') {
+                showToast('❌ تم إلغاء أو فشل عملية الدفع.', true);
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
 
@@ -993,7 +1056,6 @@
                 let isSOS = percentage > 90;
                 let sosButton = isSOS ? `<button onclick="showToast('تم تفعيل اتصال طوارئ مجاني لـ 30 دقيقة!')" class="bg-rose-500/20 border border-rose-500/50 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors cursor-pointer flex items-center gap-1.5 animate-pulse shadow-sm"><i class="fa-solid fa-life-ring"></i> طوارئ SOS</button>` : '';
                 
-                // 🚀 Masterstroke: The Cyber Ticket Design
                 html += `
                 <div class="esim-ticket p-6 md:p-8 flex flex-col md:flex-row gap-8">
                     <!-- Right/Top Side: Details & Progress -->
@@ -1107,6 +1169,9 @@
             }
             updateAuthUI();
             fetchPackages();
+            
+            // 🛡️ تشغيل الحارس الأمني للتحقق من العودة من الدفع
+            verifyPaymentAndFulfill(); 
         });
     </script>
 </body>

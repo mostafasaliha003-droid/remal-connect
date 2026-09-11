@@ -152,17 +152,21 @@
             <!-- 🚀 Stepper (مؤشر التقدم) -->
             <div class="relative mb-12">
                 <div class="absolute top-1/2 left-0 w-full h-1 bg-white/10 -translate-y-1/2 rounded-full z-0"></div>
+                <!-- الخط الممتلئ (يتغير برمجياً) -->
                 <div class="absolute top-1/2 right-0 w-0 h-1 bg-gradient-to-l from-[#00b4d8] to-[#007790] -translate-y-1/2 rounded-full z-0 step-line" id="progressLine"></div>
                 
                 <div class="flex justify-between relative z-10">
+                    <!-- خطوة 1 -->
                     <div class="flex flex-col items-center gap-2">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]" id="stepCircle1">1</div>
                         <span class="text-[10px] font-bold text-white" id="stepText1">الشركة</span>
                     </div>
+                    <!-- خطوة 2 -->
                     <div class="flex flex-col items-center gap-2">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#111c22] text-slate-500 border-4 border-[#152329]" id="stepCircle2">2</div>
                         <span class="text-[10px] font-bold text-slate-500" id="stepText2">المالية</span>
                     </div>
+                    <!-- خطوة 3 -->
                     <div class="flex flex-col items-center gap-2">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#111c22] text-slate-500 border-4 border-[#152329]" id="stepCircle3">3</div>
                         <span class="text-[10px] font-bold text-slate-500" id="stepText3">المستندات</span>
@@ -180,39 +184,31 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم الشركة السياحية / الفندق *</label>
-                            <input type="text" id="companyName" required placeholder="مثال: وكالة الأفق للسياحة" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                            <input type="text" required placeholder="مثال: وكالة الأفق للسياحة" class="w-full premium-input rounded-xl p-3.5 text-sm">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم المدير المسؤول *</label>
-                            <input type="text" id="managerName" required placeholder="الاسم الكامل" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                            <input type="text" required placeholder="الاسم الكامل" class="w-full premium-input rounded-xl p-3.5 text-sm">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">البريد الإلكتروني للشركة *</label>
-                            <input type="email" id="companyEmail" required placeholder="info@company.com" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
+                            <input type="email" required placeholder="info@company.com" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">رقم الهاتف / الواتساب *</label>
-                            <input type="tel" id="companyPhone" required placeholder="+971 50 000 0000" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
+                            <input type="tel" required placeholder="+971 50 000 0000" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left">
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-400 mb-2">عنوان المقر الرئيسي *</label>
-                            <input type="text" required placeholder="الدولة، المدينة، الشارع..." class="w-full premium-input rounded-xl p-3.5 text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-400 mb-2">كلمة مرور حساب الوكيل *</label>
-                            <input type="password" id="companyPassword" required placeholder="••••••••" class="w-full premium-input rounded-xl p-3.5 text-sm">
-                        </div>
+                    <div class="mb-8">
+                        <label class="block text-[11px] font-bold text-slate-400 mb-2">عنوان المقر الرئيسي *</label>
+                        <input type="text" required placeholder="الدولة، المدينة، الشارع، رقم المبنى" class="w-full premium-input rounded-xl p-3.5 text-sm">
                     </div>
 
-                    <div class="flex justify-between items-center">
-                        <!-- زر للذهاب لصفحة الدخول إذا كان لديه حساب -->
-                        <a href="b2b-login.html" class="text-[#00b4d8] hover:text-white text-xs font-bold transition-colors decoration-none">لديك حساب؟ سجل الدخول</a>
+                    <div class="flex justify-end">
                         <button type="button" onclick="nextStep(2)" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] px-8 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 shadow-[0_0_15px_rgba(0,180,216,0.3)]">
                             التالي: التفاصيل المالية <i class="fa-solid fa-arrow-left mr-2"></i>
                         </button>
@@ -229,23 +225,23 @@
 
                     <div class="mb-5">
                         <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم الحساب البنكي (Account Name) *</label>
-                        <input type="text" id="accountName" required placeholder="اسم الشركة كما هو في البنك" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                        <input type="text" required placeholder="اسم الشركة كما هو في البنك" class="w-full premium-input rounded-xl p-3.5 text-sm">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">اسم البنك (Bank Name) *</label>
-                            <input type="text" id="bankName" required placeholder="مثال: بنك دبي الإسلامي" class="w-full premium-input rounded-xl p-3.5 text-sm">
+                            <input type="text" required placeholder="مثال: بنك دبي الإسلامي" class="w-full premium-input rounded-xl p-3.5 text-sm">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 mb-2">رقم الآيبان (IBAN) *</label>
-                            <input type="text" id="iban" required placeholder="AE00 0000 0000 0000 0000 00" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left uppercase tracking-wider">
+                            <input type="text" required placeholder="AE00 0000 0000 0000 0000 00" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left uppercase tracking-wider">
                         </div>
                     </div>
 
                     <div class="mb-8">
                         <label class="block text-[11px] font-bold text-slate-400 mb-2">الرقم الضريبي (VAT TRN) - إن وجد</label>
-                        <input type="text" id="vatNumber" placeholder="أدخل الرقم الضريبي المكون من 15 رقماً" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left tracking-widest">
+                        <input type="text" placeholder="أدخل الرقم الضريبي المكون من 15 رقماً" dir="ltr" class="w-full premium-input rounded-xl p-3.5 text-sm text-left tracking-widest">
                     </div>
 
                     <div class="flex justify-between items-center">
@@ -264,6 +260,7 @@
                     <p class="text-slate-400 text-xs font-semibold mb-6">يرجى إرفاق المستندات بوضوح (بصيغة PDF أو JPG/PNG).</p>
 
                     <div class="space-y-4 mb-8">
+                        <!-- الرخصة -->
                         <div class="file-drop-zone p-6 rounded-2xl text-center relative overflow-hidden group">
                             <input type="file" required accept=".pdf, image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="updateFileName(this, 'licenseName')">
                             <div class="flex flex-col items-center pointer-events-none relative z-0">
@@ -273,6 +270,7 @@
                             </div>
                         </div>
 
+                        <!-- هوية المالك -->
                         <div class="file-drop-zone p-6 rounded-2xl text-center relative overflow-hidden group">
                             <input type="file" required accept=".pdf, image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="updateFileName(this, 'idName')">
                             <div class="flex flex-col items-center pointer-events-none relative z-0">
@@ -282,6 +280,7 @@
                             </div>
                         </div>
 
+                        <!-- شهادة الضريبة -->
                         <div class="file-drop-zone p-6 rounded-2xl text-center relative overflow-hidden group">
                             <input type="file" accept=".pdf, image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="updateFileName(this, 'vatName')">
                             <div class="flex flex-col items-center pointer-events-none relative z-0">
@@ -330,8 +329,7 @@
 
     <!-- 🚀 الجافاسكربت -->
     <script>
-        const API_URL = 'https://remal-connect.onrender.com/api';
-
+        // إظهار التنبيهات
         function showToast(message, isError = false) {
             const toast = document.getElementById('toastMsg');
             const icon = document.getElementById('toastIcon');
@@ -348,25 +346,31 @@
             }, 3000);
         }
 
+        // نظام التقدم بين الخطوات (Stepper Logic)
         function updateStepper(step) {
             const line = document.getElementById('progressLine');
+            // تحديث الخط
             if(step === 1) line.style.width = '0%';
             else if(step === 2) line.style.width = '50%';
             else if(step === 3) line.style.width = '100%';
 
+            // تحديث الدوائر والنصوص
             for(let i=1; i<=3; i++) {
                 const circle = document.getElementById(`stepCircle${i}`);
                 const text = document.getElementById(`stepText${i}`);
                 
                 if(i < step) {
+                    // مكتمل
                     circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]';
                     circle.innerHTML = '<i class="fa-solid fa-check"></i>';
                     text.className = 'text-[10px] font-bold text-white';
                 } else if(i === step) {
+                    // حالي
                     circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#00b4d8] text-[#091016] shadow-[0_0_15px_rgba(0,180,216,0.4)] border-4 border-[#152329]';
                     circle.innerHTML = i;
                     text.className = 'text-[10px] font-bold text-white';
                 } else {
+                    // قادم
                     circle.className = 'w-10 h-10 rounded-full flex items-center justify-center font-black text-sm step-circle bg-[#111c22] text-slate-500 border-4 border-[#152329]';
                     circle.innerHTML = i;
                     text.className = 'text-[10px] font-bold text-slate-500';
@@ -375,7 +379,9 @@
         }
 
         function nextStep(step) {
+            // إخفاء كل الخطوات
             document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            // إظهار الخطوة المطلوبة
             document.getElementById(`step${step}`).classList.add('active');
             updateStepper(step);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -388,6 +394,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // تحديث اسم الملف عند الرفع
         function updateFileName(input, targetId) {
             const target = document.getElementById(targetId);
             if(input.files && input.files[0]) {
@@ -401,56 +408,20 @@
             }
         }
 
-        async function submitForm(e) {
+        // إرسال النموذج (المحاكاة)
+        function submitForm(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق والإرسال...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري رفع الملفات وإرسال الطلب...';
             btn.disabled = true;
 
-            const payload = {
-                companyName: document.getElementById('companyName').value,
-                managerName: document.getElementById('managerName').value,
-                email: document.getElementById('companyEmail').value,
-                phone: document.getElementById('companyPhone').value,
-                password: document.getElementById('companyPassword').value,
-                financials: {
-                    accountName: document.getElementById('accountName').value,
-                    bankName: document.getElementById('bankName').value,
-                    iban: document.getElementById('iban').value,
-                    vatNumber: document.getElementById('vatNumber').value || ''
-                },
-                docs: {
-                    licenseUrl: "https://remal-secure-storage.com/docs/license_mock.pdf", 
-                    idUrl: "https://remal-secure-storage.com/docs/id_mock.pdf",
-                    vatUrl: "https://remal-secure-storage.com/docs/vat_mock.pdf"
-                }
-            };
-
-            try {
-                const response = await fetch(`${API_URL}/b2b/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    document.getElementById('b2bRegistrationForm').style.display = 'none';
-                    document.getElementById('stepSuccess').classList.add('active');
-                    document.querySelector('.relative.mb-12').style.display = 'none'; 
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    showToast(data.message || 'حدث خطأ أثناء إرسال الطلب', true);
-                    btn.innerHTML = originalHtml;
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                showToast('تعذر الاتصال بالخادم، يرجى المحاولة لاحقاً', true);
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
-            }
+            // محاكاة الاتصال بالسيرفر
+            setTimeout(() => {
+                document.getElementById('b2bRegistrationForm').style.display = 'none';
+                document.getElementById('stepSuccess').classList.add('active');
+                document.querySelector('.relative.mb-12').style.display = 'none'; // إخفاء مؤشر التقدم
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 2000);
         }
     </script>
 </body>
