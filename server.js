@@ -106,7 +106,6 @@ app.post('/api/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // توليد كود إحالة أنيق وفريد
         const prefix = fullName ? fullName.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3) : 'RML';
         const finalPrefix = prefix.length >= 2 ? prefix : 'RML';
         let generatedRefCode = finalPrefix + Math.floor(1000 + Math.random() * 9000);
@@ -158,7 +157,6 @@ app.post('/api/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ success: false, message: 'بيانات الدخول غير صحيحة' });
 
-        // التأكد من وجود كود إحالة دائم محفوظ في الحساب
         if (!user.referralCode) {
             const prefix = user.fullName ? user.fullName.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3) : 'RML';
             user.referralCode = (prefix.length >= 2 ? prefix : 'RML') + Math.floor(1000 + Math.random() * 9000);
@@ -182,7 +180,6 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// استعلام بيانات المستخدم وتحديث الرصيد لحظياً
 app.get('/api/user/profile', async (req, res) => {
     try {
         const email = req.query.email ? req.query.email.trim().toLowerCase() : null;
@@ -252,7 +249,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد (محدث لـ x-www-form-urlencoded)
+// تكامل Airalo الموحد (مع المصادقة عبر x-www-form-urlencoded، Pagination، و معالجة أخطاء 422)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -285,9 +282,12 @@ app.get('/api/airalo/packages', async (req, res) => {
     let formattedPackages = [];
     try {
         const token = await getAiraloToken();
-        const apiParams = { limit: 50 };
+        const apiParams = { limit: 50, include: 'topup' };
         if (req.query.country) {
             apiParams['filter[country]'] = req.query.country;
+        }
+        if (req.query.page) {
+            apiParams['page'] = req.query.page;
         }
 
         const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
@@ -298,18 +298,18 @@ app.get('/api/airalo/packages', async (req, res) => {
             params: apiParams
         });
         
-        const rawCountries = response.data?.data || [];
+        const rawData = response.data?.data || [];
 
-        rawCountries.forEach(country => {
-            const countryTitle = country.title || 'السعودية';
-            const countryCode = country.country_code || 'SA';
+        rawData.forEach(item => {
+            const countryTitle = item.title || 'وجهة محلية وعالمية';
+            const countryCode = item.country_code || 'GLOBAL';
 
-            if (country.operators && Array.isArray(country.operators)) {
-                country.operators.forEach(operator => {
+            if (item.operators && Array.isArray(item.operators)) {
+                item.operators.forEach(operator => {
                     if (operator.packages && Array.isArray(operator.packages)) {
                         operator.packages.forEach(pkg => {
-                            const usdPrice = pkg.price || pkg.net_price || pkg.prices?.recommended_retail_price?.USD || 5;
-                            const aedPrice = (usdPrice * 3.67).toFixed(2);
+                            const aedPriceNum = pkg.prices?.recommended_retail_price?.AED || pkg.net_price || pkg.price || 35;
+                            const aedPrice = parseFloat(aedPriceNum).toFixed(2);
 
                             formattedPackages.push({
                                 id: pkg.id,
@@ -321,7 +321,8 @@ app.get('/api/airalo/packages', async (req, res) => {
                                 validity: pkg.day ? `${pkg.day} أيام` : '7 أيام',
                                 price: aedPrice,
                                 sellingPrice: aedPrice,
-                                type: operator.type || 'local'
+                                type: operator.type || 'local',
+                                isHot: pkg.is_unlimited || false
                             });
                         });
                     }
@@ -329,14 +330,15 @@ app.get('/api/airalo/packages', async (req, res) => {
             }
         });
     } catch (error) {
-        console.log('⚠️ تنبيه في استخراج باقات Airalo:', error.response?.status, error.response?.data || error.message);
+        const errorData = error.response?.data;
+        console.log('⚠️ خطأ استجابة Airalo (Packages/422):', error.response?.status, errorData?.meta?.message || error.message);
     }
 
     if (formattedPackages.length === 0) {
         formattedPackages = [
-            { id: "mock_1", package_id: "mock_1", country: "السعودية", country_code: "SA", data: "3 GB", validity: "7 أيام", price: "25.00", sellingPrice: "25.00", type: "local" },
-            { id: "mock_2", package_id: "mock_2", country: "السعودية", country_code: "SA", data: "5 GB", validity: "15 يوماً", price: "40.00", sellingPrice: "40.00", type: "local" },
-            { id: "mock_3", package_id: "mock_3", country: "السعودية", country_code: "SA", data: "10 GB", validity: "30 يوماً", price: "75.00", sellingPrice: "75.00", type: "local" }
+            { id: "mock_1", package_id: "mock_1", country: "الإمارات", country_code: "AE", data: "3 GB", validity: "7 أيام", price: "35.00", sellingPrice: "35.00", type: "local" },
+            { id: "mock_2", package_id: "mock_2", country: "الإمارات", country_code: "AE", data: "5 GB", validity: "15 يوماً", price: "55.00", sellingPrice: "55.00", type: "local" },
+            { id: "mock_3", package_id: "mock_3", country: "الإمارات", country_code: "AE", data: "10 GB", validity: "30 يوماً", price: "95.00", sellingPrice: "95.00", type: "local" }
         ];
     }
 
@@ -353,7 +355,6 @@ app.post('/api/checkout', async (req, res) => {
     walletDeducted = parseFloat(walletDeducted) || 0;
     const cleanEmail = customerEmail ? customerEmail.trim().toLowerCase() : 'guest@remalsim.com';
 
-    // 1. الدفع بالكامل من رصيد المحفظة (المبلغ النقدي المطلوب 0)
     if (price === 0 && walletDeducted > 0) {
         try {
             const user = await User.findOne({ email: cleanEmail });
@@ -388,7 +389,6 @@ app.post('/api/checkout', async (req, res) => {
         }
     }
 
-    // 2. الدفع البنكي عبر Ziina
     if (isNaN(price) || price <= 0) {
         price = 35.00;
     }
@@ -458,7 +458,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
 
         if (tx.status === 'success') return res.json({ success: true, message: 'تم الإصدار مسبقاً' });
 
-        // خصم المحفظة الجزئي إن وُجد
         if (tx.walletDeducted > 0 && !referenceId.startsWith('WAL-')) {
             const buyer = await User.findOne({ email: tx.customerEmail });
             if (buyer && buyer.walletBalance >= tx.walletDeducted) {
@@ -490,7 +489,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
         } catch (airaloError) {
             console.log('⚠️ خطأ إصدار الشريحة من Airalo:', airaloError.response?.status, airaloError.response?.data || airaloError.message);
             
-            // معالجة مرنة لطلبات الاختبار أو شحن الرصيد
             if ((tx.packageId && tx.packageId.startsWith('topup_')) || (tx.packageId && tx.packageId.startsWith('mock_'))) {
                 airaloOrder = { sims: [{ iccid: `890000${Date.now().toString().slice(-9)}`, qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', lpa: `LPA:1$smdp.io$890000${Date.now().toString().slice(-9)}` }] };
                 tx.status = 'success';
@@ -500,31 +498,21 @@ app.post('/api/fulfill-esim', async (req, res) => {
             }
         }
 
-        // ==========================================
-        // 💰 احتساب الأدرع الأربعة والكاش باك ومكافأة الإحالة
-        // ==========================================
         let earnedCashback = 0;
         const buyer = await User.findOne({ email: tx.customerEmail });
 
         if (buyer) {
             const currentPurchases = buyer.purchasesCount || 0;
 
-            // تحديد نسبة الكاش باك حسب الأدرع:
-            // 0 - 4 طلبات: الفضي (1%)
-            // 5 - 10 طلبات: الذهبي (1.5%)
-            // 11 - 20 طلباً: البلاتيني (2%)
-            // 21+ طلباً: الماسي VIP (3%)
             let cashbackRate = 0.01;
             if (currentPurchases > 20) cashbackRate = 0.03;
             else if (currentPurchases > 10) cashbackRate = 0.02;
             else if (currentPurchases > 4) cashbackRate = 0.015;
 
-            // الكاش باك يُحسب فقط من المبلغ النقدي الفعلي المدفوع
             earnedCashback = parseFloat((tx.sellingPrice * cashbackRate).toFixed(2));
             buyer.walletBalance = parseFloat(((buyer.walletBalance || 0) + earnedCashback).toFixed(2));
             buyer.purchasesCount = currentPurchases + 1;
 
-            // 🎁 مكافأة الإحالة الحقيقية: 1 درهم للمُحيل عند أول شراء ناجح لصديقه فقط
             if (!buyer.hasCompletedFirstPurchase) {
                 buyer.hasCompletedFirstPurchase = true;
 
