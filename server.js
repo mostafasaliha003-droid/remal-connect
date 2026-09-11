@@ -11,14 +11,17 @@ const path = require('path');
 
 const app = express();
 
+// رابط المنصة الأساسي (الدومين المعتمد)
+const APP_URL = process.env.APP_URL || 'https://remalsim.com';
+
 // ==========================================
-// طباعة الـ IP الخارجي للسيرفر
+// طباعة الـ IP الخارجي للسيرفر (لإضافته في Airalo)
 // ==========================================
 axios.get('https://api.ipify.org?format=json')
   .then(response => {
     console.log(`🚀 PUBLIC IP ADDRESS: ${response.data.ip}`);
   })
-  .catch(() => console.log('تعذر جلب الـ IP'));
+  .catch(() => console.log('تعذر جلب الـ IP الخارجي'));
 
 // ==========================================
 // إعدادات الحماية والوصول (Middleware)
@@ -242,12 +245,13 @@ app.post('/api/checkout', async (req, res) => {
         });
         await newTx.save();
 
+        // إرسال العميل لرابط الدومين الجديد
         const ziinaPayload = {
             amount: Math.round(price * 100), 
             currency_code: 'AED',
             message: newTx.referenceId, 
-            success_url: `https://remal-connect.onrender.com/index.html?payment=success&ref=${newTx.referenceId}`,
-            cancel_url: `https://remal-connect.onrender.com/index.html?payment=failed`,
+            success_url: `${APP_URL}/index.html?payment=success&ref=${newTx.referenceId}`,
+            cancel_url: `${APP_URL}/index.html?payment=failed`,
             test: false 
         };
 
