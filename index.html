@@ -570,6 +570,25 @@
         </div>
     </div>
 
+    <!-- 🚀 Instructions Modal -->
+    <div id="instructionsModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-[#091016]/80 backdrop-blur-md cursor-pointer" onclick="closeInstructionsModal()"></div>
+        <div class="checkout-modal w-[90%] max-w-xl p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 max-h-[85vh] overflow-y-auto" id="instructionsContent">
+            <button onclick="closeInstructionsModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-14 h-14 bg-[#00b4d8]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-[#00b4d8] border border-[#00b4d8]/20">
+                <i class="fa-solid fa-book-open text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-2 text-center">إرشادات التثبيت الرسمية 📖</h3>
+            <p class="text-center text-xs font-bold text-slate-400 mb-6 border-b border-white/5 pb-4">تعليمات مفصلة خطوة بخطوة لجهازك</p>
+            
+            <div id="instructionsBody" class="space-y-4 text-right text-sm text-slate-200">
+                <div class="flex justify-center py-10">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00b4d8]"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 🚀 الجافاسكربت المركزي -->
     <script>
         const API_URL = '';
@@ -1347,6 +1366,72 @@
             `);
         }
 
+        async function fetchInstructions(iccid) {
+            const modal = document.getElementById('instructionsModal');
+            const content = document.getElementById('instructionsContent');
+            const body = document.getElementById('instructionsBody');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
+            
+            body.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-10">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00b4d8] mb-3"></div>
+                    <p class="text-xs text-slate-400">جاري جلب إرشادات التثبيت من Airalo...</p>
+                </div>`;
+
+            try {
+                const res = await fetch(`${API_URL}/api/airalo/instructions/${iccid}?lang=ar`);
+                const data = await res.json();
+
+                if (data.success && data.instructions) {
+                    let html = '';
+                    const inst = data.instructions;
+                    
+                    if (inst.ios && inst.ios.length > 0) {
+                        html += `<div class="mb-4"><h4 class="text-cyan-400 font-bold mb-2">🍎 إرشادات أجهزة أبل (iOS):</h4>`;
+                        inst.ios.forEach((item, idx) => {
+                            if (item.installation_manual && item.installation_manual.steps) {
+                                html += `<div class="bg-black/30 p-3 rounded-xl mb-2 text-xs">`;
+                                Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => {
+                                    html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`;
+                                });
+                                html += `</div>`;
+                            }
+                        });
+                        html += `</div>`;
+                    }
+
+                    if (inst.android && inst.android.length > 0) {
+                        html += `<div><h4 class="text-emerald-400 font-bold mb-2">🤖 إرشادات أجهزة أندرويد (Android):</h4>`;
+                        inst.android.forEach((item, idx) => {
+                            if (item.installation_manual && item.installation_manual.steps) {
+                                html += `<div class="bg-black/30 p-3 rounded-xl mb-2 text-xs">`;
+                                Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => {
+                                    html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`;
+                                });
+                                html += `</div>`;
+                            }
+                        });
+                        html += `</div>`;
+                    }
+
+                    body.innerHTML = html || '<p class="text-center text-slate-400">لا توجد إرشادات تفصيلية متاحة لهذه الشريحة حالياً.</p>';
+                } else {
+                    body.innerHTML = '<p class="text-center text-rose-400">تعذر تحميل الإرشادات في الوقت الحالي.</p>';
+                }
+            } catch (err) {
+                body.innerHTML = '<p class="text-center text-rose-400">حدث خطأ في الاتصال بالخادم.</p>';
+            }
+        }
+
+        function closeInstructionsModal() {
+            const modal = document.getElementById('instructionsModal');
+            const content = document.getElementById('instructionsContent');
+            modal.classList.add('opacity-0'); content.classList.add('translate-y-10');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
         function copyToClipboard(text, btnElement) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast('تم نسخ رمز التثبيت بنجاح!');
@@ -1408,6 +1493,9 @@
                                 <div class="mt-4 flex flex-wrap gap-2.5">
                                     <button onclick="openTopupModal('${esim.iccid}')" class="bg-white hover:bg-slate-200 text-[#091016] px-5 py-2 rounded-lg text-xs font-black transition-colors cursor-pointer flex items-center gap-2 shadow-md border-none">
                                         <i class="fa-solid fa-bolt text-[#00b4d8]"></i> شحن الرصيد
+                                    </button>
+                                    <button onclick="fetchInstructions('${esim.iccid}')" class="bg-white/5 hover:bg-white/10 text-[#00b4d8] border border-[#00b4d8]/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5">
+                                        <i class="fa-solid fa-book-open"></i> إرشادات التثبيت
                                     </button>
                                 </div>
                             </div>
