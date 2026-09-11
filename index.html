@@ -18,7 +18,7 @@
             --bg-dark: #091016;
             --panel-bg: #111c22;
             --primary-cyan: #00b4d8;
-            --glass-border: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.05);
         }
 
         body { 
@@ -39,33 +39,33 @@
         }
 
         .glass-panel { 
-            background: rgba(17, 28, 34, 0.65); 
+            background: rgba(17, 28, 34, 0.7); 
             backdrop-filter: blur(24px); 
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border); 
             border-top: 1px solid rgba(255, 255, 255, 0.1); 
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         .premium-card {
-            background: linear-gradient(160deg, rgba(25, 40, 50, 0.8), rgba(9, 16, 22, 0.95));
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 28px;
+            background: linear-gradient(165deg, rgba(20, 32, 40, 0.85), rgba(9, 16, 22, 0.98));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 26px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative; overflow: hidden;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
         }
         .premium-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(0, 180, 216, 0.3);
+            transform: translateY(-6px);
+            border-color: rgba(0, 180, 216, 0.35);
             box-shadow: 0 25px 50px rgba(0, 180, 216, 0.15);
         }
 
         .esim-ticket {
-            background: linear-gradient(135deg, rgba(17, 28, 34, 0.9), rgba(9, 16, 22, 0.98));
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 32px;
+            background: linear-gradient(135deg, rgba(17, 28, 34, 0.92), rgba(9, 16, 22, 0.98));
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 30px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             position: relative;
             overflow: hidden;
@@ -89,10 +89,10 @@
         }
 
         .ambient-banner {
-            background: rgba(17, 28, 34, 0.8);
+            background: rgba(17, 28, 34, 0.85);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 26px;
             position: relative; overflow: hidden;
         }
         .glow-overlay {
@@ -102,19 +102,19 @@
         }
 
         .checkout-modal {
-            background: rgba(17, 28, 34, 0.95);
+            background: rgba(17, 28, 34, 0.97);
             backdrop-filter: blur(30px);
             border: 1px solid rgba(255,255,255,0.1);
-            border-top: 1px solid rgba(0,180,216,0.5);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
-            border-radius: 32px;
+            border-top: 1px solid rgba(0,180,216,0.6);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.85);
+            border-radius: 30px;
         }
 
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
-        .progress-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .animate-float { animation: float 5.5s ease-in-out infinite; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-up { animation: fadeInUp 0.45s ease-out forwards; }
+        .progress-bar-fill { transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 10000; }
     </style>
@@ -132,7 +132,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 md:h-20">
                 <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="switchView('homeView')">
-                    <div class="w-9 h-9 md:w-11 md:h-11 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,180,216,0.3)] transform rotate-3">
+                    <div class="w-9 h-9 md:w-11 md:h-11 bg-gradient-to-br from-[#00b4d8] to-[#1f3a40] rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,180,216,0.35)] transform rotate-3">
                         <i class="fa-solid fa-sim-card text-white text-lg md:text-xl drop-shadow-md"></i>
                     </div>
                     <div class="flex flex-col">
@@ -161,62 +161,84 @@
         <main class="pt-32 md:pt-40 pb-16 md:pb-20 flex items-center justify-center relative z-10">
             <div class="max-w-7xl mx-auto px-4 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                 
+                <!-- الجانب التسويقي (Punchy Masterstroke Copy) -->
                 <div class="w-full lg:w-1/2 text-center lg:text-right">
-                    <div class="inline-flex items-center gap-2 bg-[#00b4d8]/10 border border-[#00b4d8]/30 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-[#00b4d8] mb-6 shadow-[0_0_15px_rgba(0,180,216,0.1)]">
+                    <div class="inline-flex items-center gap-2 bg-[#00b4d8]/10 border border-[#00b4d8]/30 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-[#00b4d8] mb-6 shadow-[0_0_15px_rgba(0,180,216,0.15)]">
                         <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00b4d8] opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-[#00b4d8]"></span></span>
-                        تغطية فورية في أكثر من 150 دولة
+                        تغطية 5G فائقة في أكثر من 150 دولة
                     </div>
                     
-                    <h1 class="text-4xl sm:text-5xl md:text-7xl font-black mb-6 leading-[1.15] tracking-tight text-white drop-shadow-2xl">
-                        عالمك بدون حدود.. <br/>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#00b4d8] to-white filter drop-shadow-[0_0_10px_rgba(0,180,216,0.3)]">بمسحة كود واحدة!</span>
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.15] tracking-tight text-white drop-shadow-2xl">
+                        اهبط متصلاً.. <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-l from-[#00b4d8] via-cyan-200 to-white filter drop-shadow-[0_0_20px_rgba(0,180,216,0.4)]">قبل أن يفك الركاب أحزمة الأمان! ✈️</span>
                     </h1>
                     
-                    <p class="text-slate-400 text-sm md:text-lg font-semibold max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
-                        تجاوز طوابير المطارات وفواتير التجوال المزعجة. اختر وجهتك، امسح الـ QR، واستمتع بإنترنت فائق السرعة فور هبوط طائرتك.
+                    <p class="text-slate-300 text-sm md:text-lg font-semibold max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+                        تجاوز طوابير أكشاك المطارات وفواتير التجوال الصادمة عند عودتك. اختر وجهتك، امسح كود الـ QR، وانطلق بإنترنت 5G فوري بدون الحاجة لتبديل شريحتك الفعلية.
                     </p>
 
-                    <form id="searchForm" class="bg-black/30 border border-white/10 p-1.5 md:p-2 rounded-full max-w-lg mx-auto lg:mx-0 flex items-center relative z-20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] focus-within:border-[#00b4d8]/50 focus-within:bg-black/50 transition-all">
+                    <!-- شريط البحث السريع -->
+                    <form id="searchForm" class="bg-black/40 border border-white/10 p-1.5 md:p-2 rounded-full max-w-lg mx-auto lg:mx-0 flex items-center relative z-20 shadow-[0_10px_30px_rgba(0,0,0,0.6)] focus-within:border-[#00b4d8]/60 focus-within:bg-black/60 transition-all">
                         <div class="pl-4 pr-3 flex items-center justify-center">
                             <i class="fa-solid fa-location-dot text-[#00b4d8] text-lg"></i>
                         </div>
-                        <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: الإمارات، تركيا...)" class="flex-1 bg-transparent border-none outline-none text-sm md:text-base font-bold text-white placeholder-slate-500 h-12 w-full">
+                        <input type="text" id="searchInput" placeholder="إلى أين تسافر؟ (مثال: الإمارات، تركيا، أمريكا...)" class="flex-1 bg-transparent border-none outline-none text-sm md:text-base font-bold text-white placeholder-slate-500 h-12 w-full">
                         <button type="submit" id="searchBtn" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#091016] font-black py-3 md:py-3.5 px-6 md:px-8 rounded-full transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.4)] shrink-0 text-sm active:scale-95 border-none">
-                            ابحث <i class="fa-solid fa-arrow-left hidden sm:inline"></i>
+                            انطلق بالإنترنت ⚡
                         </button>
                     </form>
 
                     <div class="flex items-center justify-center lg:justify-start gap-2.5 mt-6 flex-wrap">
-                        <span class="text-[10px] md:text-xs font-bold text-slate-500">بحث سريع:</span>
-                        <button type="button" onclick="quickSearch('الإمارات')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/5 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-slate-300 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇦🇪 الإمارات</button>
-                        <button type="button" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/5 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-slate-300 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇸🇦 السعودية</button>
-                        <button type="button" onclick="quickSearch('تركيا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/5 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-slate-300 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇹🇷 تركيا</button>
-                        <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/5 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold text-slate-300 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇪🇺 أوروبا</button>
+                        <span class="text-[10px] md:text-xs font-bold text-slate-400">وجهات شائعة:</span>
+                        <button type="button" onclick="quickSearch('الإمارات')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 px-4 py-1.5 rounded-full text-[11px] font-bold text-slate-200 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇦🇪 الإمارات</button>
+                        <button type="button" onclick="quickSearch('السعودية')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 px-4 py-1.5 rounded-full text-[11px] font-bold text-slate-200 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇸🇦 السعودية</button>
+                        <button type="button" onclick="quickSearch('تركيا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 px-4 py-1.5 rounded-full text-[11px] font-bold text-slate-200 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇹🇷 تركيا</button>
+                        <button type="button" onclick="quickSearch('أوروبا')" class="bg-white/5 hover:bg-[#00b4d8]/20 border border-white/10 px-4 py-1.5 rounded-full text-[11px] font-bold text-slate-200 hover:text-white transition-colors cursor-pointer backdrop-blur-sm">🇪🇺 أوروبا</button>
                     </div>
                 </div>
 
+                <!-- 🚀 3D Phone Mockup يحاكي اتصالاً حياً وشاشة قفل مسافر حقيقية -->
                 <div class="hidden lg:block w-full lg:w-1/2 relative perspective-container h-[650px] flex items-center justify-center">
                     <div class="relative w-[320px] mx-auto animate-float phone-3d" id="phoneMockup">
-                        <div class="bg-slate-900 rounded-[3rem] p-3.5 shadow-[0_40px_80px_rgba(0,0,0,0.8)] border-[6px] border-slate-700/50 relative z-10">
-                            <div class="bg-white w-full h-[600px] rounded-[2.2rem] overflow-hidden relative flex flex-col shadow-inner">
-                                <div class="absolute top-0 inset-x-0 h-6 bg-slate-900 rounded-b-2xl w-32 mx-auto z-20 flex justify-center items-end pb-1.5"><div class="w-12 h-1 bg-slate-700 rounded-full"></div></div>
-                                <div class="bg-gradient-to-b from-[#111c22] to-[#1f3a40] pt-14 pb-8 px-5 text-center rounded-b-[2rem] relative border-b border-[#00b4d8]/20">
-                                    <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-3 border border-white/20 backdrop-blur-md shadow-[0_0_15px_rgba(0,180,216,0.3)]"><span class="text-2xl">⚡</span></div>
-                                    <h4 class="text-white font-black text-xl mb-1">جاهز للاتصال</h4>
-                                    <p class="text-[#00b4d8] text-[10px] font-bold uppercase tracking-[0.15em]">Secure & Fast</p>
+                        <div class="bg-slate-900 rounded-[3.2rem] p-3.5 shadow-[0_40px_80px_rgba(0,0,0,0.85)] border-[6px] border-slate-700/60 relative z-10">
+                            <div class="bg-[#0b131a] w-full h-[580px] rounded-[2.4rem] overflow-hidden relative flex flex-col shadow-inner border border-white/5">
+                                <!-- شريط الجزيرة الديناميكية (Dynamic Island) -->
+                                <div class="absolute top-0 inset-x-0 h-6 bg-slate-950 rounded-b-2xl w-32 mx-auto z-20 flex justify-center items-end pb-1.5">
+                                    <div class="w-12 h-1 bg-slate-800 rounded-full"></div>
                                 </div>
-                                <div class="flex-1 bg-[#f8fafc] p-5 space-y-4 flex flex-col justify-center">
-                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-cyan-50 rounded-xl flex items-center justify-center text-[#00b4d8]"><i class="fa-solid fa-qrcode text-xl"></i></div>
-                                        <div class="text-right flex-1"><span class="block text-[10px] text-slate-400 font-bold mb-0.5">الخطوة الأولى</span><span class="block text-sm font-black text-slate-800">امسح الكود</span></div>
+                                
+                                <!-- رأس شاشة الهاتف المحاكي -->
+                                <div class="bg-gradient-to-b from-[#111c22] to-[#091016] pt-12 pb-6 px-5 text-center border-b border-white/5">
+                                    <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold mb-4 px-2">
+                                        <span>5G</span>
+                                        <div class="flex items-center gap-1.5 text-emerald-400">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                            <span>متصل</span>
+                                        </div>
                                     </div>
-                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500"><i class="fa-solid fa-sliders text-xl"></i></div>
-                                        <div class="text-right flex-1"><span class="block text-[10px] text-slate-400 font-bold mb-0.5">الخطوة الثانية</span><span class="block text-sm font-black text-slate-800">فعّل البيانات</span></div>
+                                    <div class="w-14 h-14 bg-[#00b4d8]/15 rounded-2xl flex items-center justify-center mx-auto mb-2 border border-[#00b4d8]/30 shadow-[0_0_20px_rgba(0,180,216,0.25)]">
+                                        <i class="fa-solid fa-satellite-dish text-[#00b4d8] text-2xl"></i>
                                     </div>
-                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500"><i class="fa-solid fa-earth-americas text-xl"></i></div>
-                                        <div class="text-right flex-1"><span class="block text-[10px] text-slate-400 font-bold mb-0.5">الخطوة الثالثة</span><span class="block text-sm font-black text-slate-800">أنت متصل!</span></div>
+                                    <h4 class="text-white font-black text-lg">Remal Connect 5G</h4>
+                                    <p class="text-[#00b4d8] text-[10px] font-black uppercase tracking-widest">Active Travel Line</p>
+                                </div>
+                                
+                                <!-- إشعارات النظام الحية المحاكية للتثبيت الفوري -->
+                                <div class="flex-1 p-4 space-y-3 flex flex-col justify-center bg-gradient-to-b from-transparent to-black/30">
+                                    <div class="bg-white/5 border border-white/10 p-3.5 rounded-2xl backdrop-blur-md text-right shadow-lg">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="w-2 h-2 rounded-full bg-[#00b4d8]"></span>
+                                            <span class="text-[10px] font-bold text-slate-400">إشعار النظام • الآن</span>
+                                        </div>
+                                        <p class="text-xs font-black text-white leading-relaxed">✅ تم تفعيل شريحة السفر بنجاح — مرحباً بك في شبكة 5G المحلية فور هبوطك!</p>
+                                    </div>
+
+                                    <div class="bg-[#00b4d8]/10 border border-[#00b4d8]/30 p-3.5 rounded-2xl text-right">
+                                        <span class="block text-[10px] text-slate-400 font-bold mb-1">الباقة النشطة</span>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm font-black text-white">الولايات المتحدة 🇺🇸</span>
+                                            <span class="text-xs font-black text-[#00b4d8]" dir="ltr">10 GB / 30D</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -226,11 +248,12 @@
             </div>
         </main>
 
+        <!-- 🚀 قسم عرض الباقات -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-20 relative z-20" id="packagesSection">
             <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 gap-4">
                 <div>
                     <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md" id="resultsTitle">الوجهات الأكثر طلباً 🔥</h3>
-                    <p class="text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR في ثوانٍ، وانطلق في رحلتك.</p>
+                    <p class="text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR في ثوانٍ، وانطلق في رحلتك دون أي انتظار.</p>
                 </div>
                 <button type="button" onclick="openCompatibilityModal()" class="text-xs md:text-sm text-[#00b4d8] hover:text-white font-bold bg-[#00b4d8]/10 hover:bg-[#00b4d8]/20 border border-[#00b4d8]/30 px-5 py-2.5 rounded-full transition-colors cursor-pointer backdrop-blur-sm flex items-center gap-2">
                     <i class="fa-solid fa-mobile-screen"></i> فحص توافق جهازي
@@ -486,7 +509,7 @@
                     </div>
                     <span class="font-bold text-sm text-[#00b4d8]">15 AED</span>
                 </label>
-                <label class="flex justify-between items-center bg-[#00b4d8]/10 border border-[#00b4d8]/40 p-4 rounded-xl cursor-pointer transition-colors shadow-[0_0_15px_rgba(0,180,216,0.1)]">
+                <label class="flex justify-between items-center bg-black/30 border border-white/5 p-4 rounded-xl cursor-pointer hover:border-[#00b4d8]/50 transition-colors">
                     <div class="flex items-center gap-3">
                         <input type="radio" name="topupOption" value="3|35" checked class="accent-[#00b4d8] w-4 h-4 cursor-pointer">
                         <span class="font-black text-white text-lg">3 GB</span>
@@ -656,7 +679,7 @@
         }
 
         // ==========================================
-        // 🛡️ نظام حفظ واسترجاع الجلسة الدائم
+        // 🛡️ نظام حفظ واسترجاع الجلسة
         // ==========================================
         function getSavedUser() {
             let data = localStorage.getItem('rimal_current_user');
@@ -939,46 +962,69 @@
             }
         }
 
+        // تم تحسين تصميم الكروت لمنع التكرار الرتيب وإبراز الهوية البصرية والقيمة
         function renderPackages(packages) {
             const container = document.getElementById('packagesContainer');
             if (!container) return;
 
             let html = '';
             packages.forEach((pkg, index) => {
-                const delay = index * 50;
-                const hotBadge = pkg.isHot ? `<span class="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded text-[10px] font-bold shadow-[0_0_10px_rgba(244,63,94,0.2)]">🔥 الأكثر مبيعاً</span>` : '';
+                const delay = index * 40;
+                const hotBadge = pkg.isHot 
+                    ? `<span class="bg-rose-500/15 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(244,63,94,0.25)]">🔥 الأكثر طلباً</span>` 
+                    : `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">⚡ تفعيل فوري</span>`;
                 
                 html += `
-                <div class="premium-card p-6 flex flex-col animate-fade-in-up group" style="animation-delay: ${delay}ms;">
-                    <div class="flex items-center justify-between mb-5 relative z-10">
-                        <div class="flex items-center gap-4">
-                            <div class="text-4xl filter drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">${pkg.flag}</div>
-                            <div>
-                                <h4 class="font-black text-xl text-white mb-0.5">${pkg.country}</h4>
-                                <span class="text-[#00b4d8] text-[10px] font-black uppercase tracking-widest block">${pkg.type === 'global' ? 'Global' : 'Local'}</span>
+                <div class="premium-card p-6 flex flex-col justify-between animate-fade-in-up group" style="animation-delay: ${delay}ms;">
+                    <div>
+                        <div class="flex items-center justify-between mb-5 relative z-10">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shadow-inner group-hover:scale-105 transition-transform">
+                                    ${pkg.flag}
+                                </div>
+                                <div class="text-right">
+                                    <h4 class="font-black text-lg text-white mb-0.5 tracking-tight">${pkg.country}</h4>
+                                    <span class="text-[#00b4d8] text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 5G تغطية فائقة
+                                    </span>
+                                </div>
+                            </div>
+                            ${hotBadge}
+                        </div>
+
+                        <!-- شبكة تفاصيل السعة والمدة بتصميم عالمي بارز -->
+                        <div class="grid grid-cols-2 gap-2.5 mb-5 relative z-10">
+                            <div class="bg-black/40 border border-white/5 p-3 rounded-2xl flex flex-col items-center justify-center text-center group-hover:border-[#00b4d8]/30 transition-colors">
+                                <span class="text-[10px] font-bold text-slate-400 mb-1 flex items-center gap-1">
+                                    <i class="fa-solid fa-database text-[#00b4d8]"></i> البيانات
+                                </span>
+                                <span class="font-black text-base text-white" dir="ltr">${pkg.data}</span>
+                            </div>
+                            <div class="bg-black/40 border border-white/5 p-3 rounded-2xl flex flex-col items-center justify-center text-center group-hover:border-[#00b4d8]/30 transition-colors">
+                                <span class="text-[10px] font-bold text-slate-400 mb-1 flex items-center gap-1">
+                                    <i class="fa-regular fa-clock text-[#00b4d8]"></i> الصلاحية
+                                </span>
+                                <span class="font-black text-base text-white">${pkg.validity}</span>
                             </div>
                         </div>
-                        ${hotBadge}
-                    </div>
 
-                    <div class="grid grid-cols-2 gap-3 mb-6 relative z-10 flex-1">
-                        <div class="bg-black/30 border border-white/5 p-3 rounded-xl flex flex-col items-center justify-center">
-                            <i class="fa-solid fa-database text-[#00b4d8] mb-1.5 text-lg"></i>
-                            <span class="font-black text-sm text-white" dir="ltr">${pkg.data}</span>
-                        </div>
-                        <div class="bg-black/30 border border-white/5 p-3 rounded-xl flex flex-col items-center justify-center">
-                            <i class="fa-solid fa-clock text-[#00b4d8] mb-1.5 text-lg"></i>
-                            <span class="font-black text-sm text-white">${pkg.validity}</span>
+                        <!-- مؤشر الكاش باك الترويجي المغري -->
+                        <div class="mb-5 bg-emerald-950/25 border border-emerald-500/20 py-1.5 px-3 rounded-xl flex items-center justify-between text-[11px] font-bold text-emerald-300">
+                            <span>كاش باك فوري لمحفظتك</span>
+                            <span class="font-black text-emerald-400">حتى 3% 💰</span>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between border-t border-white/10 pt-5 relative z-10">
+                    <div class="flex items-center justify-between border-t border-white/10 pt-4 relative z-10">
                         <div class="text-right">
-                            <span class="block text-[10px] font-bold text-slate-400 mb-0.5">السعر</span>
-                            <span class="block font-black text-2xl text-white price-val drop-shadow-md" data-aed="${pkg.price}" dir="ltr">${pkg.price} <span class="text-xs text-[#00b4d8]">AED</span></span>
+                            <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الشامل</span>
+                            <div class="flex items-baseline gap-1" dir="ltr">
+                                <span class="font-black text-2xl text-white price-val drop-shadow-md" data-aed="${pkg.price}">${pkg.price}</span>
+                                <span class="text-[10px] font-black text-[#00b4d8]">AED</span>
+                            </div>
                         </div>
-                        <button onclick="openCheckoutModalByIndex(${index})" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-6 py-2.5 rounded-xl font-black text-sm transition-transform active:scale-95 flex items-center gap-1.5 cursor-pointer border-none shadow-[0_0_15px_rgba(0,180,216,0.4)]">
-                            شراء الآن
+                        <button onclick="openCheckoutModalByIndex(${index})" class="bg-[#00b4d8] hover:bg-cyan-400 text-[#0f172a] px-5 py-2.5 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center gap-1.5 cursor-pointer border-none shadow-[0_0_20px_rgba(0,180,216,0.35)]">
+                            شراء وتفعيل <i class="fa-solid fa-arrow-left text-[10px]"></i>
                         </button>
                     </div>
                 </div>`;
@@ -988,7 +1034,7 @@
         }
 
         // ==========================================
-        // 💳 نظام الـ Checkout مع خصم رصيد الكاش باك
+        // 💳 نظام الـ Checkout مع خصم رصيد المحفظة / الكاش باك
         // ==========================================
         let currentSelectedPackage = null;
         let originalPriceAED = 0;
