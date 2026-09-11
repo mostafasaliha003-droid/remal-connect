@@ -174,7 +174,9 @@ let tokenExpirationTime = null;
 
 async function getAiraloToken() {
     if (airaloAccessToken && tokenExpirationTime && Date.now() < (tokenExpirationTime - 300000)) return airaloAccessToken;
-    const response = await axios.post('https://sandbox-api.airalo.com/v2/token', {
+    
+    // 🚀 تم تغيير الرابط إلى الإنتاج (Live/Production)
+    const response = await axios.post('https://b2b-api.airalo.com/v2/token', {
         client_id: process.env.AIRALO_CLIENT_ID,
         client_secret: process.env.AIRALO_CLIENT_SECRET,
         grant_type: 'client_credentials'
@@ -191,7 +193,8 @@ app.get('/api/airalo/packages', async (req, res) => {
     
     try {
         const token = await getAiraloToken();
-        const response = await axios.get('https://sandbox-api.airalo.com/v2/packages', {
+        // 🚀 تم تغيير الرابط إلى الإنتاج (Live/Production)
+        const response = await axios.get('https://b2b-api.airalo.com/v2/packages', {
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
             params: { 'limit': 20 }
         });
@@ -232,7 +235,7 @@ app.post('/api/checkout', async (req, res) => {
         });
         await newTx.save();
 
-        // 2. إعداد بيانات الدفع لـ Ziina (تم تحديثها للنسخة الجديدة v2)
+        // 2. إعداد بيانات الدفع لـ Ziina
         const ziinaPayload = {
             amount: Math.round(price * 100), // Ziina تتعامل بالفلوس (1 درهم = 100 فلس)
             currency_code: 'AED',
@@ -278,7 +281,8 @@ app.post('/api/fulfill-esim', async (req, res) => {
         let airaloOrder = null;
 
         try {
-            const orderResponse = await axios.post('https://sandbox-api.airalo.com/v2/orders', {
+            // 🚀 تم تغيير الرابط إلى الإنتاج (Live/Production)
+            const orderResponse = await axios.post('https://b2b-api.airalo.com/v2/orders', {
                 package_id: tx.packageId,
                 quantity: 1,
                 type: 'transaction'
