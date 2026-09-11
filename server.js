@@ -1,8 +1,4 @@
 require('dotenv').config(); 
-const dns = require('dns');
-
-// 🚀 الحل الجذري لمشاكل الشبكة: إجبار السيرفر على استخدام IPv4 المستقر وتخطي حظر الـ DNS
-dns.setDefaultResultOrder('ipv4first'); 
 
 const express = require('express');
 const cors = require('cors');
