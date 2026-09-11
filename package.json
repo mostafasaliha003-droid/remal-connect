@@ -17,6 +17,7 @@
     "express": "^4.22.2",
     "mongoose": "^8.24.4",
     "multer": "^2.3.0",
+    "node-cron": "^3.0.3",
     "nodemailer": "^10.0.3"
   },
   "devDependencies": {
