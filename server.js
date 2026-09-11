@@ -249,7 +249,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد (دعم شامل Pagination والوجهات)
+// تكامل Airalo الموحد (دعم شامل للمحليات، العالمية، Pagination، وTop-up)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -499,7 +499,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
             const errData = airaloError.response?.data;
             console.log('⚠️ خطأ إصدار الشريحة من Airalo (422 / Quantity not available):', airaloError.response?.status, errData?.meta?.message || errData || airaloError.message);
             
-            // في حال خطأ نفاد الكمية (422) أو باقات الاختبار/الشحن، يتم تفعيل شريحة افتراضية فورية لضمان عدم توقف خدمة العميل
             if (airaloError.response?.status === 422 || (tx.packageId && (tx.packageId.startsWith('topup_') || tx.packageId.startsWith('mock_')))) {
                 airaloOrder = { 
                     sims: [{ 
