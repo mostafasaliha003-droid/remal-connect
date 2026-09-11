@@ -438,7 +438,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// مسار تسليم الشريحة + الكاش باك + مكافأة الإحالة (1 AED)
+// مسار تسليم الشريحة المطابق لـ POST /v2/orders (multipart / form-urlencoded)
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
@@ -474,14 +474,18 @@ app.post('/api/fulfill-esim', async (req, res) => {
         let airaloOrder = null;
 
         try {
-            const orderResponse = await axios.post('https://partners-api.airalo.com/v2/orders', {
-                package_id: tx.packageId,
-                quantity: 1,
-                type: 'transaction'
-            }, {
+            // إرسال الطلب مطابقاً لمعيار POST /v2/orders عبر form-urlencoded (multipart/form-data support)
+            const orderFormData = new URLSearchParams();
+            orderFormData.append('package_id', tx.packageId);
+            orderFormData.append('quantity', 1);
+            orderFormData.append('type', 'sim');
+            orderFormData.append('description', `Order reference: ${tx.referenceId}`);
+
+            const orderResponse = await axios.post('https://partners-api.airalo.com/v2/orders', orderFormData, {
                 headers: {
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
             
