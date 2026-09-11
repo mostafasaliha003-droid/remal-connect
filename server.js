@@ -249,7 +249,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد (دعم شامل للمحليات، العالمية، Pagination، وTop-up)
+// تكامل Airalo الموحد (دعم شامل Pagination, Links, Meta, Top-up)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -288,7 +288,7 @@ app.get('/api/airalo/packages', async (req, res) => {
             apiParams['filter[country]'] = req.query.country;
         }
         if (req.query.type) {
-            apiParams['filter[type]'] = req.query.type; // local أو global
+            apiParams['filter[type]'] = req.query.type;
         }
         if (req.query.page) {
             apiParams['page'] = req.query.page;
@@ -335,7 +335,7 @@ app.get('/api/airalo/packages', async (req, res) => {
         });
     } catch (error) {
         const errorData = error.response?.data;
-        console.log('⚠️ خطأ استجابة Airalo (Packages/Global):', error.response?.status, errorData?.meta?.message || error.message);
+        console.log('⚠️ خطأ استجابة Airalo (Packages/Pagination):', error.response?.status, errorData?.meta?.message || error.message);
     }
 
     if (formattedPackages.length === 0) {
@@ -465,7 +465,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
         if (tx.walletDeducted > 0 && !referenceId.startsWith('WAL-')) {
             const buyer = await User.findOne({ email: tx.customerEmail });
             if (buyer && buyer.walletBalance >= tx.walletDeducted) {
-                buyer.walletBalance = Math.max(0, buyer.walletBalance - tx.walletDeducted);
+                buyer.walletBalance = Math.max(0, buyer.walletBalance - tx.walletDended);
                 await buyer.save();
             }
         }
@@ -552,5 +552,5 @@ app.post('/api/fulfill-esim', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`✅ Remal Connect API is running seamlessly on port ${PORT} 🚀`);
+    console.log(`✅ Remal Connect API is running seamlessly on port `${PORT}` 🚀`);
 });
