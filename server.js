@@ -1,4 +1,8 @@
 require('dotenv').config(); 
+const dns = require('dns');
+
+// 🚀 الحل الجذري لمشاكل الشبكة في Render: إجبار السيرفر على استخدام IPv4 للوصول لـ Airalo
+dns.setDefaultResultOrder('ipv4first'); 
 
 const express = require('express');
 const cors = require('cors');
@@ -125,9 +129,6 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// ==========================================
-// مسار استعادة كلمة المرور (Forgot Password)
-// ==========================================
 app.post('/api/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
@@ -146,28 +147,22 @@ app.post('/api/forgot-password', async (req, res) => {
             html: `
                 <div style="font-family: Arial, sans-serif; text-align: right; direction: rtl; color: #333; padding: 20px;">
                     <h2 style="color: #00b4d8;">أهلاً ${user.fullName}،</h2>
-                    <p>لقد تلقينا طلباً لاستعادة كلمة المرور الخاصة بحسابك في منصة Remal Connect.</p>
                     <p>الرجاء الضغط على الزر أدناه لتعيين كلمة مرور جديدة:</p>
                     <a href="${resetLink}" style="display: inline-block; background-color: #00b4d8; color: #091016; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 15px; margin-bottom: 15px;">إعادة تعيين كلمة المرور</a>
-                    <p style="margin-top: 20px; font-size: 12px; color: #777;">إذا لم تقم بطلب هذا التغيير، يرجى تجاهل هذا الإيميل وسيظل حسابك آمناً.</p>
-                    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                    <p style="font-size: 12px; color: #999;">فريق الدعم الفني<br>شركة الرمال الدولية - دبي</p>
                 </div>
             `
         };
 
         await transporter.sendMail(mailOptions);
-        
         res.status(200).json({ success: true, message: 'تم إرسال رابط الاستعادة إلى بريدك بنجاح.' });
-
     } catch (error) {
         console.error('Forgot Password Error:', error);
-        res.status(500).json({ success: false, message: 'حدث خطأ أثناء إرسال الإيميل، يرجى المحاولة لاحقاً.' });
+        res.status(500).json({ success: false, message: 'حدث خطأ أثناء إرسال الإيميل.' });
     }
 });
 
 // ==========================================
-// 5. تكامل واجهة Airalo الحقيقية (نظام الشركاء B2B)
+// 5. تكامل واجهة Airalo (بيئة الاختبار SANDBOX)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -175,8 +170,8 @@ let tokenExpirationTime = null;
 async function getAiraloToken() {
     if (airaloAccessToken && tokenExpirationTime && Date.now() < (tokenExpirationTime - 300000)) return airaloAccessToken;
     
-    // 🚀 تم التعديل إلى رابط شركاء Airalo الصحيح
-    const response = await axios.post('https://partners-api.airalo.com/v2/token', {
+    // 🚀 التوجيه لبيئة الـ Sandbox (بما يتطابق مع حالة حسابك الحالية)
+    const response = await axios.post('https://sandbox-api.airalo.com/v2/token', {
         client_id: process.env.AIRALO_CLIENT_ID,
         client_secret: process.env.AIRALO_CLIENT_SECRET,
         grant_type: 'client_credentials'
@@ -184,7 +179,7 @@ async function getAiraloToken() {
 
     airaloAccessToken = response.data.access_token;
     tokenExpirationTime = Date.now() + ((response.data.expires_in || 3600) * 1000); 
-    console.log('✅ تم جلب توكن Airalo جديد بنجاح');
+    console.log('✅ تم جلب توكن Airalo SANDBOX بنجاح');
     return airaloAccessToken;
 }
 
@@ -193,22 +188,20 @@ app.get('/api/airalo/packages', async (req, res) => {
     
     try {
         const token = await getAiraloToken();
-        // 🚀 تم التعديل إلى رابط شركاء Airalo الصحيح
-        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
+        // 🚀 جلب الباقات التجريبية الحقيقية من بيئة الـ Sandbox
+        const response = await axios.get('https://sandbox-api.airalo.com/v2/packages', {
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
             params: { 'limit': 20 }
         });
         packages = response.data.data || [];
     } catch (error) {
-        console.log('⚠️ لم نتمكن من الاتصال بـ Airalo (قد تكون المفاتيح غير صحيحة). سيتم عرض باقات الطوارئ.');
+        console.log('⚠️ خطأ في الاتصال بـ Airalo Sandbox. سيتم عرض باقات الطوارئ.');
     }
 
     if (packages.length === 0) {
         packages = [
             { id: "mock_1", data: "3 GB", validity: "7 أيام", price: "5.50", type: "local" },
-            { id: "mock_2", data: "5 GB", validity: "15 يوماً", price: "9.00", type: "local" },
-            { id: "mock_3", data: "10 GB", validity: "30 يوماً", price: "18.50", type: "local" },
-            { id: "mock_global", data: "20 GB", validity: "365 يوماً", price: "35.00", type: "global", isHot: true }
+            { id: "mock_2", data: "5 GB", validity: "15 يوماً", price: "9.00", type: "local" }
         ];
     }
 
@@ -216,14 +209,12 @@ app.get('/api/airalo/packages', async (req, res) => {
 });
 
 // ==========================================
-// 6. مسارات الدفع الفعلي (Ziina) وربطها مع (Airalo)
+// 6. مسارات الدفع الفعلي (Ziina) واستخراج الشريحة
 // ==========================================
 
-// أ: إنشاء رابط الدفع وإرسال العميل لـ Ziina
 app.post('/api/checkout', async (req, res) => {
     const { packageId, price, customerEmail } = req.body;
     try {
-        // 1. تسجيل طلب مبدئي في قاعدة البيانات كـ (قيد الانتظار)
         const newTx = new Transaction({
             referenceId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
             customerEmail: customerEmail, 
@@ -235,17 +226,16 @@ app.post('/api/checkout', async (req, res) => {
         });
         await newTx.save();
 
-        // 2. إعداد بيانات الدفع لـ Ziina
+        // دفع حقيقي عبر Ziina
         const ziinaPayload = {
-            amount: Math.round(price * 100), // Ziina تتعامل بالفلوس (1 درهم = 100 فلس)
+            amount: Math.round(price * 100), 
             currency_code: 'AED',
-            message: newTx.referenceId, // حفظ رقم الطلب كرسالة للتعرف عليه لاحقاً
+            message: newTx.referenceId, 
             success_url: `https://remal-connect.onrender.com/index.html?payment=success&ref=${newTx.referenceId}`,
             cancel_url: `https://remal-connect.onrender.com/index.html?payment=failed`,
-            test: false // الدفع الحقيقي
+            test: false 
         };
 
-        // 3. الاتصال ببوابة Ziina
         const ziinaResponse = await axios.post('https://api-v2.ziina.com/api/payment_intent', ziinaPayload, {
             headers: { 
                 'Authorization': `Bearer ${process.env.ZIINA_API_KEY}`, 
@@ -253,7 +243,6 @@ app.post('/api/checkout', async (req, res) => {
             }
         });
 
-        // 4. إرسال الرابط للواجهة ليتم تحويل العميل
         res.json({ success: true, paymentUrl: ziinaResponse.data.redirect_url, referenceId: newTx.referenceId });
     } catch (error) {
         console.error('Ziina Checkout Error:', error.response ? error.response.data : error.message);
@@ -261,28 +250,23 @@ app.post('/api/checkout', async (req, res) => {
     }
 });
 
-// ب: معالجة العودة من الدفع واستخراج الشريحة
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId } = req.body;
     try {
-        // 1. التأكد من وجود الطلب
         const tx = await Transaction.findOne({ referenceId });
         if (!tx) return res.status(404).json({ success: false, message: 'الطلب غير موجود' });
         
-        // منع الإصدار المزدوج لنفس الشريحة
         if (tx.status === 'success') return res.json({ success: true, message: 'تم الإصدار مسبقاً' });
 
-        // 2. تحديث حالة الطلب لـ (ناجح)
         tx.status = 'success';
         await tx.save();
 
-        // 3. الاتصال بـ Airalo لإنشاء الشريحة الفعلية (Create Order)
         const token = await getAiraloToken();
         let airaloOrder = null;
 
         try {
-            // 🚀 تم التعديل إلى رابط شركاء Airalo الصحيح
-            const orderResponse = await axios.post('https://partners-api.airalo.com/v2/orders', {
+            // 🚀 استخراج شريحة تجريبية من سيرفر الـ Sandbox
+            const orderResponse = await axios.post('https://sandbox-api.airalo.com/v2/orders', {
                 package_id: tx.packageId,
                 quantity: 1,
                 type: 'transaction'
@@ -292,21 +276,13 @@ app.post('/api/fulfill-esim', async (req, res) => {
             
             airaloOrder = orderResponse.data.data;
             tx.apiCost = airaloOrder.price;
-            await tx.save(); // حفظ التكلفة الفعلية للأرباح
+            await tx.save(); 
 
         } catch (airaloError) {
-            // في حال كانت الباقة المشتراة من باقات "المحاكاة" الوهمية، يتم توليد شريحة طوارئ للعميل
-            console.log('⚠️ الباقة ليست من Airalo، تم تفعيل شريحة الطوارئ للعميل.');
-            return res.json({
-                success: true, 
-                message: 'تم الدفع، الشريحة قيد التحضير.',
-                qr_code_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$smdp.io$fallback_8985',
-                iccid: '89852345' + Math.floor(Math.random() * 10000000000),
-                lpa: 'LPA:1$smdp.io$fallback_8985'
-            });
+            console.log('⚠️ فشل إصدار الشريحة التجريبية من Airalo.');
+            return res.status(500).json({ success: false, message: 'فشل استخراج الشريحة من المزود.' });
         }
 
-        // 4. تسليم الشريحة الفعلية للعميل
         const simDetails = airaloOrder.sims[0];
         res.json({
             success: true,
