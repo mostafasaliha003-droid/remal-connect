@@ -141,7 +141,7 @@ app.post('/api/forgot-password', async (req, res) => {
             return res.status(404).json({ success: false, message: 'هذا البريد الإلكتروني غير مسجل لدينا.' });
         }
 
-        const resetLink = `http://localhost:3000/reset-password?email=${email}`; 
+        const resetLink = `https://remal-connect.onrender.com/reset-password?email=${email}`; 
         
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -240,8 +240,8 @@ app.post('/api/checkout', async (req, res) => {
         const ziinaPayload = {
             amount: Math.round(price * 100), // Ziina تتعامل بالفلوس (1 درهم = 100 فلس)
             currency_code: 'AED',
-            success_url: `http://localhost:3000/index.html?payment=success&ref=${newTx.referenceId}`,
-            cancel_url: `http://localhost:3000/index.html?payment=failed`,
+            success_url: `https://remal-connect.onrender.com/index.html?payment=success&ref=${newTx.referenceId}`,
+            cancel_url: `https://remal-connect.onrender.com/index.html?payment=failed`,
             test: false, // الدفع الحقيقي
             reference_id: newTx.referenceId
         };
@@ -324,5 +324,4 @@ app.post('/api/fulfill-esim', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`✅ Remal Connect API is running seamlessly on port ${PORT} 🚀`);
-    console.log(`🌐 الرجاء فتح الرابط التالي في متصفحك لاختبار الموقع: http://localhost:${PORT}/index.html`);
 });
