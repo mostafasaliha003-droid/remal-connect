@@ -568,7 +568,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
 });
 
 // ==========================================
-// مسار إضافي لجلب إرشادات التثبيت (Step 4: Get Installation Instructions)
+// مسار جلب إرشادات التثبيت (Step 4: Get Installation Instructions)
 // ==========================================
 app.get('/api/airalo/instructions/:iccid', async (req, res) => {
     try {
