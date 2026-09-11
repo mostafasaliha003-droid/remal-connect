@@ -129,7 +129,6 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// مسار استعادة كلمة المرور
 app.post('/api/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
@@ -144,13 +143,11 @@ app.post('/api/forgot-password', async (req, res) => {
             return res.status(404).json({ success: false, message: 'البريد الإلكتروني غير مسجل لدينا' });
         }
 
-        // توليد كلمة مرور مؤقتة وتحديثها في قاعدة البيانات
         const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(tempPassword, salt);
         await user.save();
 
-        // إرسال كلمة المرور إلى بريد المستخدم
         const mailOptions = {
             from: `"Remal Connect" <${process.env.EMAIL_USER}>`,
             to: user.email,
@@ -159,12 +156,11 @@ app.post('/api/forgot-password', async (req, res) => {
                 <div dir="rtl" style="font-family: Arial, sans-serif; padding: 25px; background: #0f172a; color: #f8fafc; border-radius: 10px; max-width: 500px; margin: auto;">
                     <h2 style="color: #38bdf8; text-align: center;">Remal Connect</h2>
                     <p>مرحباً <strong>${user.fullName}</strong>،</p>
-                    <p>لقد استلمنا طلباً لاستعادة كلمة المرور الخاصة بحسابك المسجل لدينا.</p>
                     <p>كلمة المرور المؤقتة الجديدة الخاصة بك هي:</p>
                     <div style="background: #1e293b; padding: 14px; text-align: center; border-radius: 8px; font-size: 20px; font-weight: bold; color: #38bdf8; letter-spacing: 2px; border: 1px dashed #38bdf8; margin: 15px 0;">
                         ${tempPassword}
                     </div>
-                    <p style="font-size: 13px; color: #94a3b8;">يمكنك استخدام كلمة المرور هذه لتسجيل الدخول فوراً، ونوصي بتغييرها من حسابك لضمان الأمان.</p>
+                    <p style="font-size: 13px; color: #94a3b8;">يمكنك استخدام كلمة المرور هذه لتسجيل الدخول فوراً وتغييرها من حسابك.</p>
                 </div>
             `
         };
@@ -207,7 +203,6 @@ async function getAiraloToken() {
     return airaloAccessToken;
 }
 
-// تفكيك واستخراج الباقات من مصفوفة المشغلين والدول
 app.get('/api/airalo/packages', async (req, res) => {
     let formattedPackages = [];
     try {
@@ -228,7 +223,6 @@ app.get('/api/airalo/packages', async (req, res) => {
         
         const rawCountries = response.data?.data || [];
 
-        // التعمق في هيكل Airalo: الدول -> المشغلين -> الباقات الفعلية
         rawCountries.forEach(country => {
             const countryTitle = country.title || 'السعودية';
             const countryCode = country.country_code || 'SA';
@@ -237,7 +231,6 @@ app.get('/api/airalo/packages', async (req, res) => {
                 country.operators.forEach(operator => {
                     if (operator.packages && Array.isArray(operator.packages)) {
                         operator.packages.forEach(pkg => {
-                            // حساب السعر وتحويله من الدولار إلى الدرهم الإماراتي (1 USD ≈ 3.67 AED)
                             const usdPrice = pkg.price || pkg.net_price || pkg.prices?.recommended_retail_price?.USD || 5;
                             const aedPrice = (usdPrice * 3.67).toFixed(2);
 
@@ -263,7 +256,6 @@ app.get('/api/airalo/packages', async (req, res) => {
         console.log('⚠️ خطأ في استخراج باقات Airalo:', error.response?.status, error.response?.data || error.message);
     }
 
-    // باقات الطوارئ الاحتياطية بأسعار سليمة
     if (formattedPackages.length === 0) {
         formattedPackages = [
             { id: "mock_1", package_id: "mock_1", country: "السعودية", country_code: "SA", data: "3 GB", validity: "7 أيام", price: "25.00", sellingPrice: "25.00", type: "local" },
@@ -288,8 +280,10 @@ app.post('/api/checkout', async (req, res) => {
     }
 
     try {
+        const referenceId = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
         const newTx = new Transaction({
-            referenceId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            referenceId,
             customerEmail: customerEmail || 'guest@remaltourismllc.com', 
             type: 'b2c', 
             packageId: packageId || 'package_default',
@@ -299,15 +293,20 @@ app.post('/api/checkout', async (req, res) => {
         });
         await newTx.save();
 
-        // إرسال العميل لرابط الدومين الجديد
+        // حساب المبلغ بالفلس وتحويله إلى Integer صحيح
+        const amountInFils = Math.round(price * 100);
+
         const ziinaPayload = {
-            amount: Math.round(price * 100), 
+            amount: amountInFils, 
             currency_code: 'AED',
-            message: newTx.referenceId, 
-            success_url: `${APP_URL}/index.html?payment=success&ref=${newTx.referenceId}`,
+            message: referenceId, 
+            success_url: `${APP_URL}/index.html?payment=success&ref=${referenceId}`,
             cancel_url: `${APP_URL}/index.html?payment=failed`,
+            failure_url: `${APP_URL}/index.html?payment=failed`,
             test: false 
         };
+
+        console.log(`💳 إنشاء جلسة دفع في Ziina بمبلغ: ${amountInFils} فلس (${price} درهم) للطلب: ${referenceId}`);
 
         const ziinaResponse = await axios.post('https://api-v2.ziina.com/api/payment_intent', ziinaPayload, {
             headers: { 
@@ -316,7 +315,9 @@ app.post('/api/checkout', async (req, res) => {
             }
         });
 
-        res.json({ success: true, paymentUrl: ziinaResponse.data.redirect_url, referenceId: newTx.referenceId });
+        console.log(`🔗 رابط الدفع: ${ziinaResponse.data.redirect_url}`);
+
+        res.json({ success: true, paymentUrl: ziinaResponse.data.redirect_url, referenceId });
     } catch (error) {
         console.error('Ziina Checkout Error:', error.response?.data || error.message);
         res.status(500).json({ success: false, message: 'فشل إنشاء جلسة الدفع' });
@@ -329,9 +330,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
         const tx = await Transaction.findOne({ referenceId });
         if (!tx) return res.status(404).json({ success: false, message: 'الطلب غير موجود' });
         if (tx.status === 'success') return res.json({ success: true, message: 'تم الإصدار مسبقاً' });
-
-        tx.status = 'success';
-        await tx.save();
 
         const token = await getAiraloToken();
         let airaloOrder = null;
@@ -350,6 +348,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
             
             airaloOrder = orderResponse.data?.data || orderResponse.data;
             tx.apiCost = airaloOrder.price || 0;
+            tx.status = 'success';
             await tx.save(); 
 
         } catch (airaloError) {
