@@ -438,7 +438,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// مسار تسليم الشريحة المطابق تماماً لـ Submit Order (200)
+// مسار تسليم الشريحة المتوافق مع Submit Order (200 / 422 Handling)
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
@@ -488,24 +488,24 @@ app.post('/api/fulfill-esim', async (req, res) => {
                 }
             });
             
-            // استخراج بيانات الـ data والـ sims من نموذج الاستجابة المحدث
             const responseData = orderResponse.data?.data || orderResponse.data;
             airaloOrder = responseData;
             
-            // حفظ تكلفة الـ API الفعلية المسترجعة من استجابة الـ 200
             tx.apiCost = responseData.price || 0;
             tx.status = 'success';
             await tx.save();
 
         } catch (airaloError) {
-            console.log('⚠️ خطأ إصدار الشريحة من Airalo:', airaloError.response?.status, airaloError.response?.data || airaloError.message);
+            const errData = airaloError.response?.data;
+            console.log('⚠️ خطأ إصدار الشريحة من Airalo (422/Order):', airaloError.response?.status, errData?.meta?.message || errData || airaloError.message);
             
             if ((tx.packageId && tx.packageId.startsWith('topup_')) || (tx.packageId && tx.packageId.startsWith('mock_'))) {
                 airaloOrder = { sims: [{ iccid: `890000${Date.now().toString().slice(-9)}`, qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', lpa: `LPA:1$smdp.io$890000${Date.now().toString().slice(-9)}` }] };
                 tx.status = 'success';
                 await tx.save();
             } else {
-                return res.status(500).json({ success: false, message: 'فشل استخراج الشريحة من المزود' });
+                const errorMessage = errData?.meta?.message || 'فشل استخراج الشريحة من المزود';
+                return res.status(500).json({ success: false, message: errorMessage });
             }
         }
 
@@ -540,7 +540,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
             await buyer.save();
         }
 
-        // استخراج أول شريحة من مصفوفة sims بالتوافق مع النموذج الجديد
         const simsArray = airaloOrder.sims || [];
         const simDetails = simsArray.length > 0 ? simsArray[0] : airaloOrder;
 
