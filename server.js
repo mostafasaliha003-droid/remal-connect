@@ -62,10 +62,10 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: { type: String, enum: ['customer', 'agent', 'cs', 'admin'], default: 'customer' },
     walletBalance: { type: Number, default: 0 }, // يبدأ بـ 0.00 AED
-    purchasesCount: { type: Number, default: 0 }, // عدد المشتريات المكتملة
-    referralCode: { type: String, unique: true, sparse: true }, // كود المشاركة الخاص
+    purchasesCount: { type: Number, default: 0 }, // عدد المشتريات لتحديد الدرع
+    referralCode: { type: String, unique: true, sparse: true }, // كود المشاركة الفريد
     referredBy: { type: String, default: null }, // كود من قام بدعوته
-    hasCompletedFirstPurchase: { type: Boolean, default: false }, // لضمان صرف الـ 1 درهم لمرة واحدة فقط
+    hasCompletedFirstPurchase: { type: Boolean, default: false }, // لضمان صرف مكافأة الـ 1 درهم لمرة واحدة فقط
     createdAt: { type: Date, default: Date.now }
 });
 const User = mongoose.model('User', userSchema);
@@ -106,11 +106,14 @@ app.post('/api/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // توليد كود إحالة فريد للحساب الجديد
-        let generatedRefCode = 'RM' + Math.floor(100000 + Math.random() * 900000);
+        // توليد كود إحالة أنيق وفريد
+        const prefix = fullName ? fullName.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3) : 'RML';
+        const finalPrefix = prefix.length >= 2 ? prefix : 'RML';
+        let generatedRefCode = finalPrefix + Math.floor(1000 + Math.random() * 9000);
+        
         let exists = await User.findOne({ referralCode: generatedRefCode });
         while (exists) {
-            generatedRefCode = 'RM' + Math.floor(100000 + Math.random() * 900000);
+            generatedRefCode = finalPrefix + Math.floor(1000 + Math.random() * 9000);
             exists = await User.findOne({ referralCode: generatedRefCode });
         }
 
@@ -157,7 +160,8 @@ app.post('/api/login', async (req, res) => {
 
         // التأكد من وجود كود إحالة دائم محفوظ في الحساب
         if (!user.referralCode) {
-            user.referralCode = 'RM' + Math.floor(100000 + Math.random() * 900000);
+            const prefix = user.fullName ? user.fullName.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3) : 'RML';
+            user.referralCode = (prefix.length >= 2 ? prefix : 'RML') + Math.floor(1000 + Math.random() * 9000);
             await user.save();
         }
 
@@ -178,7 +182,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// استعلام بيانات المستخدم وتحديث الرصيد
+// استعلام بيانات المستخدم وتحديث الرصيد لحظياً
 app.get('/api/user/profile', async (req, res) => {
     try {
         const email = req.query.email ? req.query.email.trim().toLowerCase() : null;
@@ -188,7 +192,8 @@ app.get('/api/user/profile', async (req, res) => {
         if (!user) return res.status(404).json({ success: false, message: 'المستخدم غير موجود' });
 
         if (!user.referralCode) {
-            user.referralCode = 'RM' + Math.floor(100000 + Math.random() * 900000);
+            const prefix = user.fullName ? user.fullName.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3) : 'RML';
+            user.referralCode = (prefix.length >= 2 ? prefix : 'RML') + Math.floor(1000 + Math.random() * 9000);
             await user.save();
         }
 
@@ -347,7 +352,7 @@ app.post('/api/checkout', async (req, res) => {
     walletDeducted = parseFloat(walletDeducted) || 0;
     const cleanEmail = customerEmail ? customerEmail.trim().toLowerCase() : 'guest@remalsim.com';
 
-    // 1. الدفع بالكامل من رصيد المحفظة (السعر المطلوب 0)
+    // 1. الدفع بالكامل من رصيد المحفظة (المبلغ النقدي المطلوب 0)
     if (price === 0 && walletDeducted > 0) {
         try {
             const user = await User.findOne({ email: cleanEmail });
@@ -373,6 +378,7 @@ app.post('/api/checkout', async (req, res) => {
             return res.json({ 
                 success: true, 
                 walletPaid: true, 
+                paymentUrl: `${APP_URL}/index.html?payment=success&ref=${referenceId}`,
                 referenceId,
                 message: 'تم خصم المبلغ من المحفظة بنجاح' 
             });
@@ -434,7 +440,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
     try {
         let tx = await Transaction.findOne({ referenceId });
         
-        // مرونة مع طلبات المحفظة المباشرة
         if (!tx) {
             if (referenceId && referenceId.startsWith('WAL-')) {
                 tx = new Transaction({
@@ -484,9 +489,9 @@ app.post('/api/fulfill-esim', async (req, res) => {
         } catch (airaloError) {
             console.log('⚠️ خطأ إصدار الشريحة من Airalo:', airaloError.response?.status, airaloError.response?.data || airaloError.message);
             
-            // معالجة مرنة لطلبات شحن الرصيد التجريبية
-            if (tx.packageId && tx.packageId.startsWith('topup_')) {
-                airaloOrder = { sims: [{ iccid: tx.packageId.split('_')[1] || '890000000', qrcode_url: '', lpa: '' }] };
+            // معالجة مرنة لطلبات الاختبار أو شحن الرصيد
+            if ((tx.packageId && tx.packageId.startsWith('topup_')) || (tx.packageId && tx.packageId.startsWith('mock_'))) {
+                airaloOrder = { sims: [{ iccid: `890000${Date.now().toString().slice(-9)}`, qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', lpa: `LPA:1$smdp.io$890000${Date.now().toString().slice(-9)}` }] };
                 tx.status = 'success';
                 await tx.save();
             } else {
@@ -503,16 +508,17 @@ app.post('/api/fulfill-esim', async (req, res) => {
         if (buyer) {
             const currentPurchases = buyer.purchasesCount || 0;
 
-            // تحديد نسبة الكاش باك حسب شروطك المحددة:
-            // 0 - 4 طلبات: الدرع الفضي (1%)
-            // 5 - 10 طلبات: الدرع الذهبي (1.5%)
-            // 11 - 20 طلباً: الدرع البلاتيني (2%)
-            // 21 - 50 طلباً: الدرع الماسي VIP (3%)
+            // تحديد نسبة الكاش باك حسب الأدرع:
+            // 0 - 4 طلبات: الفضي (1%)
+            // 5 - 10 طلبات: الذهبي (1.5%)
+            // 11 - 20 طلباً: البلاتيني (2%)
+            // 21+ طلباً: الماسي VIP (3%)
             let cashbackRate = 0.01;
             if (currentPurchases > 20) cashbackRate = 0.03;
             else if (currentPurchases > 10) cashbackRate = 0.02;
             else if (currentPurchases > 4) cashbackRate = 0.015;
 
+            // الكاش باك يُحسب فقط من المبلغ النقدي الفعلي المدفوع
             earnedCashback = parseFloat((tx.sellingPrice * cashbackRate).toFixed(2));
             buyer.walletBalance = parseFloat(((buyer.walletBalance || 0) + earnedCashback).toFixed(2));
             buyer.purchasesCount = currentPurchases + 1;
