@@ -12,6 +12,18 @@ const path = require('path');
 const app = express();
 
 // ==========================================
+// 🚀 خطوة هامة: معرفة الـ IP الخارجي للسيرفر
+// ==========================================
+axios.get('https://api.ipify.org?format=json')
+  .then(response => {
+    console.log('🌟 ========================================= 🌟');
+    console.log(`🚀 PUBLIC IP ADDRESS OF THIS SERVER: ${response.data.ip}`);
+    console.log('🌟 ========================================= 🌟');
+    console.log('👉 يرجى نسخ هذا الـ IP وإضافته في لوحة تحكم Airalo (Allowed IP addresses)');
+  })
+  .catch(err => console.log('تعذر جلب الـ IP الخارجي للسيرفر'));
+
+// ==========================================
 // إعدادات الحماية والوصول (Middleware)
 // ==========================================
 app.use(express.json());
@@ -158,7 +170,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// 5. تكامل واجهة Airalo (بيئة الشركاء Partners API)
+// 5. تكامل واجهة Airalo (بيئة الاختبار SANDBOX)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -166,8 +178,8 @@ let tokenExpirationTime = null;
 async function getAiraloToken() {
     if (airaloAccessToken && tokenExpirationTime && Date.now() < (tokenExpirationTime - 300000)) return airaloAccessToken;
     
-    // 🚀 التوجيه للرابط الموحد للشركاء (Sandbox و Live)
-    const response = await axios.post('https://partners-api.airalo.com/v2/token', {
+    // 🚀 التوجيه لبيئة الـ Sandbox (بما يتطابق مع حالة حسابك الحالية)
+    const response = await axios.post('https://sandbox-api.airalo.com/v2/token', {
         client_id: process.env.AIRALO_CLIENT_ID,
         client_secret: process.env.AIRALO_CLIENT_SECRET,
         grant_type: 'client_credentials'
@@ -175,7 +187,7 @@ async function getAiraloToken() {
 
     airaloAccessToken = response.data.access_token;
     tokenExpirationTime = Date.now() + ((response.data.expires_in || 3600) * 1000); 
-    console.log('✅ تم جلب توكن Airalo بنجاح');
+    console.log('✅ تم جلب توكن Airalo SANDBOX بنجاح');
     return airaloAccessToken;
 }
 
@@ -184,14 +196,14 @@ app.get('/api/airalo/packages', async (req, res) => {
     
     try {
         const token = await getAiraloToken();
-        // 🚀 جلب الباقات من الرابط الموحد للشركاء
-        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
+        // 🚀 جلب الباقات التجريبية الحقيقية من بيئة الـ Sandbox
+        const response = await axios.get('https://sandbox-api.airalo.com/v2/packages', {
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
-            params: { 'limit': 50 }
+            params: { 'limit': 20 }
         });
         packages = response.data.data || [];
     } catch (error) {
-        console.log('⚠️ خطأ في الاتصال بـ Airalo. سيتم عرض باقات الطوارئ.');
+        console.log('⚠️ خطأ في الاتصال بـ Airalo Sandbox. سيتم عرض باقات الطوارئ.');
     }
 
     if (packages.length === 0) {
@@ -261,8 +273,8 @@ app.post('/api/fulfill-esim', async (req, res) => {
         let airaloOrder = null;
 
         try {
-            // 🚀 طلب استخراج شريحة من الرابط الموحد
-            const orderResponse = await axios.post('https://partners-api.airalo.com/v2/orders', {
+            // 🚀 استخراج شريحة تجريبية من سيرفر الـ Sandbox
+            const orderResponse = await axios.post('https://sandbox-api.airalo.com/v2/orders', {
                 package_id: tx.packageId,
                 quantity: 1,
                 type: 'transaction'
@@ -275,7 +287,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
             await tx.save(); 
 
         } catch (airaloError) {
-            console.log('⚠️ فشل إصدار الشريحة من Airalo.');
+            console.log('⚠️ فشل إصدار الشريحة التجريبية من Airalo.');
             return res.status(500).json({ success: false, message: 'فشل استخراج الشريحة من المزود.' });
         }
 
