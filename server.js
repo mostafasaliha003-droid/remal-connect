@@ -249,7 +249,7 @@ app.post('/api/forgot-password', async (req, res) => {
 });
 
 // ==========================================
-// تكامل Airalo الموحد (دعم شامل Pagination, Links, Meta, Top-up)
+// تكامل Airalo الموحد (دعم شامل للمحليات، العالمية، Pagination، وTop-up)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -465,7 +465,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
         if (tx.walletDeducted > 0 && !referenceId.startsWith('WAL-')) {
             const buyer = await User.findOne({ email: tx.customerEmail });
             if (buyer && buyer.walletBalance >= tx.walletDeducted) {
-                buyer.walletBalance = Math.max(0, buyer.walletBalance - tx.walletDended);
+                buyer.walletBalance = Math.max(0, buyer.walletBalance - tx.walletDeducted);
                 await buyer.save();
             }
         }
@@ -535,7 +535,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
 
         const simDetails = airaloOrder.sims ? airaloOrder.sims[0] : airaloOrder;
         res.json({
-            success: true,
+            success: codeSuccess = true,
             iccid: simDetails.iccid,
             qr_code_url: simDetails.qrcode_url || simDetails.qr_code,
             lpa: simDetails.lpa,
@@ -552,5 +552,5 @@ app.post('/api/fulfill-esim', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`✅ Remal Connect API is running seamlessly on port `${PORT}` 🚀`);
+    console.log(`✅ Remal Connect API is running seamlessly on port ${PORT} 🚀`);
 });
