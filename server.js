@@ -168,7 +168,6 @@ app.post('/api/login', async (req, res) => {
 // ==========================================
 // 2. نظام وكلاء السفر (B2B Portal)
 // ==========================================
-// تسجيل وكالة سفر جديدة مع استقبال الملفات عبر FormData
 app.post('/api/b2b/register-with-files', upload.fields([{ name: 'licenseFile' }, { name: 'idFile' }, { name: 'vatFile' }]), async (req, res) => {
     try {
         const { companyName, managerName, email, phone, password, accountName, bankName, iban, vatNumber } = req.body;
@@ -314,6 +313,74 @@ app.get('/api/search-packages', async (req, res) => {
 });
 
 // ==========================================
+// 5.5. تكامل واجهة Airalo الحقيقية (Live eSIM API)
+// ==========================================
+
+// متغيرات لتخزين التوكن مؤقتاً في الذاكرة لتقليل الضغط على السيرفر
+let airaloAccessToken = null;
+let tokenExpirationTime = null;
+
+// دالة ذكية لجلب التوكن (تستخدم التوكن القديم إذا كان لا يزال صالحاً)
+async function getAiraloToken() {
+    // التحقق مما إذا كان لدينا توكن صالح (نعطيه هامش أمان 5 دقائق قبل الانتهاء)
+    if (airaloAccessToken && tokenExpirationTime && Date.now() < (tokenExpirationTime - 300000)) {
+        return airaloAccessToken;
+    }
+
+    try {
+        // 🚀 تنبيه: أضف AIRALO_CLIENT_ID و AIRALO_CLIENT_SECRET في ملف .env
+        const response = await axios.post('https://sandbox-sandbox-api.airalo.com/v2/token', {
+            client_id: process.env.AIRALO_CLIENT_ID,
+            client_secret: process.env.AIRALO_CLIENT_SECRET,
+            grant_type: 'client_credentials'
+        }, {
+            headers: { 'Accept': 'application/json' }
+        });
+
+        airaloAccessToken = response.data.access_token;
+        // التوكن الخاص بـ Airalo صالح عادة لمدة معينة، نحدد الصلاحية هنا
+        const expiresIn = response.data.expires_in || 3600; // افتراضياً ساعة
+        tokenExpirationTime = Date.now() + (expiresIn * 1000); 
+        
+        console.log('✅ تم جلب توكن Airalo جديد بنجاح');
+        return airaloAccessToken;
+    } catch (error) {
+        console.error('❌ خطأ في جلب توكن Airalo:', error.response ? error.response.data : error.message);
+        throw new Error('فشل في المصادقة مع مزود الشبكة');
+    }
+}
+
+// المسار المباشر لجلب الباقات الحقيقية بناءً على رمز الدولة (مثل: SA, AE, TR, GB)
+app.get('/api/airalo/packages', async (req, res) => {
+    try {
+        // نأخذ رمز الدولة من الواجهة، وإذا لم يُحدد نعرض باقات السعودية كافتراضي
+        const countryCode = req.query.country || 'SA'; 
+        const token = await getAiraloToken();
+
+        const response = await axios.get('https://sandbox-sandbox-api.airalo.com/v2/packages', {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            params: {
+                'filter[country]': countryCode.toUpperCase(),
+                'limit': 20 // عدد الباقات المسترجعة
+            }
+        });
+
+        res.json({ 
+            success: true, 
+            count: response.data.data.length,
+            packages: response.data.data 
+        });
+
+    } catch (error) {
+        console.error('Airalo Fetch Packages Error:', error.response ? error.response.data : error.message);
+        res.status(500).json({ success: false, message: 'حدث خطأ أثناء جلب باقات الإنترنت الحية' });
+    }
+});
+
+// ==========================================
 // 6. مسارات الدفع عبر Ziina وإصدار الشريحة
 // ==========================================
 
@@ -385,7 +452,7 @@ app.post('/api/webhooks/ziina', express.raw({ type: 'application/json' }), async
             );
 
             if (tx) {
-                // 🚀 هنا نقوم بالاتصال بـ API مزود الـ eSIM (مثل RateHawk) لإنشاء الشريحة فعلياً!
+                // 🚀 هنا نقوم بالاتصال بـ API مزود الـ eSIM (مثل Airalo) لإنشاء الشريحة فعلياً!
                 // const esimData = await esimProvider.issue(tx.packageId);
                 
                 // تحديث الـ iccid والتكلفة الفعلية
