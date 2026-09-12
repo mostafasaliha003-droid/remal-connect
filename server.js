@@ -351,7 +351,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// مسار استخراج الشريحة
+// 🚀 استخراج الشريحة (ذكي: يفرق بين شريحة جديدة و إعادة الشحن)
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
@@ -374,46 +374,69 @@ app.post('/api/fulfill-esim', async (req, res) => {
         }
 
         let airaloOrder = null;
+        let isTopup = false;
+        let finalIccid = '';
+
         try {
             const orderFormData = new URLSearchParams();
+            let apiEndpoint = '/orders'; 
+
             if(tx.packageId && tx.packageId.startsWith('topup_')) {
+                isTopup = true;
                 const parts = tx.packageId.split('_'); 
-                orderFormData.append('package_id', parts[2]); 
+                finalIccid = parts[1]; 
                 orderFormData.append('iccid', parts[1]); 
-                orderFormData.append('quantity', 1);
+                orderFormData.append('package_id', parts[2]); 
+                apiEndpoint = '/orders/topups'; 
             } else { 
                 orderFormData.append('package_id', tx.packageId); 
                 orderFormData.append('quantity', 1); 
+                orderFormData.append('brand_settings_name', 'Remal Connect');
             }
             orderFormData.append('description', `Order reference: ${tx.referenceId}`);
-            orderFormData.append('brand_settings_name', 'Remal Connect');
 
-            const orderResponse = await airaloApiRequest('post', '/orders', orderFormData.toString(), true);
+            const orderResponse = await airaloApiRequest('post', apiEndpoint, orderFormData.toString(), true);
             const responseData = orderResponse.data?.data || orderResponse.data;
             airaloOrder = responseData;
             
         } catch (airaloError) {
-            if (airaloError.response?.status === 422 || (tx.packageId && (tx.packageId.startsWith('topup_') || tx.packageId.startsWith('mock_')))) {
+            if (airaloError.response?.status === 422 || (tx.packageId && tx.packageId.startsWith('mock_'))) {
+                finalIccid = finalIccid || `890000${Date.now().toString().slice(-9)}`;
                 airaloOrder = { sims: [{ 
-                    iccid: `890000${Date.now().toString().slice(-9)}`, 
+                    iccid: finalIccid, 
                     qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', 
-                    lpa: `LPA:1$smdp.io$890000${Date.now().toString().slice(-9)}`, 
+                    lpa: `LPA:1$smdp.io$${finalIccid}`, 
                     direct_apple_installation_url: 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$smdp.io$TEST',
                     sharing: { link: "https://esims.cloud/remal-connect/mock-test", access_code: "1234" }
                 }] };
-            } else { return res.status(500).json({ success: false, message: 'عذراً، كمية الشريحة غير متوفرة مؤقتاً لدى المزوّد.' }); }
+            } else { return res.status(500).json({ success: false, message: 'عذراً، الخدمة غير متوفرة مؤقتاً لدى المزوّد.' }); }
         }
 
-        const simsArray = airaloOrder.sims || [];
-        const simDetails = simsArray.length > 0 ? simsArray[0] : airaloOrder;
-        
-        const sharingLink = simDetails.sharing?.link || '';
-        const sharingAccessCode = simDetails.sharing?.access_code || '';
+        let sharingLink = '';
+        let sharingAccessCode = '';
+        let qrCodeUrl = '';
+        let lpaCode = '';
+        let appleUrl = '';
+
+        if (!isTopup) {
+            const simsArray = airaloOrder.sims || [];
+            const simDetails = simsArray.length > 0 ? simsArray[0] : airaloOrder;
+            
+            finalIccid = simDetails.iccid || finalIccid;
+            sharingLink = simDetails.sharing?.link || '';
+            sharingAccessCode = simDetails.sharing?.access_code || '';
+            qrCodeUrl = simDetails.qrcode_url || simDetails.qrcode || '';
+            lpaCode = simDetails.lpa || '';
+            appleUrl = simDetails.direct_apple_installation_url || '';
+        } else {
+            sharingLink = tx.esimsCloudLink || '';
+            sharingAccessCode = tx.esimsCloudAccessCode || '';
+        }
 
         tx.apiCost = airaloOrder.price || 0; 
         tx.esimsCloudLink = sharingLink;
         tx.esimsCloudAccessCode = sharingAccessCode;
-        tx.iccid = simDetails.iccid;
+        tx.iccid = finalIccid;
         tx.status = 'success'; 
         await tx.save();
 
@@ -437,10 +460,11 @@ app.post('/api/fulfill-esim', async (req, res) => {
 
         res.json({ 
             success: true, 
-            iccid: simDetails.iccid, 
-            qr_code_url: simDetails.qrcode_url || simDetails.qrcode || '', 
-            lpa: simDetails.lpa || '', 
-            direct_apple_installation_url: simDetails.direct_apple_installation_url || '',
+            is_topup: isTopup,
+            iccid: finalIccid, 
+            qr_code_url: qrCodeUrl, 
+            lpa: lpaCode, 
+            direct_apple_installation_url: appleUrl,
             esims_cloud_link: sharingLink,
             esims_cloud_access_code: sharingAccessCode,
             earnedCashback, 
@@ -448,7 +472,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
             newPurchasesCount: buyer ? buyer.purchasesCount : 0 
         });
 
-    } catch (error) { res.status(500).json({ success: false, message: 'فشل تسليم الشريحة بسبب مشكلة في قاعدة البيانات' }); }
+    } catch (error) { res.status(500).json({ success: false, message: 'فشل تسليم الشريحة بسبب مشكلة تقنية' }); }
 });
 
 app.get('/api/airalo/instructions/:iccid', async (req, res) => {
@@ -465,11 +489,7 @@ app.get('/api/airalo/instructions/:iccid', async (req, res) => {
             }
         });
 
-        res.json({
-            success: true,
-            instructions: response.data?.data || response.data
-        });
-
+        res.json({ success: true, instructions: response.data?.data || response.data });
     } catch (error) {
         res.status(500).json({ success: false, message: 'تعذر جلب إرشادات التثبيت الخاصة بالشريحة' });
     }
@@ -483,60 +503,36 @@ app.get('/api/airalo/usage/:iccid', async (req, res) => {
         const { iccid } = req.params;
         const response = await airaloApiRequest('get', `/sims/${iccid}/usage`);
         const usageData = response.data?.data || response.data;
-        
-        res.json({
-            success: true,
-            usage: usageData
-        });
+        res.json({ success: true, usage: usageData });
     } catch (error) {
-        console.error('⚠️ خطأ في جلب الاستهلاك:', error.response?.data || error.message);
-        res.status(500).json({ 
-            success: false, 
-            message: 'تعذر جلب بيانات الاستهلاك حالياً.' 
-        });
+        res.status(500).json({ success: false, message: 'تعذر جلب بيانات الاستهلاك حالياً.' });
     }
 });
 
 // ==========================================
-// 🚀 مسار جلب باقات إعادة الشحن (Top-ups) لشريحة معينة
+// مسار جلب باقات إعادة الشحن (Top-ups) لشريحة معينة
 // ==========================================
 app.get('/api/airalo/topups/:iccid', async (req, res) => {
     try {
         const { iccid } = req.params;
         const response = await airaloApiRequest('get', `/sims/${iccid}/topups`);
         const topupsData = response.data?.data || response.data;
-        
-        res.json({
-            success: true,
-            topups: topupsData
-        });
+        res.json({ success: true, topups: topupsData });
     } catch (error) {
-        console.error('⚠️ خطأ في جلب باقات إعادة الشحن:', error.response?.data || error.message);
-        res.status(500).json({ 
-            success: false, 
-            message: 'تعذر جلب باقات إعادة الشحن لهذه الشريحة.' 
-        });
+        res.status(500).json({ success: false, message: 'تعذر جلب باقات إعادة الشحن لهذه الشريحة.' });
     }
 });
 
 // ==========================================
-// 🚀 مسار استرجاع تفاصيل الشريحة (استعلام احتياطي)
+// مسار استرجاع تفاصيل الشريحة (استعلام احتياطي)
 // ==========================================
 app.get('/api/airalo/sim/:iccid', async (req, res) => {
     try {
         const { iccid } = req.params;
         const response = await airaloApiRequest('get', `/sims/${iccid}`, { include: 'share' });
-        
-        res.json({
-            success: true,
-            sim: response.data?.data || response.data
-        });
+        res.json({ success: true, sim: response.data?.data || response.data });
     } catch (error) {
-        console.error('⚠️ خطأ في جلب تفاصيل الشريحة:', error.message);
-        res.status(500).json({ 
-            success: false, 
-            message: 'تعذر استرجاع بيانات الشريحة حالياً.' 
-        });
+        res.status(500).json({ success: false, message: 'تعذر استرجاع بيانات الشريحة حالياً.' });
     }
 });
 
@@ -547,11 +543,8 @@ app.post('/api/webhooks/airalo', async (req, res) => {
     try {
         const payload = req.body;
         console.log('🔔 [WEBHOOK] تم استلام إشعار جديد من Airalo:', payload);
-
         res.status(200).send('Webhook Received');
-
     } catch (error) {
-        console.error('❌ خطأ في معالجة الـ Webhook:', error.message);
         res.status(500).send('Webhook Error');
     }
 });
