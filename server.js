@@ -481,6 +481,53 @@ app.get('/api/airalo/instructions/:iccid', async (req, res) => {
     }
 });
 
+// ==========================================
+// 🚀 مسار الاستعلام عن الاستهلاك الحي (Check Usage)
+// ==========================================
+app.get('/api/airalo/usage/:iccid', async (req, res) => {
+    try {
+        const { iccid } = req.params;
+        const response = await airaloApiRequest('get', `/sims/${iccid}/usage`);
+        const usageData = response.data?.data || response.data;
+        
+        res.json({
+            success: true,
+            usage: usageData
+        });
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب الاستهلاك:', error.response?.data || error.message);
+        res.status(500).json({ 
+            success: false, 
+            message: 'تعذر جلب بيانات الاستهلاك حالياً.' 
+        });
+    }
+});
+
+// ==========================================
+// 🚀 مسار الخطافات (Webhooks) لاستقبال التنبيهات من Airalo
+// ==========================================
+app.post('/api/webhooks/airalo', async (req, res) => {
+    try {
+        const payload = req.body;
+        console.log('🔔 [WEBHOOK] تم استلام إشعار جديد من Airalo:', payload);
+
+        res.status(200).send('Webhook Received');
+
+        /*
+        if (payload.alert_type === 'low_data') {
+            const tx = await Transaction.findOne({ iccid: payload.iccid });
+            if (tx) {
+                console.log(`✉️ إرسال تنبيه للعميل ${tx.customerEmail} لإعادة الشحن!`);
+            }
+        }
+        */
+
+    } catch (error) {
+        console.error('❌ خطأ في معالجة الـ Webhook:', error.message);
+        res.status(500).send('Webhook Error');
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`✅ Remal Connect API is running seamlessly on port ${PORT} 🚀`);
