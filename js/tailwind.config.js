@@ -5,13 +5,13 @@ tailwind.config = {
                 brand: {
                     base: '#030712',
                     surface: '#0f172a',
-                    cyan: '#00b4d8', 
+                    cyan: '#06b6d4',
                     cyanGlow: '#22d3ee',
-                    red: '#800000', 
                 }
             },
             animation: {
                 'float': 'float 6s ease-in-out infinite',
+                'float-delayed': 'float 6s ease-in-out 3s infinite',
                 'data-stream': 'dataStream 20s linear infinite',
                 'pulse-glow': 'pulseGlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             },
@@ -25,8 +25,8 @@ tailwind.config = {
                     '100%': { transform: 'translateY(-100%)' }
                 },
                 pulseGlow: {
-                    '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(0,180,216,0.5))' },
-                    '50%': { filter: 'drop-shadow(0 0 25px rgba(0,180,216,0.8))' }
+                    '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(6,182,212,0.5))' },
+                    '50%': { filter: 'drop-shadow(0 0 25px rgba(6,182,212,0.8))' }
                 },
                 fadeInUp: {
                     from: { opacity: 0, transform: 'translateY(16px)' },
