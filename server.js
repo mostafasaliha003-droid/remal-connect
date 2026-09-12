@@ -17,6 +17,21 @@ const app = express();
 const APP_URL = process.env.APP_URL || 'https://remalsim.com';
 
 // ==========================================
+// إعدادات الحماية والوصول (Middleware)
+// ==========================================
+app.use(express.json());
+// ✅ تم تعديل CORS للسماح باتصال الواجهة من أي مكان (مثل GitHub Pages) لتجنب أخطاء الاتصال
+app.use(cors({ origin: '*' }));
+app.use(express.static(__dirname));
+
+// ==========================================
+// مسار فحص صحة الخادم (Health Check)
+// ==========================================
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', message: '🚀 السيرفر يعمل ويتصل بالواجهة بنجاح!' });
+});
+
+// ==========================================
 // طباعة الـ IP الخارجي للسيرفر (لإضافته في Airalo)
 // ==========================================
 axios.get('https://api.ipify.org?format=json')
@@ -26,18 +41,11 @@ axios.get('https://api.ipify.org?format=json')
   .catch(() => console.log('تعذر جلب الـ IP الخارجي'));
 
 // ==========================================
-// إعدادات الحماية والوصول (Middleware)
-// ==========================================
-app.use(express.json());
-app.use(cors());
-app.use(express.static(__dirname));
-
-// ==========================================
 // الاتصال بقاعدة بيانات MongoDB
 // ==========================================
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ متصل بقاعدة بيانات MongoDB بنجاح'))
-  .catch((err) => console.error('❌ خطأ في الاتصال بقاعدة البيانات:', err));
+  .catch((err) => console.error('❌ خطأ في الاتصال بقاعدة البيانات:', err.message));
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -582,6 +590,8 @@ app.post('/api/checkout', async (req, res) => {
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
+    console.log(`[+] بدأ استلام طلب تفعيل الشريحة. المرجع: ${referenceId}`);
+    
     try {
         let tx = await Transaction.findOne({ referenceId });
         
@@ -596,6 +606,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
                 });
                 await tx.save();
             } else {
+                console.log(`[-] الطلب غير موجود في قاعدة البيانات: ${referenceId}`);
                 return res.status(404).json({ success: false, message: 'الطلب غير موجود' });
             }
         }
@@ -615,7 +626,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
         try {
             const orderFormData = new URLSearchParams();
             
-            // ✅ التحقق والتفريق بين شراء شريحة جديدة أو شحن (Top-up)
+            // ✅ تم التصحيح: معالجة Top-up والشراء الجديد بدقة دون إرسال 'type: sim'
             if(tx.packageId && tx.packageId.startsWith('topup_')) {
                 const parts = tx.packageId.split('_');
                 const targetIccid = parts[1]; 
@@ -627,11 +638,11 @@ app.post('/api/fulfill-esim', async (req, res) => {
             } else {
                 orderFormData.append('package_id', tx.packageId);
                 orderFormData.append('quantity', 1);
-                // إرسال نوع الشريحة فقط في المشتريات الجديدة كما يتطلب Airalo API
             }
 
             orderFormData.append('description', `Order reference: ${tx.referenceId}`);
 
+            console.log(`[+] إرسال الطلب إلى Airalo...`);
             const orderResponse = await airaloApiRequest('post', '/orders', orderFormData.toString(), true);
             
             const responseData = orderResponse.data?.data || orderResponse.data;
@@ -640,12 +651,15 @@ app.post('/api/fulfill-esim', async (req, res) => {
             tx.apiCost = responseData.price || 0;
             tx.status = 'success';
             await tx.save();
+            console.log(`[+] تم نجاح استخراج الشريحة/الشحن من Airalo.`);
 
         } catch (airaloError) {
             const errData = airaloError.response?.data;
             console.log('⚠️ خطأ إصدار الشريحة من Airalo (422 / Quantity not available):', airaloError.response?.status, errData?.meta?.message || errData || airaloError.message);
             
+            // إصدار شريحة وهمية في بيئة الاختبار إذا لم تتوفر كمية
             if (airaloError.response?.status === 422 || (tx.packageId && (tx.packageId.startsWith('topup_') || tx.packageId.startsWith('mock_')))) {
+                console.log(`[!] جاري إصدار شريحة وهمية (Mock) للبيئة التجريبية...`);
                 airaloOrder = { 
                     sims: [{ 
                         iccid: `890000${Date.now().toString().slice(-9)}`, 
@@ -708,8 +722,8 @@ app.post('/api/fulfill-esim', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Fulfill Error:', error);
-        res.status(500).json({ success: false, message: 'فشل تسليم الشريحة' });
+        console.error('❌ خطأ داخلي في الخادم أثناء تسليم الشريحة:', error.message);
+        res.status(500).json({ success: false, message: 'فشل تسليم الشريحة بسبب خطأ في الخادم' });
     }
 });
 
