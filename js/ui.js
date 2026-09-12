@@ -69,7 +69,21 @@ function updateAuthUI() {
         const firstName = user.fullName ? user.fullName.split(' ')[0] : 'حسابي';
         const walletBalance = parseFloat(user.walletBalance || 0).toFixed(2);
         
-        authArea.innerHTML = `<select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-black/40 border border-white/5 text-slate-300 hover:text-white text-xs font-bold py-2 px-3 rounded-2xl outline-none cursor-pointer transition-colors appearance-none text-center backdrop-blur-md"><option value="AED" class="bg-slate-900 text-white">AED</option><option value="SAR" class="bg-slate-900 text-white">SAR</option><option value="USD" class="bg-slate-900 text-white">USD</option><option value="EUR" class="bg-slate-900 text-white">EUR</option></select><button onclick="switchView('dashboardView')" class="flex items-center gap-3 hover:bg-white/5 px-3 py-1.5 rounded-2xl transition-colors text-left cursor-pointer border border-transparent"><div class="flex flex-col items-end"><span class="text-[9px] font-black text-emerald-400 tracking-wider">محفظتي: ${walletBalance} AED</span><span class="text-xs font-bold text-white">${firstName}</span></div><div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#06b6d4] to-blue-600 flex items-center justify-center text-white text-xs font-black shadow-[0_0_15px_rgba(6,182,212,0.4)]">${initialLetter}</div></button><button onclick="logoutUser(event)" title="تسجيل الخروج" aria-label="تسجيل الخروج" class="w-8 h-8 rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 flex items-center justify-center transition cursor-pointer ml-1"><i class="fa-solid fa-arrow-right-from-bracket text-xs"></i></button>`;
+        authArea.innerHTML = `
+            <select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-transparent border border-white/20 text-white hover:bg-white/10 text-xs font-bold py-2 px-3 rounded-2xl outline-none cursor-pointer transition-all appearance-none text-center backdrop-blur-md focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan">
+                <option value="AED" class="bg-slate-900 text-white">AED</option><option value="SAR" class="bg-slate-900 text-white">SAR</option><option value="USD" class="bg-slate-900 text-white">USD</option><option value="EUR" class="bg-slate-900 text-white">EUR</option>
+            </select>
+            <button onclick="switchView('dashboardView')" class="flex items-center gap-3 hover:bg-white/10 px-3 py-1.5 rounded-2xl transition-all text-left cursor-pointer border border-transparent hover:border-white/10 group">
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] font-semibold text-emerald-400 tracking-wider group-hover:text-emerald-300 transition-colors">محفظتي: ${walletBalance} AED</span>
+                    <span class="text-sm font-black text-white group-hover:text-brand-cyan transition-colors">${firstName}</span>
+                </div>
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#06b6d4] to-blue-600 flex items-center justify-center text-white text-sm font-black shadow-[0_0_15px_rgba(6,182,212,0.5)] ring-2 ring-transparent group-hover:ring-brand-cyan transition-all">${initialLetter}</div>
+            </button>
+            <button onclick="logoutUser(event)" title="تسجيل الخروج" aria-label="تسجيل الخروج" class="w-9 h-9 rounded-full bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 flex items-center justify-center transition-all cursor-pointer ml-1 shadow-sm">
+                <i class="fa-solid fa-power-off text-xs"></i>
+            </button>
+        `;
         if(document.getElementById('currencySelector')) document.getElementById('currencySelector').value = currentCurrency;
     }
 }
