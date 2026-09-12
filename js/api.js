@@ -1,8 +1,4 @@
-function quickSearch(country) {
-    document.getElementById('searchInput').value = country;
-    fetchPackages(country);
-    document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
-}
+function quickSearch(country) { document.getElementById('searchInput').value = country; fetchPackages(country); document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' }); }
 
 async function fetchPackages(query = '') {
     const container = document.getElementById('packagesContainer'), title = document.getElementById('resultsTitle'), btn = document.getElementById('searchBtn');
