@@ -1,4 +1,5 @@
-const API_URL = ''; // 🚀 تم تفريغ الرابط ليتعرف على بيئة Render و Localhost تلقائياً
+// 🚀 تم ربط الواجهة بالسيرفر الحي (Render / الدومين الرسمي)
+const API_URL = 'https://remalsim.com';
 
 window.allPackages = [];
 const exchangeRates = { 'AED': 1, 'SAR': 1.02, 'USD': 0.27, 'EUR': 0.25 };
