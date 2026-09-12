@@ -65,7 +65,6 @@ const transactionSchema = new mongoose.Schema({
     sellingPrice: { type: Number, required: true },
     walletDeducted: { type: Number, default: 0 },
     netMargin: { type: Number },
-    // 🚀 إضافة حقول الـ eSIMs Cloud السحابية الجديدة
     esimsCloudLink: { type: String },
     esimsCloudAccessCode: { type: String },
     whatsappDelivered: { type: Boolean, default: false },
@@ -165,7 +164,7 @@ app.get('/api/user/profile', async (req, res) => {
 });
 
 // ==========================================
-// توكن Airalo (Production)
+// 🚀 توكن Airalo (Production & Caching)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -352,7 +351,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// 🚀 تحديث مسار استخراج الشريحة (لدعم eSIMs Cloud Link)
+// مسار استخراج الشريحة
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
@@ -387,8 +386,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
                 orderFormData.append('quantity', 1); 
             }
             orderFormData.append('description', `Order reference: ${tx.referenceId}`);
-            
-            // 🚀 إضافة الهوية التجارية (Brand Name) لتوليد رابط سحابي باسم شركتك
             orderFormData.append('brand_settings_name', 'Remal Connect');
 
             const orderResponse = await airaloApiRequest('post', '/orders', orderFormData.toString(), true);
@@ -397,7 +394,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
             
         } catch (airaloError) {
             if (airaloError.response?.status === 422 || (tx.packageId && (tx.packageId.startsWith('topup_') || tx.packageId.startsWith('mock_')))) {
-                // Mock Data with Cloud Link included for fallback
                 airaloOrder = { sims: [{ 
                     iccid: `890000${Date.now().toString().slice(-9)}`, 
                     qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', 
@@ -411,7 +407,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
         const simsArray = airaloOrder.sims || [];
         const simDetails = simsArray.length > 0 ? simsArray[0] : airaloOrder;
         
-        // 🚀 استخراج روابط الـ eSIM Cloud وحفظها في قاعدة البيانات
         const sharingLink = simDetails.sharing?.link || '';
         const sharingAccessCode = simDetails.sharing?.access_code || '';
 
@@ -440,7 +435,6 @@ app.post('/api/fulfill-esim', async (req, res) => {
             await buyer.save();
         }
 
-        // 🚀 إرسال معلومات الرابط السحابي للواجهة
         res.json({ 
             success: true, 
             iccid: simDetails.iccid, 
@@ -482,7 +476,7 @@ app.get('/api/airalo/instructions/:iccid', async (req, res) => {
 });
 
 // ==========================================
-// 🚀 مسار الاستعلام عن الاستهلاك الحي (Check Usage)
+// مسار الاستعلام عن الاستهلاك الحي (Check Usage)
 // ==========================================
 app.get('/api/airalo/usage/:iccid', async (req, res) => {
     try {
@@ -504,7 +498,7 @@ app.get('/api/airalo/usage/:iccid', async (req, res) => {
 });
 
 // ==========================================
-// 🚀 مسار الخطافات (Webhooks) لاستقبال التنبيهات من Airalo
+// مسار الخطافات (Webhooks) لاستقبال التنبيهات من Airalo
 // ==========================================
 app.post('/api/webhooks/airalo', async (req, res) => {
     try {
@@ -512,15 +506,6 @@ app.post('/api/webhooks/airalo', async (req, res) => {
         console.log('🔔 [WEBHOOK] تم استلام إشعار جديد من Airalo:', payload);
 
         res.status(200).send('Webhook Received');
-
-        /*
-        if (payload.alert_type === 'low_data') {
-            const tx = await Transaction.findOne({ iccid: payload.iccid });
-            if (tx) {
-                console.log(`✉️ إرسال تنبيه للعميل ${tx.customerEmail} لإعادة الشحن!`);
-            }
-        }
-        */
 
     } catch (error) {
         console.error('❌ خطأ في معالجة الـ Webhook:', error.message);
