@@ -498,6 +498,28 @@ app.get('/api/airalo/usage/:iccid', async (req, res) => {
 });
 
 // ==========================================
+// 🚀 مسار جلب باقات إعادة الشحن (Top-ups) لشريحة معينة
+// ==========================================
+app.get('/api/airalo/topups/:iccid', async (req, res) => {
+    try {
+        const { iccid } = req.params;
+        const response = await airaloApiRequest('get', `/sims/${iccid}/topups`);
+        const topupsData = response.data?.data || response.data;
+        
+        res.json({
+            success: true,
+            topups: topupsData
+        });
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب باقات إعادة الشحن:', error.response?.data || error.message);
+        res.status(500).json({ 
+            success: false, 
+            message: 'تعذر جلب باقات إعادة الشحن لهذه الشريحة.' 
+        });
+    }
+});
+
+// ==========================================
 // 🚀 مسار استرجاع تفاصيل الشريحة (استعلام احتياطي)
 // ==========================================
 app.get('/api/airalo/sim/:iccid', async (req, res) => {
