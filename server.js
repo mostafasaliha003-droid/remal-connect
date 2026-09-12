@@ -13,7 +13,6 @@ const path = require('path');
 
 const app = express();
 
-// رابط المنصة الأساسي
 const APP_URL = process.env.APP_URL || 'https://remalsim.com';
 
 app.use(express.json());
@@ -24,9 +23,6 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', message: '🚀 السيرفر يعمل ويتصل بالواجهة بنجاح!' });
 });
 
-// ==========================================
-// الاتصال بقاعدة بيانات MongoDB
-// ==========================================
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ متصل بقاعدة بيانات MongoDB بنجاح'))
   .catch((err) => console.error('❌ خطأ في الاتصال بقاعدة البيانات:', err.message));
@@ -37,10 +33,7 @@ const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
     secure: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    },
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
     tls: { rejectUnauthorized: false }
 });
 
@@ -81,9 +74,6 @@ transactionSchema.pre('save', function(next) {
 });
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
-// ==========================================
-// مسارات الحسابات
-// ==========================================
 app.post('/api/register', async (req, res) => {
     try {
         const { fullName, email, whatsapp, password, referredBy } = req.body;
@@ -112,7 +102,7 @@ app.post('/api/register', async (req, res) => {
         res.status(201).json({
             success: true, message: 'تم إنشاء الحساب بنجاح', user: { id: newUser._id, fullName: newUser.fullName, email: newUser.email, role: newUser.role, walletBalance: newUser.walletBalance, purchasesCount: newUser.purchasesCount, referralCode: newUser.referralCode }
         });
-    } catch (error) { res.status(500).json({ success: false, message: 'خطأ داخلي في الخادم' }); }
+    } catch (error) { res.status(500).json({ success: false, message: 'خطأ داخلي' }); }
 });
 
 app.post('/api/login', async (req, res) => {
@@ -134,7 +124,7 @@ app.post('/api/login', async (req, res) => {
         res.status(200).json({
             success: true, user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, walletBalance: user.walletBalance || 0, purchasesCount: user.purchasesCount || 0, referralCode: user.referralCode }
         });
-    } catch (error) { res.status(500).json({ success: false, message: 'خطأ داخلي في الخادم' }); }
+    } catch (error) { res.status(500).json({ success: false, message: 'خطأ داخلي' }); }
 });
 
 app.get('/api/user/profile', async (req, res) => {
@@ -149,12 +139,8 @@ app.get('/api/user/profile', async (req, res) => {
     } catch (e) { res.status(500).json({ success: false, message: 'خطأ داخلي' }); }
 });
 
-app.post('/api/forgot-password', async (req, res) => {
-    // ... تم اختصاره للحفاظ على المساحة، يمكنك تركه كما كان
-});
-
 // ==========================================
-// إدارة توكن Airalo (موجهة لبيئة Sandbox للتوافق مع حسابك)
+// توكن Airalo (موجه لبيئة الـ Production الحية)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -168,25 +154,22 @@ async function getAiraloToken() {
         params.append('client_secret', process.env.AIRALO_CLIENT_SECRET);
         params.append('grant_type', 'client_credentials');
 
-        // ✅ التوجيه إلى Sandbox
-        const response = await axios.post('https://sandbox-partners-api.airalo.com/v2/token', params, {
+        // ✅ التوجيه للبيئة الحية
+        const response = await axios.post('https://partners-api.airalo.com/v2/token', params, {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' } 
         });
 
         airaloAccessToken = response.data?.data?.access_token || response.data?.access_token;
         const expiresIn = response.data?.data?.expires_in || response.data?.expires_in || 86400;
         tokenExpirationTime = Date.now() + (expiresIn * 1000) - 300000; 
-
-        console.log('🔑 تم تحديث وتخزين توكن Airalo بنجاح');
         return airaloAccessToken;
     } catch (error) { throw new Error('فشل المصادقة مع مزود الخدمة'); }
 }
 
 async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEncoded = false) {
     let token = await getAiraloToken();
-    // ✅ التوجيه إلى Sandbox
-    const url = `https://sandbox-partners-api.airalo.com/v2${endpoint}`;
-
+    // ✅ التوجيه للبيئة الحية
+    const url = `https://partners-api.airalo.com/v2${endpoint}`;
     const headers = { 'Accept': 'application/json', 'Authorization': `Bearer ${token}`, 'Content-Type': isFormUrlEncoded ? 'application/x-www-form-urlencoded' : 'application/json' };
 
     try {
@@ -205,17 +188,6 @@ async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEn
         throw error;
     }
 }
-
-cron.schedule('0 * * * *', async () => {
-    try {
-        const token = await getAiraloToken();
-        // ✅ التوجيه إلى Sandbox
-        const response = await axios.get('https://sandbox-partners-api.airalo.com/v2/packages', {
-            headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
-        });
-        console.log(`✅ تمت مزامنة الكتالوج بنجاح`);
-    } catch (error) {}
-});
 
 app.get('/api/airalo/packages', async (req, res) => {
     let formattedPackages = [];
@@ -249,10 +221,10 @@ app.get('/api/airalo/packages', async (req, res) => {
         });
     } catch (error) {}
 
+    // 🔴 إذا رفضت Airalo حسابك لأنه غير مفعل بالكامل بعد للإنتاج، ستظهر هذه الرسالة لتعلم بالسبب
     if (formattedPackages.length === 0) {
         formattedPackages = [
-            { id: "mock_1", package_id: "mock_1", country: "الإمارات", country_code: "AE", data: "3 GB", validity: "7 أيام", price: "35.00", sellingPrice: "35.00", type: "local" },
-            { id: "mock_2", package_id: "mock_2", country: "الإمارات", country_code: "AE", data: "5 GB", validity: "15 يوماً", price: "55.00", sellingPrice: "55.00", type: "local" }
+            { id: "mock_1", package_id: "mock_1", country: "انتظار تفعيل Airalo", country_code: "AE", data: "تفعيل", validity: "قريباً", price: "0.00", sellingPrice: "0.00", type: "local" }
         ];
     }
     res.json({ success: true, count: formattedPackages.length, packages: formattedPackages });
