@@ -578,7 +578,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// مسار تسليم الشريحة (مع معالجة أخطاء نفاد الكمية 422 تلقائياً)
+// مسار تسليم الشريحة والتكامل مع Airalo
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
@@ -614,9 +614,22 @@ app.post('/api/fulfill-esim', async (req, res) => {
 
         try {
             const orderFormData = new URLSearchParams();
-            orderFormData.append('package_id', tx.packageId);
-            orderFormData.append('quantity', 1);
-            orderFormData.append('type', 'sim');
+            
+            // ✅ التحقق والتفريق بين شراء شريحة جديدة أو شحن (Top-up)
+            if(tx.packageId && tx.packageId.startsWith('topup_')) {
+                const parts = tx.packageId.split('_');
+                const targetIccid = parts[1]; 
+                const targetPackage = parts[2]; 
+                
+                orderFormData.append('package_id', targetPackage); 
+                orderFormData.append('iccid', targetIccid); 
+                orderFormData.append('quantity', 1);
+            } else {
+                orderFormData.append('package_id', tx.packageId);
+                orderFormData.append('quantity', 1);
+                // إرسال نوع الشريحة فقط في المشتريات الجديدة كما يتطلب Airalo API
+            }
+
             orderFormData.append('description', `Order reference: ${tx.referenceId}`);
 
             const orderResponse = await airaloApiRequest('post', '/orders', orderFormData.toString(), true);
@@ -706,7 +719,7 @@ app.post('/api/fulfill-esim', async (req, res) => {
 app.get('/api/airalo/instructions/:iccid', async (req, res) => {
     try {
         const { iccid } = req.params;
-        const lang = req.query.lang || 'en';
+        const lang = req.query.lang || 'ar'; // تعديل للغة العربية بشكل افتراضي
 
         const response = await airaloApiRequest('get', `/sims/${iccid}/instructions`, {}, false);
         response.config.headers['Accept-Language'] = lang;
