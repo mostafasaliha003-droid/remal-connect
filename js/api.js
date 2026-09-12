@@ -1,4 +1,8 @@
-function quickSearch(country) { document.getElementById('searchInput').value = country; fetchPackages(country); document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' }); }
+function quickSearch(country) {
+    document.getElementById('searchInput').value = country;
+    fetchPackages(country);
+    document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
+}
 
 async function fetchPackages(query = '') {
     const container = document.getElementById('packagesContainer'), title = document.getElementById('resultsTitle'), btn = document.getElementById('searchBtn');
@@ -84,10 +88,7 @@ async function verifyPaymentAndFulfill() {
 function installSmartEsim(lpaString) {
     if (!lpaString) return; navigator.clipboard.writeText(lpaString).catch(() => {});
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) { showToast('جاري فتح معالج الآيفون...'); window.location.href = `https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=${encodeURIComponent(lpaString)}`; }
-    else { showToast('تم نسخ رمز LPA! انتقل إلى الإعدادات لإضافة eSIM'); alert("لتثبيت الشريحة على أندرويد:
-1. تم نسخ رمز التفعيل (LPA).
-2. اذهب إلى: الضبط > الاتصالات > إدارة بطاقة SIM > إضافة eSIM.
-3. الصق الرمز."); }
+    else { showToast('تم نسخ رمز LPA! انتقل إلى الإعدادات لإضافة eSIM'); alert(`لتثبيت الشريحة على أندرويد:\n1. تم نسخ رمز التفعيل (LPA).\n2. اذهب إلى: الضبط > الاتصالات > إدارة بطاقة SIM > إضافة eSIM.\n3. الصق الرمز.`); }
 }
 
 function downloadQrCode(qrUrl, countryName) {
