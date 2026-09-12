@@ -12,7 +12,6 @@ const crypto = require('crypto');
 const path = require('path');
 
 const app = express();
-
 const APP_URL = process.env.APP_URL || 'https://remalsim.com';
 
 app.use(express.json());
@@ -38,7 +37,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // ==========================================
-// نماذج قاعدة البيانات (العملاء، المعاملات، والباقات)
+// نماذج قاعدة البيانات
 // ==========================================
 const userSchema = new mongoose.Schema({
     fullName: { type: String, required: true },
@@ -77,7 +76,7 @@ transactionSchema.pre('save', function(next) {
 });
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
-// 🚀 المودل الجديد لحفظ باقات Airalo
+// 🚀 المودل الذكي لحفظ باقات Airalo
 const packageSchema = new mongoose.Schema({
     package_id: { type: String, required: true, unique: true },
     slug: { type: String },
@@ -87,8 +86,8 @@ const packageSchema = new mongoose.Schema({
     operator_title: { type: String },
     data: { type: String },
     validity: { type: String },
-    price: { type: Number }, // السعر للمستخدم (AED)
-    net_price: { type: Number }, // تكلفة Airalo
+    price: { type: Number },
+    net_price: { type: Number },
     is_unlimited: { type: Boolean, default: false },
     has_topup: { type: Boolean, default: false }
 }, { timestamps: true });
@@ -163,7 +162,7 @@ app.get('/api/user/profile', async (req, res) => {
 });
 
 // ==========================================
-// توكن Airalo (موجه لبيئة الـ Production الحية)
+// توكن Airalo (Production)
 // ==========================================
 let airaloAccessToken = null;
 let tokenExpirationTime = null;
@@ -211,14 +210,14 @@ async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEn
 }
 
 // ==========================================
-// 🚀 نظام المزامنة الدورية الذكي (Background Sync)
+// 🚀 نظام المزامنة الدورية الذكي (استخراج الكتالوج كاملاً حسب Airalo Specs)
 // ==========================================
 async function syncAiraloPackages() {
-    console.log('🔄 بدء مزامنة باقات Airalo في الخلفية وحفظها في قاعدة البيانات...');
+    console.log('🔄 بدء مزامنة باقات Airalo (Local, Global, Regional) في الخلفية...');
     try {
         const token = await getAiraloToken();
         const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
-            params: { limit: 1000, include: 'topup' },
+            params: { limit: 1000, include: 'topup' }, // حسب التوثيق لسحب الجميع
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
         });
 
@@ -227,7 +226,16 @@ async function syncAiraloPackages() {
 
         for (const item of rawData) {
             const countryTitle = item.title || 'وجهة عالمية / إقليمية';
-            const countryCode = item.country_code || (item.slug === 'world' ? 'GLOBAL' : 'REGIONAL');
+            
+            // تصنيف الباقات الإقليمية والعالمية بشكل ذكي
+            let countryCode = item.country_code;
+            if (!countryCode) {
+                if (item.slug === 'world') countryCode = 'GLOBAL';
+                else if (item.slug === 'europe') countryCode = 'EU';
+                else if (item.slug === 'asia') countryCode = 'AS';
+                else if (item.slug === 'africa') countryCode = 'AF';
+                else countryCode = 'REGIONAL';
+            }
 
             if (item.operators && Array.isArray(item.operators)) {
                 for (const operator of item.operators) {
@@ -262,20 +270,20 @@ async function syncAiraloPackages() {
                 }
             }
         }
-        console.log(`✅ تمت المزامنة بنجاح! تم تحديث/إضافة ${updatedCount} باقة في قاعدة البيانات.`);
+        console.log(`✅ تمت المزامنة بنجاح! تم حفظ/تحديث ${updatedCount} باقة في قاعدة البيانات.`);
     } catch (error) {
         console.error('❌ فشل عملية المزامنة:', error.response?.data || error.message);
     }
 }
 
-// تشغيل المزامنة كل ساعة حسب طلب Airalo
+// تنفيذ المزامنة كل ساعة لتحديث الأسعار وتوفر الباقات
 cron.schedule('0 * * * *', syncAiraloPackages);
 
-// تشغيل المزامنة لمرة واحدة فور إقلاع السيرفر لتعبئة قاعدة البيانات
-setTimeout(syncAiraloPackages, 8000); 
+// تشغيل لمرة واحدة فور الإقلاع لتعبئة قاعدة البيانات فوراً
+setTimeout(syncAiraloPackages, 5000); 
 
 // ==========================================
-// 🚀 مسار جلب الباقات السريع للمستخدم (من قاعدة البيانات مباشرة)
+// مسار جلب الباقات السريع للمستخدم (أقل من ثانية واحدة)
 // ==========================================
 app.get('/api/airalo/packages', async (req, res) => {
     try {
@@ -283,7 +291,6 @@ app.get('/api/airalo/packages', async (req, res) => {
         if (req.query.country) query.country_code = req.query.country.toUpperCase();
         if (req.query.type) query.type = req.query.type;
 
-        // جلب الباقات في أجزاء من الثانية
         const dbPackages = await AiraloPackage.find(query).sort({ price: 1 });
 
         if (dbPackages.length > 0) {
@@ -303,9 +310,8 @@ app.get('/api/airalo/packages', async (req, res) => {
             return res.json({ success: true, count: formattedPackages.length, packages: formattedPackages });
         }
 
-        // إذا كانت قاعدة البيانات فارغة بانتظار إكتمال أول مزامنة
         return res.json({ success: true, count: 1, packages: [
-            { id: "mock_1", package_id: "mock_1", country: "جاري المزامنة", country_code: "AE", data: "تحديث", validity: "قريباً", price: "0.00", sellingPrice: "0.00", type: "local" }
+            { id: "mock_1", package_id: "mock_1", country: "جاري المزامنة مع Airalo", country_code: "AE", data: "تحديث", validity: "قريباً", price: "0.00", sellingPrice: "0.00", type: "local" }
         ]});
 
     } catch (error) {
