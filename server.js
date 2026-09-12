@@ -12,6 +12,7 @@ const crypto = require('crypto');
 const path = require('path');
 
 const app = express();
+
 const APP_URL = process.env.APP_URL || 'https://remalsim.com';
 
 app.use(express.json());
@@ -416,13 +417,35 @@ app.post('/api/fulfill-esim', async (req, res) => {
     } catch (error) { res.status(500).json({ success: false, message: 'فشل تسليم الشريحة بسبب مشكلة في قاعدة البيانات' }); }
 });
 
+// ==========================================
+// مسار جلب إرشادات التثبيت (محدث مع Accept-Language)
+// ==========================================
 app.get('/api/airalo/instructions/:iccid', async (req, res) => {
     try {
         const { iccid } = req.params;
-        const response = await airaloApiRequest('get', `/sims/${iccid}/instructions`, {}, false);
-        response.config.headers['Accept-Language'] = req.query.lang || 'ar';
-        res.json({ success: true, instructions: response.data?.data || response.data });
-    } catch (error) { res.status(500).json({ success: false, message: 'تعذر جلب إرشادات التثبيت الخاصة بالشريحة' }); }
+        const lang = req.query.lang || 'ar'; 
+        const token = await getAiraloToken(); 
+
+        const response = await axios.get(`https://partners-api.airalo.com/v2/sims/${iccid}/instructions`, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept-Language': lang 
+            }
+        });
+
+        res.json({
+            success: true,
+            instructions: response.data?.data || response.data
+        });
+
+    } catch (error) {
+        console.error('Instructions Error:', error.response?.data || error.message);
+        res.status(500).json({ 
+            success: false, 
+            message: 'تعذر جلب إرشادات التثبيت الخاصة بالشريحة' 
+        });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
