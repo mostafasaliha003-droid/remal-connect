@@ -1,7 +1,4 @@
-// 🚀 التوجيه التلقائي: سيكتشف الموقع ما إذا كان يعمل محلياً أو على الإنترنت ويتصل بالسيرفر الصحيح
-const hostname = window.location.hostname;
-const isLocal = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '';
-const API_URL = isLocal ? 'http://localhost:3000' : 'https://remalsim.com';
+const API_URL = ''; // 🚀 تم تفريغ الرابط ليتعرف على بيئة Render و Localhost تلقائياً
 
 window.allPackages = [];
 const exchangeRates = { 'AED': 1, 'SAR': 1.02, 'USD': 0.27, 'EUR': 0.25 };
