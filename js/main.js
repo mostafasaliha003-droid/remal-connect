@@ -1,7 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.perspective-container');
+    const phone = document.getElementById('phoneMockup');
+    if (container && phone) {
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const rotateX = (((e.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * -15; 
+            const rotateY = (((e.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 15;
+            phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        container.addEventListener('mouseleave', () => { phone.style.transform = `rotateX(0deg) rotateY(0deg)`; });
+    }
+    
     updateAuthUI();
     fetchPackages();
-    
+    verifyPaymentAndFulfill(); 
+
     const searchForm = document.getElementById('searchForm');
     if(searchForm) {
         searchForm.addEventListener('submit', function(e) {
@@ -11,3 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.log('SW registration failed: ', err);
+        });
+    });
+}
