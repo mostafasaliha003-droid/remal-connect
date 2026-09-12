@@ -498,6 +498,27 @@ app.get('/api/airalo/usage/:iccid', async (req, res) => {
 });
 
 // ==========================================
+// 🚀 مسار استرجاع تفاصيل الشريحة (استعلام احتياطي)
+// ==========================================
+app.get('/api/airalo/sim/:iccid', async (req, res) => {
+    try {
+        const { iccid } = req.params;
+        const response = await airaloApiRequest('get', `/sims/${iccid}`, { include: 'share' });
+        
+        res.json({
+            success: true,
+            sim: response.data?.data || response.data
+        });
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب تفاصيل الشريحة:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            message: 'تعذر استرجاع بيانات الشريحة حالياً.' 
+        });
+    }
+});
+
+// ==========================================
 // مسار الخطافات (Webhooks) لاستقبال التنبيهات من Airalo
 // ==========================================
 app.post('/api/webhooks/airalo', async (req, res) => {
