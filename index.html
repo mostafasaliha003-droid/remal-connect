@@ -104,7 +104,7 @@
                     </h1>
                     
                     <p class="text-slate-400 text-base md:text-lg font-semibold max-w-xl mb-10 leading-relaxed">
-                        تجاوز طوابير المطارات وفواتير التجوال البدائية. نظامنا يعتمد على <span class="text-white">تكامل API لحظي</span> لزرع شريحة 5G إلكترونية في هاتفك بضغطة زر.
+                        وداعاً لفواتير التجوال المرتفعة. احصل على <span class="text-white">شريحتك الإلكترونية (eSIM)</span> بتقنية 5G وتصفح الإنترنت فور وصولك بضغطة زر.
                     </p>
 
                     <form id="searchForm" class="w-full max-w-xl ai-search-box p-2.5 rounded-3xl flex flex-col sm:flex-row items-center gap-3 shadow-2xl relative overflow-hidden">
@@ -114,7 +114,7 @@
                         </div>
                         <input type="text" id="searchInput" aria-label="البحث عن الوجهات" placeholder="حدد وجهتك وسنتكفل بالباقي (دبي، باريس...)" class="flex-1 w-full bg-transparent border-none outline-none text-base font-bold text-white placeholder-slate-500 py-3 z-10">
                         <button type="submit" id="searchBtn" aria-label="بحث" class="w-full sm:w-auto masterstroke-btn text-white font-black py-4 px-8 rounded-2xl shadow-lg z-10 text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 border-none">
-                            تهيئة الاتصال <i class="fa-solid fa-microchip"></i>
+                            ابحث عن وجهتك <i class="fa-solid fa-earth-americas"></i>
                         </button>
                     </form>
 
@@ -204,8 +204,10 @@
                 </div>
                 <div class="w-px h-12 bg-white/10 hidden md:block"></div>
                 <div class="text-center flex-1">
-                    <div class="text-3xl font-black text-white mb-1 drop-shadow-md">0.4s</div>
-                    <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">استجابة الـ API</span>
+                    <div class="text-3xl font-black text-white mb-1 drop-shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt text-brand-cyan"></i> فوري
+                    </div>
+                    <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">استجابة وتفعيل</span>
                 </div>
             </div>
         </section>
@@ -213,8 +215,8 @@
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-20" id="packagesSection">
             <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-10 gap-4">
                 <div>
-                    <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md" id="resultsTitle">تذاكر العبور للإنترنت العالمي 🔥</h3>
-                    <p class="text-sm font-bold text-slate-400">اختر الباقة، استلم الـ QR السحري في ثوانٍ، وسافر بسلام.</p>
+                    <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md" id="resultsTitle">باقات الإنترنت الدولي 🌍</h3>
+                    <p class="text-sm font-bold text-slate-400">اختر باقتك، امسح الرمز (QR)، وانطلق في رحلتك.</p>
                 </div>
                 <button type="button" aria-label="فحص توافق الهاتف" onclick="openCompatibilityModal()" class="text-xs md:text-sm text-brand-cyan hover:text-white font-bold bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/30 px-6 py-3 rounded-full transition-colors cursor-pointer backdrop-blur-sm flex items-center gap-2 shadow-[0_0_15px_rgba(6,182,216,0.1)]">
                     <i class="fa-solid fa-mobile-screen"></i> فحص توافق جهازي
@@ -226,9 +228,7 @@
         </section>
     </div>
 
-    <!-- ========================================== -->
     <!-- 🌟 شاشة لوحة تحكم شرائحي (Dashboard View) -->
-    <!-- ========================================== -->
     <div id="dashboardView" class="hidden transition-opacity duration-300 w-full">
         <main class="pt-32 md:pt-40 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/5 pb-6 mb-8 gap-4">
@@ -280,10 +280,10 @@
                             برنامج سفراء رمال 🤝
                         </div>
                         <h3 class="text-2xl md:text-3xl font-black mb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-gift text-emerald-400"></i> شارك كودك واربح 1 درهم نقداً!
+                            <i class="fa-solid fa-gift text-emerald-400"></i> شارك كودك واربح رصيداً مجانياً!
                         </h3>
                         <p class="text-xs md:text-sm font-semibold text-slate-300 max-w-2xl leading-relaxed">
-                            أموالك ترجع لك.. شارك كودك الحصري مع أصدقائك؛ وعند إتمام صديقك أول طلب باقة ناجح عبر كودك، يُضاف 1 درهم نقدي فوري لمحفظتك لتستخدمه في خصم باقاتك القادمة.
+                            أموالك ترجع لك.. شارك كودك الحصري مع أصدقائك؛ وعند إتمام صديقك أول طلب باقة ناجح عبر كودك، يُضاف رصيد نقدي فوري لمحفظتك لتستخدمه في خصم باقاتك القادمة.
                         </p>
                     </div>
                     <div class="relative z-10 bg-black/40 border border-white/10 p-3 rounded-2xl flex items-center justify-between gap-4 w-full md:w-auto min-w-[280px] shrink-0 backdrop-blur-md">
