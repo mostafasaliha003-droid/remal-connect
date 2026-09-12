@@ -37,6 +37,9 @@ const transporter = nodemailer.createTransport({
     tls: { rejectUnauthorized: false }
 });
 
+// ==========================================
+// نماذج قاعدة البيانات (العملاء، المعاملات، والباقات)
+// ==========================================
 const userSchema = new mongoose.Schema({
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -74,6 +77,26 @@ transactionSchema.pre('save', function(next) {
 });
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
+// 🚀 المودل الجديد لحفظ باقات Airalo
+const packageSchema = new mongoose.Schema({
+    package_id: { type: String, required: true, unique: true },
+    slug: { type: String },
+    type: { type: String }, // local, global, regional
+    country_code: { type: String },
+    country_title: { type: String },
+    operator_title: { type: String },
+    data: { type: String },
+    validity: { type: String },
+    price: { type: Number }, // السعر للمستخدم (AED)
+    net_price: { type: Number }, // تكلفة Airalo
+    is_unlimited: { type: Boolean, default: false },
+    has_topup: { type: Boolean, default: false }
+}, { timestamps: true });
+const AiraloPackage = mongoose.model('AiraloPackage', packageSchema);
+
+// ==========================================
+// مسارات الحسابات
+// ==========================================
 app.post('/api/register', async (req, res) => {
     try {
         const { fullName, email, whatsapp, password, referredBy } = req.body;
@@ -154,7 +177,6 @@ async function getAiraloToken() {
         params.append('client_secret', process.env.AIRALO_CLIENT_SECRET);
         params.append('grant_type', 'client_credentials');
 
-        // ✅ التوجيه للبيئة الحية
         const response = await axios.post('https://partners-api.airalo.com/v2/token', params, {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' } 
         });
@@ -168,7 +190,6 @@ async function getAiraloToken() {
 
 async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEncoded = false) {
     let token = await getAiraloToken();
-    // ✅ التوجيه للبيئة الحية
     const url = `https://partners-api.airalo.com/v2${endpoint}`;
     const headers = { 'Accept': 'application/json', 'Authorization': `Bearer ${token}`, 'Content-Type': isFormUrlEncoded ? 'application/x-www-form-urlencoded' : 'application/json' };
 
@@ -189,47 +210,113 @@ async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEn
     }
 }
 
-app.get('/api/airalo/packages', async (req, res) => {
-    let formattedPackages = [];
+// ==========================================
+// 🚀 نظام المزامنة الدورية الذكي (Background Sync)
+// ==========================================
+async function syncAiraloPackages() {
+    console.log('🔄 بدء مزامنة باقات Airalo في الخلفية وحفظها في قاعدة البيانات...');
     try {
-        const apiParams = { limit: 50, include: 'topup' };
-        if (req.query.country) apiParams['filter[country]'] = req.query.country;
-        if (req.query.type) apiParams['filter[type]'] = req.query.type;
+        const token = await getAiraloToken();
+        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
+            params: { limit: 1000, include: 'topup' },
+            headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
+        });
 
-        const response = await airaloApiRequest('get', '/packages', apiParams, false);
         const rawData = response.data?.data || [];
+        let updatedCount = 0;
 
-        rawData.forEach(item => {
+        for (const item of rawData) {
             const countryTitle = item.title || 'وجهة عالمية / إقليمية';
             const countryCode = item.country_code || (item.slug === 'world' ? 'GLOBAL' : 'REGIONAL');
 
             if (item.operators && Array.isArray(item.operators)) {
-                item.operators.forEach(operator => {
+                for (const operator of item.operators) {
                     if (operator.packages && Array.isArray(operator.packages)) {
-                        operator.packages.forEach(pkg => {
+                        for (const pkg of operator.packages) {
                             const aedPriceNum = pkg.prices?.recommended_retail_price?.AED || pkg.net_price || pkg.price || 35;
-                            const aedPrice = parseFloat(aedPriceNum).toFixed(2);
-                            formattedPackages.push({
-                                id: pkg.id, package_id: pkg.id, country: countryTitle, country_code: countryCode, operator: operator.title,
-                                data: pkg.data || (pkg.amount ? `${Math.round(pkg.amount / 1024)} GB` : 'غير محدد'), validity: pkg.day ? `${pkg.day} أيام` : '7 أيام',
-                                price: aedPrice, sellingPrice: aedPrice, type: operator.type || 'local', isHot: pkg.is_unlimited || false
-                            });
-                        });
-                    }
-                });
-            }
-        });
-    } catch (error) {}
+                            const netPriceNum = pkg.prices?.net_price?.AED || pkg.net_price || 0;
+                            
+                            const packageData = {
+                                package_id: pkg.id,
+                                slug: item.slug,
+                                type: operator.type || 'local',
+                                country_code: countryCode,
+                                country_title: countryTitle,
+                                operator_title: operator.title,
+                                data: pkg.data || (pkg.amount ? `${Math.round(pkg.amount / 1024)} GB` : 'غير محدد'),
+                                validity: pkg.day ? `${pkg.day} أيام` : '7 أيام',
+                                price: parseFloat(aedPriceNum).toFixed(2),
+                                net_price: parseFloat(netPriceNum).toFixed(2),
+                                is_unlimited: pkg.is_unlimited || false,
+                                has_topup: operator.rechargeability || false
+                            };
 
-    // 🔴 إذا رفضت Airalo حسابك لأنه غير مفعل بالكامل بعد للإنتاج، ستظهر هذه الرسالة لتعلم بالسبب
-    if (formattedPackages.length === 0) {
-        formattedPackages = [
-            { id: "mock_1", package_id: "mock_1", country: "انتظار تفعيل Airalo", country_code: "AE", data: "تفعيل", validity: "قريباً", price: "0.00", sellingPrice: "0.00", type: "local" }
-        ];
+                            await AiraloPackage.findOneAndUpdate(
+                                { package_id: pkg.id },
+                                { $set: packageData },
+                                { upsert: true, new: true }
+                            );
+                            updatedCount++;
+                        }
+                    }
+                }
+            }
+        }
+        console.log(`✅ تمت المزامنة بنجاح! تم تحديث/إضافة ${updatedCount} باقة في قاعدة البيانات.`);
+    } catch (error) {
+        console.error('❌ فشل عملية المزامنة:', error.response?.data || error.message);
     }
-    res.json({ success: true, count: formattedPackages.length, packages: formattedPackages });
+}
+
+// تشغيل المزامنة كل ساعة حسب طلب Airalo
+cron.schedule('0 * * * *', syncAiraloPackages);
+
+// تشغيل المزامنة لمرة واحدة فور إقلاع السيرفر لتعبئة قاعدة البيانات
+setTimeout(syncAiraloPackages, 8000); 
+
+// ==========================================
+// 🚀 مسار جلب الباقات السريع للمستخدم (من قاعدة البيانات مباشرة)
+// ==========================================
+app.get('/api/airalo/packages', async (req, res) => {
+    try {
+        const query = {};
+        if (req.query.country) query.country_code = req.query.country.toUpperCase();
+        if (req.query.type) query.type = req.query.type;
+
+        // جلب الباقات في أجزاء من الثانية
+        const dbPackages = await AiraloPackage.find(query).sort({ price: 1 });
+
+        if (dbPackages.length > 0) {
+            const formattedPackages = dbPackages.map(pkg => ({
+                id: pkg.package_id,
+                package_id: pkg.package_id,
+                country: pkg.country_title,
+                country_code: pkg.country_code,
+                operator: pkg.operator_title,
+                data: pkg.data,
+                validity: pkg.validity,
+                price: pkg.price,
+                sellingPrice: pkg.price,
+                type: pkg.type,
+                isHot: pkg.is_unlimited
+            }));
+            return res.json({ success: true, count: formattedPackages.length, packages: formattedPackages });
+        }
+
+        // إذا كانت قاعدة البيانات فارغة بانتظار إكتمال أول مزامنة
+        return res.json({ success: true, count: 1, packages: [
+            { id: "mock_1", package_id: "mock_1", country: "جاري المزامنة", country_code: "AE", data: "تحديث", validity: "قريباً", price: "0.00", sellingPrice: "0.00", type: "local" }
+        ]});
+
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب الباقات من قاعدة البيانات:', error.message);
+        res.status(500).json({ success: false, message: 'تعذر جلب الباقات' });
+    }
 });
 
+// ==========================================
+// مسار الدفع وتسليم الشريحة
+// ==========================================
 app.post('/api/checkout', async (req, res) => {
     let { packageId, price, customerEmail, walletDeducted } = req.body;
     price = parseFloat(price); walletDeducted = parseFloat(walletDeducted) || 0;
