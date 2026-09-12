@@ -1,4 +1,4 @@
-const API_URL = '';
+const API_URL = 'http://localhost:3000'; // 🚀 تم إضافة رابط السيرفر المحلي هنا
 window.allPackages = [];
 const exchangeRates = { 'AED': 1, 'SAR': 1.02, 'USD': 0.27, 'EUR': 0.25 };
 let currentCurrency = 'AED';
