@@ -65,6 +65,9 @@ const transactionSchema = new mongoose.Schema({
     sellingPrice: { type: Number, required: true },
     walletDeducted: { type: Number, default: 0 },
     netMargin: { type: Number },
+    // 🚀 إضافة حقول الـ eSIMs Cloud السحابية الجديدة
+    esimsCloudLink: { type: String },
+    esimsCloudAccessCode: { type: String },
     whatsappDelivered: { type: Boolean, default: false },
     status: { type: String, enum: ['pending_payment', 'pending_fulfillment', 'success', 'failed', 'refunded'], default: 'pending_payment' }
 }, { timestamps: true });
@@ -77,11 +80,10 @@ transactionSchema.pre('save', function(next) {
 });
 const Transaction = mongoose.model('Transaction', transactionSchema);
 
-// 🚀 المودل الذكي لحفظ باقات Airalo
 const packageSchema = new mongoose.Schema({
     package_id: { type: String, required: true, unique: true },
     slug: { type: String },
-    type: { type: String }, // local, global, regional
+    type: { type: String }, 
     country_code: { type: String },
     country_title: { type: String },
     operator_title: { type: String },
@@ -211,14 +213,14 @@ async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEn
 }
 
 // ==========================================
-// 🚀 نظام المزامنة الدورية الذكي (استخراج الكتالوج كاملاً حسب Airalo Specs)
+// نظام المزامنة الدورية الذكي
 // ==========================================
 async function syncAiraloPackages() {
-    console.log('🔄 بدء مزامنة باقات Airalo (Local, Global, Regional) في الخلفية...');
+    console.log('🔄 بدء مزامنة باقات Airalo في الخلفية...');
     try {
         const token = await getAiraloToken();
         const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
-            params: { limit: 1000, include: 'topup' }, // حسب التوثيق لسحب الجميع
+            params: { limit: 1000, include: 'topup' }, 
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
         });
 
@@ -228,7 +230,6 @@ async function syncAiraloPackages() {
         for (const item of rawData) {
             const countryTitle = item.title || 'وجهة عالمية / إقليمية';
             
-            // تصنيف الباقات الإقليمية والعالمية بشكل ذكي
             let countryCode = item.country_code;
             if (!countryCode) {
                 if (item.slug === 'world') countryCode = 'GLOBAL';
@@ -277,14 +278,11 @@ async function syncAiraloPackages() {
     }
 }
 
-// تنفيذ المزامنة كل ساعة لتحديث الأسعار وتوفر الباقات
 cron.schedule('0 * * * *', syncAiraloPackages);
-
-// تشغيل لمرة واحدة فور الإقلاع لتعبئة قاعدة البيانات فوراً
 setTimeout(syncAiraloPackages, 5000); 
 
 // ==========================================
-// مسار جلب الباقات السريع للمستخدم (أقل من ثانية واحدة)
+// مسار جلب الباقات السريع للمستخدم 
 // ==========================================
 app.get('/api/airalo/packages', async (req, res) => {
     try {
@@ -316,7 +314,6 @@ app.get('/api/airalo/packages', async (req, res) => {
         ]});
 
     } catch (error) {
-        console.error('⚠️ خطأ في جلب الباقات من قاعدة البيانات:', error.message);
         res.status(500).json({ success: false, message: 'تعذر جلب الباقات' });
     }
 });
@@ -354,6 +351,9 @@ app.post('/api/checkout', async (req, res) => {
     } catch (error) { res.status(500).json({ success: false, message: 'فشل إنشاء جلسة الدفع' }); }
 });
 
+// ==========================================
+// 🚀 تحديث مسار استخراج الشريحة (لدعم eSIMs Cloud Link)
+// ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
     try {
@@ -378,20 +378,49 @@ app.post('/api/fulfill-esim', async (req, res) => {
         try {
             const orderFormData = new URLSearchParams();
             if(tx.packageId && tx.packageId.startsWith('topup_')) {
-                const parts = tx.packageId.split('_'); orderFormData.append('package_id', parts[2]); orderFormData.append('iccid', parts[1]); orderFormData.append('quantity', 1);
-            } else { orderFormData.append('package_id', tx.packageId); orderFormData.append('quantity', 1); }
+                const parts = tx.packageId.split('_'); 
+                orderFormData.append('package_id', parts[2]); 
+                orderFormData.append('iccid', parts[1]); 
+                orderFormData.append('quantity', 1);
+            } else { 
+                orderFormData.append('package_id', tx.packageId); 
+                orderFormData.append('quantity', 1); 
+            }
             orderFormData.append('description', `Order reference: ${tx.referenceId}`);
+            
+            // 🚀 إضافة الهوية التجارية (Brand Name) لتوليد رابط سحابي باسم شركتك
+            orderFormData.append('brand_settings_name', 'Remal Connect');
 
             const orderResponse = await airaloApiRequest('post', '/orders', orderFormData.toString(), true);
             const responseData = orderResponse.data?.data || orderResponse.data;
             airaloOrder = responseData;
-            tx.apiCost = responseData.price || 0; tx.status = 'success'; await tx.save();
+            
         } catch (airaloError) {
             if (airaloError.response?.status === 422 || (tx.packageId && (tx.packageId.startsWith('topup_') || tx.packageId.startsWith('mock_')))) {
-                airaloOrder = { sims: [{ iccid: `890000${Date.now().toString().slice(-9)}`, qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', lpa: `LPA:1$smdp.io$890000${Date.now().toString().slice(-9)}`, direct_apple_installation_url: 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$smdp.io$TEST' }] };
-                tx.status = 'success'; await tx.save();
+                // Mock Data with Cloud Link included for fallback
+                airaloOrder = { sims: [{ 
+                    iccid: `890000${Date.now().toString().slice(-9)}`, 
+                    qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', 
+                    lpa: `LPA:1$smdp.io$890000${Date.now().toString().slice(-9)}`, 
+                    direct_apple_installation_url: 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$smdp.io$TEST',
+                    sharing: { link: "https://esims.cloud/remal-connect/mock-test", access_code: "1234" }
+                }] };
             } else { return res.status(500).json({ success: false, message: 'عذراً، كمية الشريحة غير متوفرة مؤقتاً لدى المزوّد.' }); }
         }
+
+        const simsArray = airaloOrder.sims || [];
+        const simDetails = simsArray.length > 0 ? simsArray[0] : airaloOrder;
+        
+        // 🚀 استخراج روابط الـ eSIM Cloud وحفظها في قاعدة البيانات
+        const sharingLink = simDetails.sharing?.link || '';
+        const sharingAccessCode = simDetails.sharing?.access_code || '';
+
+        tx.apiCost = airaloOrder.price || 0; 
+        tx.esimsCloudLink = sharingLink;
+        tx.esimsCloudAccessCode = sharingAccessCode;
+        tx.iccid = simDetails.iccid;
+        tx.status = 'success'; 
+        await tx.save();
 
         let earnedCashback = 0;
         const buyer = await User.findOne({ email: tx.customerEmail });
@@ -411,15 +440,23 @@ app.post('/api/fulfill-esim', async (req, res) => {
             await buyer.save();
         }
 
-        const simsArray = airaloOrder.sims || [];
-        const simDetails = simsArray.length > 0 ? simsArray[0] : airaloOrder;
-        res.json({ success: true, iccid: simDetails.iccid, qr_code_url: simDetails.qrcode_url || simDetails.qrcode || '', lpa: simDetails.lpa || '', direct_apple_installation_url: simDetails.direct_apple_installation_url || '', earnedCashback, newWalletBalance: buyer ? buyer.walletBalance : 0, newPurchasesCount: buyer ? buyer.purchasesCount : 0 });
+        // 🚀 إرسال معلومات الرابط السحابي للواجهة
+        res.json({ 
+            success: true, 
+            iccid: simDetails.iccid, 
+            qr_code_url: simDetails.qrcode_url || simDetails.qrcode || '', 
+            lpa: simDetails.lpa || '', 
+            direct_apple_installation_url: simDetails.direct_apple_installation_url || '',
+            esims_cloud_link: sharingLink,
+            esims_cloud_access_code: sharingAccessCode,
+            earnedCashback, 
+            newWalletBalance: buyer ? buyer.walletBalance : 0, 
+            newPurchasesCount: buyer ? buyer.purchasesCount : 0 
+        });
+
     } catch (error) { res.status(500).json({ success: false, message: 'فشل تسليم الشريحة بسبب مشكلة في قاعدة البيانات' }); }
 });
 
-// ==========================================
-// مسار جلب إرشادات التثبيت (محدث مع Accept-Language)
-// ==========================================
 app.get('/api/airalo/instructions/:iccid', async (req, res) => {
     try {
         const { iccid } = req.params;
@@ -440,11 +477,7 @@ app.get('/api/airalo/instructions/:iccid', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Instructions Error:', error.response?.data || error.message);
-        res.status(500).json({ 
-            success: false, 
-            message: 'تعذر جلب إرشادات التثبيت الخاصة بالشريحة' 
-        });
+        res.status(500).json({ success: false, message: 'تعذر جلب إرشادات التثبيت الخاصة بالشريحة' });
     }
 });
 
