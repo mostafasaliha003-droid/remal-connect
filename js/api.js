@@ -1,4 +1,8 @@
-function quickSearch(country) { document.getElementById('searchInput').value = country; fetchPackages(country); document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' }); }
+function quickSearch(country) { 
+    document.getElementById('searchInput').value = country; 
+    fetchPackages(country); 
+    document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' }); 
+}
 
 async function fetchPackages(query = '') {
     const container = document.getElementById('packagesContainer'), title = document.getElementById('resultsTitle'), btn = document.getElementById('searchBtn');
@@ -157,13 +161,26 @@ function openCheckoutModalByIndex(index) {
     const pkg = window.allPackages[index];
     if (!pkg) return;
     currentSelectedPackage = pkg; originalPriceAED = parseFloat(pkg.price); finalPriceAED = originalPriceAED; walletDeductionAED = 0;
-    document.getElementById('modalCountry').innerText = `${pkg.country} ${pkg.flag}`; document.getElementById('modalData').innerText = pkg.data; document.getElementById('modalOriginalPrice').innerText = originalPriceAED.toFixed(2); document.getElementById('modalFinalPrice').innerText = finalPriceAED.toFixed(2);
+    
+    document.getElementById('modalCountry').innerText = `${pkg.country} ${pkg.flag}`; 
+    document.getElementById('modalData').innerText = pkg.data; 
+    document.getElementById('modalOriginalPrice').innerText = originalPriceAED.toFixed(2); 
+    document.getElementById('modalFinalPrice').innerText = finalPriceAED.toFixed(2);
+    
     const user = getSavedUser(), actionArea = document.getElementById('checkoutActionArea'), walletArea = document.getElementById('walletDeductionArea'), walletCheckbox = document.getElementById('useWalletCheckbox');
     if (user) {
-        if (parseFloat(user.walletBalance || 0) > 0) { walletArea.classList.remove('hidden'); document.getElementById('availableWalletLabel').innerText = `الرصيد المتاح: ${parseFloat(user.walletBalance).toFixed(2)} AED`; walletCheckbox.checked = false; document.getElementById('deductedAmountLabel').innerText = '-0.00 AED'; } else walletArea.classList.add('hidden');
+        if (parseFloat(user.walletBalance || 0) > 0) { 
+            walletArea.classList.remove('hidden'); 
+            document.getElementById('availableWalletLabel').innerText = `الرصيد المتاح: ${parseFloat(user.walletBalance).toFixed(2)} AED`; 
+            walletCheckbox.checked = false; 
+            document.getElementById('deductedAmountLabel').innerText = '-0.00 AED'; 
+        } else {
+            walletArea.classList.add('hidden');
+        }
         updateCheckoutButtonUI(finalPriceAED);
     } else {
-        walletArea.classList.add('hidden'); actionArea.innerHTML = `<div class="text-center mb-4"><span class="text-xs font-bold text-slate-400">يجب تسجيل الدخول لإتمام الشراء</span></div><a href="register.html" class="w-full masterstroke-btn text-white font-black py-4 rounded-xl shadow-[0_0_15px_rgba(6,182,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">تسجيل الدخول <i class="fa-regular fa-user"></i></a>`;
+        walletArea.classList.add('hidden'); 
+        actionArea.innerHTML = `<div class="text-center mb-4"><span class="text-xs font-bold text-slate-400">يجب تسجيل الدخول لإتمام الشراء</span></div><a href="register.html" class="w-full masterstroke-btn text-white font-black py-4 rounded-xl shadow-[0_0_15px_rgba(6,182,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">تسجيل الدخول <i class="fa-regular fa-user"></i></a>`;
     }
     const modal = document.getElementById('checkoutModal'), content = document.getElementById('checkoutContent');
     modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
