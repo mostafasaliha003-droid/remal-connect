@@ -20,7 +20,7 @@
     <link rel="manifest" href="/manifest.json">
 
     <!-- الخطوط والأيقونات -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Tailwind & Custom Styles -->
@@ -41,7 +41,7 @@
 
     <!-- 🚀 Floating Navbar with Scalable SVG Logo -->
     <div class="fixed top-4 w-full z-50 flex justify-center px-4 md:px-0 transition-all duration-300 pointer-events-none">
-        <nav class="w-full max-w-7xl glass-pill rounded-[2rem] px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto shadow-2xl">
+        <nav class="w-full max-w-7xl glass-pill rounded-[2rem] px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto shadow-2xl border border-white/10">
             
             <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('homeView')">
                 <div class="w-12 h-12 flex items-center justify-center transform group-hover:scale-105 transition-all">
@@ -74,11 +74,14 @@
 
             <!-- Dynamic Auth Area -->
             <div class="flex items-center gap-2 md:gap-3" id="headerAuthArea">
-                <select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-black/40 border border-white/5 text-slate-300 hover:text-white text-xs font-bold py-2 px-3 rounded-2xl outline-none cursor-pointer transition-colors appearance-none text-center backdrop-blur-md">
-                    <option value="AED" class="bg-slate-900 text-white">AED</option><option value="SAR" class="bg-slate-900 text-white">SAR</option><option value="USD" class="bg-slate-900 text-white">USD</option><option value="EUR" class="bg-slate-900 text-white">EUR</option>
+                <select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-slate-900/50 border border-white/20 text-white hover:bg-white/10 text-xs font-bold py-2 px-3 rounded-2xl outline-none cursor-pointer transition-all appearance-none text-center backdrop-blur-md focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan">
+                    <option value="AED" class="bg-slate-900 text-white">AED</option>
+                    <option value="SAR" class="bg-slate-900 text-white">SAR</option>
+                    <option value="USD" class="bg-slate-900 text-white">USD</option>
+                    <option value="EUR" class="bg-slate-900 text-white">EUR</option>
                 </select>
 
-                <a href="register.html" class="masterstroke-btn text-white px-6 py-2.5 rounded-2xl text-sm font-black transition-all flex items-center gap-2 active:scale-95 shadow-[0_0_15px_rgba(6,182,212,0.3)] text-decoration-none border border-brand-cyan/50">
+                <a href="register.html" class="masterstroke-btn text-white px-6 py-2.5 rounded-2xl text-sm font-black transition-all flex items-center gap-2 active:scale-95 shadow-[0_0_15px_rgba(6,182,212,0.3)] text-decoration-none border border-brand-cyan/50 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)]">
                     <i class="fa-regular fa-user"></i> <span class="hidden sm:inline">دخول / تسجيل</span>
                 </a>
             </div>
@@ -93,7 +96,7 @@
             <div class="max-w-7xl mx-auto px-6 w-full flex flex-col lg:flex-row items-center justify-between gap-16 relative z-10">
                 
                 <div class="w-full lg:w-[55%] text-center lg:text-right flex flex-col items-center lg:items-start z-10">
-                    <div class="glass-pill px-4 py-1.5 rounded-full mb-8 inline-flex items-center gap-2 border border-brand-cyan/20 text-brand-cyan text-xs font-black">
+                    <div class="glass-pill px-4 py-1.5 rounded-full mb-8 inline-flex items-center gap-2 border border-brand-cyan/20 text-brand-cyan text-xs font-black shadow-sm">
                         <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-cyan opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-brand-cyan"></span></span>
                         محرك ذكاء اصطناعي لاختيار أسرع شبكة خلوية
                     </div>
@@ -103,25 +106,25 @@
                         <span class="text-gradient">قبل أن تُفتح أبواب الطائرة!</span> ✈️
                     </h1>
                     
-                    <p class="text-slate-400 text-base md:text-lg font-semibold max-w-xl mb-10 leading-relaxed">
-                        وداعاً لفواتير التجوال المرتفعة. احصل على <span class="text-white">شريحتك الإلكترونية (eSIM)</span> بتقنية 5G وتصفح الإنترنت فور وصولك بضغطة زر.
+                    <p class="text-slate-300 text-base md:text-lg font-medium max-w-xl mb-10 leading-relaxed">
+                        وداعاً لطوابير المطارات وفواتير التجوال المرتفعة. احصل على <span class="font-bold text-white">شريحتك الإلكترونية (eSIM)</span> بتقنية 5G وتصفح الإنترنت فور وصولك بضغطة زر.
                     </p>
 
-                    <form id="searchForm" class="w-full max-w-xl ai-search-box p-2.5 rounded-3xl flex flex-col sm:flex-row items-center gap-3 shadow-2xl relative overflow-hidden">
+                    <form id="searchForm" class="w-full max-w-xl ai-search-box p-2.5 rounded-3xl flex flex-col sm:flex-row items-center gap-3 shadow-2xl relative overflow-hidden group">
                         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] animate-[dataStream_3s_infinite]"></div>
                         <div class="pl-4 pr-3 text-brand-cyan animate-pulse-glow z-10 flex items-center justify-center">
-                            <i class="fa-solid fa-radar fa-spin-pulse text-lg"></i>
+                            <i class="fa-solid fa-radar fa-spin-pulse text-lg group-focus-within:text-white transition-colors"></i>
                         </div>
-                        <input type="text" id="searchInput" aria-label="البحث عن الوجهات" placeholder="حدد وجهتك وسنتكفل بالباقي (دبي، باريس...)" class="flex-1 w-full bg-transparent border-none outline-none text-base font-bold text-white placeholder-slate-500 py-3 z-10">
+                        <input type="text" id="searchInput" aria-label="البحث عن الوجهات" placeholder="حدد وجهتك وسنتكفل بالباقي (دبي، باريس...)" class="flex-1 w-full bg-transparent border-none outline-none text-base font-bold text-white placeholder-slate-400 py-3 z-10 transition-all">
                         <button type="submit" id="searchBtn" aria-label="بحث" class="w-full sm:w-auto masterstroke-btn text-white font-black py-4 px-8 rounded-2xl shadow-lg z-10 text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 border-none">
                             ابحث عن وجهتك <i class="fa-solid fa-earth-americas"></i>
                         </button>
                     </form>
 
-                    <div class="mt-8 flex items-center gap-4 text-xs font-bold text-slate-500 flex-wrap justify-center lg:justify-start">
-                        <span><i class="fa-solid fa-language text-slate-400"></i> دعم 40 لغة محلية</span>
+                    <div class="mt-8 flex items-center gap-4 text-xs font-bold text-slate-400 flex-wrap justify-center lg:justify-start">
+                        <span><i class="fa-solid fa-language text-slate-500"></i> دعم 40 لغة محلية</span>
                         <span class="w-1 h-1 bg-slate-600 rounded-full"></span>
-                        <span><i class="fa-brands fa-apple text-slate-400"></i> <i class="fa-brands fa-android text-slate-400"></i> توافق تام</span>
+                        <span><i class="fa-brands fa-apple text-slate-500"></i> <i class="fa-brands fa-android text-slate-500"></i> توافق تام</span>
                     </div>
                 </div>
 
@@ -200,14 +203,12 @@
                     <div class="text-3xl font-black text-brand-cyanGlow mb-1 flex items-center justify-center gap-2 drop-shadow-[0_0_10px_rgba(6,182,212,0.3)]">
                         <i class="fa-solid fa-server text-xl"></i> +150
                     </div>
-                    <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">خوادم طرفية (Edge)</span>
+                    <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">تغطية شبكات</span>
                 </div>
                 <div class="w-px h-12 bg-white/10 hidden md:block"></div>
                 <div class="text-center flex-1">
-                    <div class="text-3xl font-black text-white mb-1 drop-shadow-md flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-bolt text-brand-cyan"></i> فوري
-                    </div>
-                    <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">استجابة وتفعيل</span>
+                    <div class="text-3xl font-black text-white mb-1 drop-shadow-md">0.4s</div>
+                    <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">تفعيل فوري</span>
                 </div>
             </div>
         </section>
@@ -215,8 +216,8 @@
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-20" id="packagesSection">
             <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-10 gap-4">
                 <div>
-                    <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md" id="resultsTitle">باقات الإنترنت الدولي 🌍</h3>
-                    <p class="text-sm font-bold text-slate-400">اختر باقتك، امسح الرمز (QR)، وانطلق في رحلتك.</p>
+                    <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md" id="resultsTitle">باقات الإنترنت الدولي 🔥</h3>
+                    <p class="text-sm font-semibold text-slate-400">اختر باقتك، امسح الرمز (QR)، وانطلق في رحلتك.</p>
                 </div>
                 <button type="button" aria-label="فحص توافق الهاتف" onclick="openCompatibilityModal()" class="text-xs md:text-sm text-brand-cyan hover:text-white font-bold bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/30 px-6 py-3 rounded-full transition-colors cursor-pointer backdrop-blur-sm flex items-center gap-2 shadow-[0_0_15px_rgba(6,182,216,0.1)]">
                     <i class="fa-solid fa-mobile-screen"></i> فحص توافق جهازي
@@ -224,11 +225,14 @@
             </div>
             
             <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                <!-- Packages Data injected here via JS -->
             </div>
         </section>
     </div>
 
+    <!-- ========================================== -->
     <!-- 🌟 شاشة لوحة تحكم شرائحي (Dashboard View) -->
+    <!-- ========================================== -->
     <div id="dashboardView" class="hidden transition-opacity duration-300 w-full">
         <main class="pt-32 md:pt-40 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-white/5 pb-6 mb-8 gap-4">
@@ -245,8 +249,7 @@
             <div id="tierBannerContainer" class="glass-pill p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-slate-400 rounded-3xl relative overflow-hidden">
                 <div class="glow-overlay top-0 right-0 bg-slate-400" id="tierGlow"></div>
                 <div class="flex items-center gap-5 w-full md:w-auto relative z-10">
-                    <div id="tierShieldBadge" class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center shrink-0">
-                    </div>
+                    <div id="tierShieldBadge" class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center shrink-0"></div>
                     <div class="text-right">
                         <div class="flex items-center gap-2 mb-1.5">
                             <span class="text-[10px] md:text-xs font-black tracking-widest uppercase px-2.5 py-0.5 rounded-md border" id="userTierTag">الدرع الفضي</span>
@@ -302,6 +305,7 @@
                 <i class="fa-solid fa-layer-group text-brand-cyan"></i> شرائحي الفعّالة
             </h3>
             <div id="myEsimsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- User eSIMs injected here via JS -->
             </div>
         </main>
     </div>
