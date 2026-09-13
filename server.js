@@ -164,6 +164,28 @@ app.get('/api/user/profile', async (req, res) => {
 });
 
 // ==========================================
+// 🚀 مسار جلب سجل شرائح العميل (مضاف حديثاً)
+// ==========================================
+app.get('/api/user/esims', async (req, res) => {
+    try {
+        const email = req.query.email ? req.query.email.trim().toLowerCase() : null;
+        if (!email) return res.status(400).json({ success: false, message: 'البريد الإلكتروني مطلوب' });
+
+        const userOrders = await Transaction.find({ customerEmail: email, status: 'success' })
+                                            .sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            count: userOrders.length,
+            orders: userOrders
+        });
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب سجل الطلبات:', error.message);
+        res.status(500).json({ success: false, message: 'تعذر جلب سجل الطلبات' });
+    }
+});
+
+// ==========================================
 // 🚀 توكن Airalo (Production & Caching)
 // ==========================================
 let airaloAccessToken = null;
