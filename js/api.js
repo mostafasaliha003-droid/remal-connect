@@ -1,7 +1,8 @@
+// تم إزالة السطر الخاص بـ API_URL من هنا لأنه معرف بالفعل في ملف data.js
+
 // ==========================================
-// 🚀 إعدادات الاتصال بالسيرفر والبحث
+// 🚀 إعدادات البحث وجلب البيانات
 // ==========================================
-const API_URL = 'http://localhost:3000'; // قم بتغييرها لرابط الاستضافة عند الرفع
 
 function quickSearch(country) { 
     document.getElementById('searchInput').value = country; 
@@ -44,12 +45,13 @@ async function fetchPackages(query = '') {
                 type: pkg.type || 'local', 
                 isHot: pkg.isHot || false 
             }));
-            renderPackages(window.allPackages);
+            if(typeof renderPackages === 'function') renderPackages(window.allPackages);
         } else if (container) {
-            container.innerHTML = `<div class="col-span-full text-center text-[#ff4d4d] font-bold py-10 bg-[#800000]/20 backdrop-blur-md rounded-2xl border border-[#800000]/50 shadow-[0_0_15px_rgba(128,0,0,0.3)]">عذراً، لم نتمكن من العثور على باقات لهذه الوجهة حالياً.</div>`;
+            container.innerHTML = `<div class="col-span-full text-center text-[#ff4d4d] font-bold py-10 bg-[#800000]/20 backdrop-blur-md rounded-2xl border border-[#800000]/50 shadow-[0_0_15px_rgba(128,0,0,0.3)]">عذراً، لم نتمكن من العثور على باقات لهذه الوجهة حالياً. السيرفر يقوم بمزامنة الباقات، يرجى المحاولة بعد قليل.</div>`;
         }
     } catch (error) {
-        if(container) container.innerHTML = `<div class="col-span-full text-center text-[#ff4d4d] font-bold py-10 bg-[#800000]/20 backdrop-blur-md rounded-2xl border border-[#800000]/50 shadow-[0_0_15px_rgba(128,0,0,0.3)]">حدث خطأ في جلب الباقات، يرجى تحديث الصفحة.</div>`;
+        if(container) container.innerHTML = `<div class="col-span-full text-center text-[#ff4d4d] font-bold py-10 bg-[#800000]/20 backdrop-blur-md rounded-2xl border border-[#800000]/50 shadow-[0_0_15px_rgba(128,0,0,0.3)]">حدث خطأ في الاتصال بالخادم، يرجى تحديث الصفحة.</div>`;
+        console.error("Fetch Error:", error);
     } finally { 
         if(btn) { btn.innerHTML = 'ابحث عن وجهتك <i class="fa-solid fa-earth-americas"></i>'; btn.disabled = false; } 
     }
@@ -128,20 +130,18 @@ function renderPackages(packages) {
 // 🚀 جلب تفاصيل الباقة (Product Information)
 // ==========================================
 async function fetchPackageDetails(slug) {
-    showToast('جاري جلب تفاصيل الشبكة والتغطية...');
+    if(typeof showToast === 'function') showToast('جاري جلب تفاصيل الشبكة والتغطية...');
     try {
         const res = await fetch(`${API_URL}/api/airalo/packages/${slug}/info`);
         const data = await res.json();
         if(data.success && data.info) {
-            // يمكنك هنا فتح Modal مخصص لعرض البيانات المتقدمة كالمزودين (network_providers) 
-            // وسرعة التنزيل (max_download_speed_mbit) ورابط الـ PDF (pib_version_pdf_link)
             console.log("تفاصيل الباقة:", data.info);
             alert(`مزودي الخدمة: ${data.info.network_providers.join(' - ')}\nالسرعة المدعومة: ${data.info.network_technologies.join(' - ')}\nالاستخدام العادل: ${data.info.is_fair_usage_policy ? 'نعم' : 'لا'}`);
         } else {
-            showToast('تعذر جلب تفاصيل هذه الباقة حالياً', true);
+            if(typeof showToast === 'function') showToast('تعذر جلب تفاصيل هذه الباقة حالياً', true);
         }
     } catch (err) {
-        showToast('خطأ في الاتصال بالخادم', true);
+        if(typeof showToast === 'function') showToast('خطأ في الاتصال بالخادم', true);
     }
 }
 
@@ -159,7 +159,7 @@ function renderMyEsims() {
             <div class="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 text-[#00b4d8] text-4xl shadow-inner border border-[#00b4d8]/20"><i class="fa-solid fa-box-open"></i></div>
             <p class="text-white font-black text-2xl mb-3 drop-shadow-md">حقيبة السفر الرقمية فارغة حالياً</p>
             <p class="text-slate-400 font-bold text-sm mb-8 max-w-md mx-auto">اشترِ باقتك الأولى وسنقوم بحفظها هنا للوصول السريع حتى في وضع الطيران!</p>
-            <button onclick="switchView('homeView')" class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-10 py-4 rounded-xl font-black text-sm transition-transform active:scale-95 border-none cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.4)]">تصفح الباقات العالمية</button>
+            <button onclick="if(typeof switchView==='function') switchView('homeView')" class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-10 py-4 rounded-xl font-black text-sm transition-transform active:scale-95 border-none cursor-pointer shadow-[0_0_20px_rgba(0,180,216,0.4)]">تصفح الباقات العالمية</button>
         </div>`;
         return;
     }
@@ -170,10 +170,23 @@ function renderMyEsims() {
         let totalMB = esim.totalBytes || 3072, usedMB = esim.usedBytes || 0;
         let percentage = (usedMB / totalMB) * 100;
         
-        // تغيير اللون للأحمر الغامق إذا قارب على الانتهاء
         let progressColor = percentage > 85 ? 'from-[#800000] to-[#ff4d4d] shadow-[0_0_15px_rgba(128,0,0,0.6)]' : 'from-[#00b4d8] to-[#48cae4] shadow-[0_0_15px_rgba(0,180,216,0.6)]';
         let statusBadge = percentage > 85 ? '🔴 شريحة توشك على الانتهاء' : '🟢 الشريحة فعالة';
         let statusColor = percentage > 85 ? 'bg-[#800000]/20 text-[#ff4d4d] border-[#800000]/30' : 'bg-[#00b4d8]/10 text-[#00b4d8] border-[#00b4d8]/30';
+
+        let cloudButtonHtml = '';
+        if(esim.cloudLink) {
+            cloudButtonHtml = `
+            <div class="mt-4 bg-black/40 border border-white/10 p-3 rounded-xl flex items-center justify-between">
+                <div>
+                    <span class="block text-[9px] text-slate-400 font-bold mb-0.5">الإدارة السحابية المتقدمة</span>
+                    <span class="block text-xs font-black text-[#00b4d8]">كود الدخول: ${esim.cloudCode || '---'}</span>
+                </div>
+                <a href="${esim.cloudLink}" target="_blank" class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-4 py-2 rounded-lg text-xs font-black transition-colors text-decoration-none shadow-md flex items-center gap-1.5">
+                    <i class="fa-solid fa-cloud"></i> السحابة
+                </a>
+            </div>`;
+        }
 
         html += `
         <div class="bg-black/40 backdrop-blur-xl border border-white/5 hover:border-[#00b4d8]/20 p-6 md:p-8 flex flex-col md:flex-row gap-8 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.4)] mb-6 transition-colors">
@@ -198,10 +211,10 @@ function renderMyEsims() {
                             <div class="bg-gradient-to-r ${progressColor} h-3 rounded-full progress-bar-fill transition-all duration-1000 ease-out" style="width: 0%" data-width="${percentage}%"></div>
                         </div>
                         <div class="mt-4 flex flex-wrap gap-2.5">
-                            <button aria-label="شحن الرصيد" onclick="openTopupModal('${esim.iccid}')" class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-5 py-2 rounded-lg text-xs font-black transition-colors cursor-pointer flex items-center gap-2 shadow-[0_0_15px_rgba(0,180,216,0.3)] border-none">
+                            <button aria-label="شحن الرصيد" onclick="if(typeof openTopupModal==='function') openTopupModal('${esim.iccid}')" class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-5 py-2 rounded-lg text-xs font-black transition-colors cursor-pointer flex items-center gap-2 shadow-[0_0_15px_rgba(0,180,216,0.3)] border-none">
                                 <i class="fa-solid fa-bolt text-yellow-300"></i> شحن الرصيد
                             </button>
-                            <button aria-label="إرشادات التثبيت" onclick="fetchInstructions('${esim.iccid}')" class="bg-transparent hover:bg-white/5 text-[#00b4d8] border border-[#00b4d8]/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5">
+                            <button aria-label="إرشادات التثبيت" onclick="if(typeof fetchInstructions==='function') fetchInstructions('${esim.iccid}')" class="bg-transparent hover:bg-white/5 text-[#00b4d8] border border-[#00b4d8]/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5">
                                 <i class="fa-solid fa-book-open"></i> الإرشادات
                             </button>
                         </div>
@@ -211,7 +224,12 @@ function renderMyEsims() {
                             <span class="block text-[9px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-sim-card text-[#00b4d8] ml-1"></i>رقم الشريحة (ICCID)</span>
                             <span class="block font-black text-xs text-white tracking-widest truncate" dir="ltr">${esim.iccid}</span>
                         </div>
+                        <div class="bg-black/50 border border-white/5 p-3 rounded-xl flex-1 min-w-[100px]">
+                            <span class="block text-[9px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-clock text-[#00b4d8] ml-1"></i>الصلاحية المتبقية</span>
+                            <span class="block font-black text-sm text-[#00b4d8]">14 يوماً</span>
+                        </div>
                     </div>
+                    ${cloudButtonHtml}
                 </div>
             </div>
             
@@ -219,8 +237,11 @@ function renderMyEsims() {
                 <div class="bg-white p-2 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.1)] mb-4 w-44 h-44 z-10">
                     <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
                 </div>
-                <button aria-label="تثبيت ذكي" onclick="installSmartEsim('${lpaString}')" class="w-full bg-white text-black py-3 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border-none cursor-pointer hover:bg-gray-200 transition-colors relative z-10 mb-2.5">
+                <button aria-label="تثبيت ذكي" onclick="if(typeof installSmartEsim==='function') installSmartEsim('${lpaString}')" class="w-full bg-white text-black py-3 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border-none cursor-pointer hover:bg-gray-200 transition-colors relative z-10 mb-2.5">
                     <i class="fa-brands fa-apple text-sm"></i> تثبيت تلقائي للآيفون
+                </button>
+                <button aria-label="تحميل QR" onclick="if(typeof downloadQrCode==='function') downloadQrCode('${esim.qrUrl}', '${esim.country}')" class="w-full bg-black hover:bg-[#0A101C] text-white py-2.5 rounded-xl font-black text-[11px] flex items-center justify-center gap-2 border border-slate-700 cursor-pointer transition-colors relative z-10 mb-4 shadow-sm">
+                    <i class="fa-solid fa-download text-[#00b4d8]"></i> حفظ رمز QR في الصور
                 </button>
                 <div class="w-full bg-[#00b4d8]/10 p-3 rounded-xl border border-[#00b4d8]/30 text-right">
                     <p class="text-[9px] text-[#00b4d8] font-bold mb-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> رمز التثبيت اليدوي (LPA):</p>
@@ -246,7 +267,7 @@ async function processSecurePayment() {
     localStorage.setItem('pending_esim_package', JSON.stringify({ ...currentSelectedPackage, walletDeducted: typeof walletDeductionAED !== 'undefined' ? walletDeductionAED : 0, paidAmount: typeof finalPriceAED !== 'undefined' ? finalPriceAED : currentSelectedPackage.price }));
 
     if (typeof finalPriceAED !== 'undefined' && finalPriceAED <= 0) {
-        if(user) { user.walletBalance = Math.max(0, (user.walletBalance || 0) - walletDeductionAED); saveUserPersistent(user); }
+        if(user) { user.walletBalance = Math.max(0, (user.walletBalance || 0) - walletDeductionAED); if(typeof saveUserPersistent==='function') saveUserPersistent(user); }
         setTimeout(() => { if(typeof closeCheckoutModal === 'function') closeCheckoutModal(); window.location.href = `index.html?payment=success&ref=WAL-${Date.now()}`; }, 1000); 
         return;
     }
@@ -255,9 +276,9 @@ async function processSecurePayment() {
         const res = await fetch(`${API_URL}/api/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ packageId: currentSelectedPackage.id, price: finalPriceAED || currentSelectedPackage.price, walletDeducted: typeof walletDeductionAED !== 'undefined' ? walletDeductionAED : 0, customerEmail: targetEmail }) });
         const data = await res.json();
         if (data.success && data.paymentUrl) window.location.href = data.paymentUrl; 
-        else { showToast(data.message || 'فشل في تهيئة الدفع', true); btn.innerHTML = 'دفع الآن <i class="fa-solid fa-bolt"></i>'; btn.disabled = false; }
+        else { if(typeof showToast==='function') showToast(data.message || 'فشل في تهيئة الدفع', true); btn.innerHTML = 'دفع الآن <i class="fa-solid fa-bolt"></i>'; btn.disabled = false; }
     } catch (error) { 
-        showToast('حدث خطأ في الاتصال بالسيرفر.', true); btn.innerHTML = 'دفع الآن <i class="fa-solid fa-bolt"></i>'; btn.disabled = false; 
+        if(typeof showToast==='function') showToast('حدث خطأ في الاتصال بالسيرفر.', true); btn.innerHTML = 'دفع الآن <i class="fa-solid fa-bolt"></i>'; btn.disabled = false; 
     }
 }
 
@@ -269,8 +290,8 @@ async function processTopupPayment() {
         const res = await fetch(`${API_URL}/api/checkout`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ packageId: `topup_${currentTopupIccid}_${gb}gb`, price: parseFloat(price), customerEmail: user ? user.email : 'guest@remalsim.com' }) });
         const data = await res.json();
         if (data.success && data.paymentUrl) window.location.href = data.paymentUrl; 
-        else { showToast(data.message || 'تعذر بدء الدفع', true); btn.innerHTML = 'دفع آمن <i class="fa-solid fa-lock"></i>'; btn.disabled = false; }
-    } catch (err) { showToast('خطأ في الاتصال', true); btn.innerHTML = 'دفع آمن <i class="fa-solid fa-lock"></i>'; btn.disabled = false; }
+        else { if(typeof showToast==='function') showToast(data.message || 'تعذر بدء الدفع', true); btn.innerHTML = 'دفع آمن <i class="fa-solid fa-lock"></i>'; btn.disabled = false; }
+    } catch (err) { if(typeof showToast==='function') showToast('خطأ في الاتصال', true); btn.innerHTML = 'دفع آمن <i class="fa-solid fa-lock"></i>'; btn.disabled = false; }
 }
 
 async function verifyPaymentAndFulfill() {
@@ -286,18 +307,17 @@ async function verifyPaymentAndFulfill() {
             const index = esims.findIndex(e => e.iccid === topupData.iccid);
             if (index > -1) { esims[index].totalBytes += topupData.gb * 1024; localStorage.setItem('rimal_my_esims', JSON.stringify(esims)); }
             localStorage.removeItem('pending_topup_order'); 
-            showToast(`🎉 تم شحن ${topupData.gb}GB بنجاح لشريحتك!`); 
+            if(typeof showToast==='function') showToast(`🎉 تم شحن ${topupData.gb}GB بنجاح لشريحتك!`); 
             renderMyEsims(); 
             window.history.replaceState({}, document.title, window.location.pathname); 
             return;
         }
 
         // مسار شريحة جديدة
-        showToast('✅ الدفع ناجح! جاري استخراج الشريحة الآن...');
+        if(typeof showToast==='function') showToast('✅ الدفع ناجح! جاري استخراج الشريحة الآن...');
         try {
             let data = { success: false };
             if (referenceId.startsWith('WAL-')) {
-                // حالة الدفع الكلي بالمحفظة
                 const res = await fetch(`${API_URL}/api/fulfill-esim`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ referenceId }) });
                 data = await res.json();
             } else { 
@@ -307,102 +327,40 @@ async function verifyPaymentAndFulfill() {
             
             if (data.success && data.iccid) {
                 const pendingPkg = JSON.parse(localStorage.getItem('pending_esim_package')) || { country: 'وجهة عالمية', flag: '🌍', data: 'N/A', price: '0.00' };
-                if(typeof saveEsimLocally === 'function') saveEsimLocally({ ...pendingPkg, iccid: data.iccid, qrUrl: data.qr_code_url, lpa: data.lpa || `LPA:1$smdp.io$${data.iccid}`, date: new Date().toISOString().split('T')[0], totalBytes: (parseInt(pendingPkg.data) || 1) * 1024, usedBytes: 0 });
+                
+                // 🚀 حفظ روابط السحابة في التخزين المحلي
+                if(typeof saveEsimLocally === 'function') {
+                    saveEsimLocally({ 
+                        ...pendingPkg, 
+                        iccid: data.iccid, 
+                        qrUrl: data.qr_code_url, 
+                        lpa: data.lpa || `LPA:1$smdp.io$${data.iccid}`, 
+                        cloudLink: data.esims_cloud_link || null,
+                        cloudCode: data.esims_cloud_access_code || null,
+                        date: new Date().toISOString().split('T')[0], 
+                        totalBytes: (parseInt(pendingPkg.data) || 1) * 1024, 
+                        usedBytes: 0 
+                    });
+                }
                 
                 const user = typeof getSavedUser === 'function' ? getSavedUser() : null;
                 if (user && data.earnedCashback > 0) {
                     user.walletBalance = (user.walletBalance || 0) + data.earnedCashback;
                     if(typeof saveUserPersistent === 'function') saveUserPersistent(user);
-                    showToast(`🎉 تمت استخراج الشريحة وكسبت كاش باك ${data.earnedCashback} AED!`);
+                    if(typeof showToast==='function') showToast(`🎉 تمت استخراج الشريحة وكسبت كاش باك ${data.earnedCashback} AED!`);
                 } else {
-                    showToast('🎉 تم استخراج الشريحة وإضافتها للوحة التحكم!');
+                    if(typeof showToast==='function') showToast('🎉 تم استخراج الشريحة وإضافتها للوحة التحكم!');
                 }
                 renderMyEsims();
-            } else showToast(data.message || 'حدث خطأ في النظام أثناء الاستخراج', true);
+            } else if(typeof showToast==='function') showToast(data.message || 'حدث خطأ في النظام أثناء الاستخراج', true);
         } catch (err) { 
-            showToast('الشبكة ضعيفة! ستجد شريحتك في لوحة التحكم قريباً.', true); 
+            if(typeof showToast==='function') showToast('الشبكة ضعيفة! ستجد شريحتك في لوحة التحكم قريباً.', true); 
         } finally { 
             window.history.replaceState({}, document.title, window.location.pathname); 
             localStorage.removeItem('pending_esim_package'); 
         }
     } else if (paymentStatus === 'failed') { 
-        showToast('❌ تعذر إتمام عملية الدفع.', true); 
+        if(typeof showToast==='function') showToast('❌ تعذر إتمام عملية الدفع.', true); 
         window.history.replaceState({}, document.title, window.location.pathname); 
-    }
-}
-
-// ==========================================
-// 🚀 الأدوات المساعدة (Helpers)
-// ==========================================
-function installSmartEsim(lpaString) {
-    if (!lpaString) return; navigator.clipboard.writeText(lpaString).catch(() => {});
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) { 
-        showToast('جاري التوجيه لتطبيق الإعدادات...'); 
-        window.location.href = `https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=${encodeURIComponent(lpaString)}`; 
-    }
-    else { 
-        showToast('تم نسخ رمز LPA! انتقل للإعدادات'); 
-        alert(`تم نسخ رمز التفعيل.\nاذهب إلى إعدادات الهاتف > الاتصالات > إدارة بطاقة SIM > إضافة eSIM > أدخل الرمز يدوياً والصقه.`); 
-    }
-}
-
-function downloadQrCode(qrUrl, countryName) {
-    if (!qrUrl) return; showToast('جاري تحضير الـ QR Code...');
-    const newTab = window.open(); 
-    newTab.document.write(`<html dir="rtl"><head><title>كود eSIM</title></head><body style="background:#050a0f;color:white;text-align:center;font-family:sans-serif;padding:30px;"><h2>رمز تفعيل شريحة ${countryName}</h2><p style="color:#00b4d8;">خذ لقطة شاشة (Screenshot) أو اضغط مطولاً للحفظ</p><img src="${qrUrl}" style="max-width:300px;border-radius:20px;background:white;padding:15px;margin-top:20px;box-shadow: 0 0 20px rgba(0,180,216,0.5);" /></body></html>`);
-}
-
-async function fetchInstructions(iccid) {
-    const modal = document.getElementById('instructionsModal'), content = document.getElementById('instructionsContent'), body = document.getElementById('instructionsBody');
-    if(!modal) return;
-    modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
-    body.innerHTML = `<div class="flex flex-col items-center justify-center py-10"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00b4d8] mb-3"></div><p class="text-xs text-slate-400">جاري تحميل إرشادات التثبيت الآمن...</p></div>`;
-    try {
-        const res = await fetch(`${API_URL}/api/airalo/instructions/${iccid}?lang=ar`), data = await res.json();
-        if (data.success && data.instructions) {
-            let html = ''; const inst = data.instructions;
-            if (inst.ios && inst.ios.length > 0) { 
-                html += `<div class="mb-4"><h4 class="text-white font-bold mb-2 flex items-center gap-2"><i class="fa-brands fa-apple text-xl"></i> أجهزة أبل (iOS):</h4>`; 
-                inst.ios.forEach(item => { if (item.installation_manual && item.installation_manual.steps) { html += `<div class="bg-black/40 border border-white/5 p-3 rounded-xl mb-2 text-xs">`; Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => { html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`; }); html += `</div>`; } }); html += `</div>`; 
-            }
-            if (inst.android && inst.android.length > 0) { 
-                html += `<div><h4 class="text-[#00b4d8] font-bold mb-2 flex items-center gap-2"><i class="fa-brands fa-android text-xl"></i> أجهزة أندرويد:</h4>`; 
-                inst.android.forEach(item => { if (item.installation_manual && item.installation_manual.steps) { html += `<div class="bg-black/40 border border-white/5 p-3 rounded-xl mb-2 text-xs">`; Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => { html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`; }); html += `</div>`; } }); html += `</div>`; 
-            }
-            body.innerHTML = html || '<p class="text-center text-slate-400">لا توجد إرشادات متاحة.</p>';
-        } else body.innerHTML = '<p class="text-center text-[#ff4d4d]">تعذر تحميل الإرشادات من المزوّد.</p>';
-    } catch (err) { body.innerHTML = '<p class="text-center text-[#ff4d4d]">حدث خطأ في الاتصال بالشبكة.</p>'; }
-}
-
-function openCheckoutModalByIndex(index) {
-    const pkg = window.allPackages[index];
-    if (!pkg) return;
-    currentSelectedPackage = pkg; originalPriceAED = parseFloat(pkg.price); finalPriceAED = originalPriceAED; walletDeductionAED = 0;
-    
-    const countryEl = document.getElementById('modalCountry'), dataEl = document.getElementById('modalData'), opEl = document.getElementById('modalOriginalPrice'), fpEl = document.getElementById('modalFinalPrice');
-    if(countryEl) countryEl.innerText = `${pkg.country} ${pkg.flag}`; 
-    if(dataEl) dataEl.innerText = pkg.data; 
-    if(opEl) opEl.innerText = originalPriceAED.toFixed(2); 
-    if(fpEl) fpEl.innerText = finalPriceAED.toFixed(2);
-    
-    const user = typeof getSavedUser === 'function' ? getSavedUser() : null, actionArea = document.getElementById('checkoutActionArea'), walletArea = document.getElementById('walletDeductionArea'), walletCheckbox = document.getElementById('useWalletCheckbox');
-    if (user && actionArea) {
-        if (parseFloat(user.walletBalance || 0) > 0 && walletArea) { 
-            walletArea.classList.remove('hidden'); 
-            document.getElementById('availableWalletLabel').innerText = `الرصيد المتاح: ${parseFloat(user.walletBalance).toFixed(2)} AED`; 
-            walletCheckbox.checked = false; 
-            document.getElementById('deductedAmountLabel').innerText = '-0.00 AED'; 
-        } else if (walletArea) {
-            walletArea.classList.add('hidden');
-        }
-        if(typeof updateCheckoutButtonUI === 'function') updateCheckoutButtonUI(finalPriceAED);
-    } else if (actionArea && walletArea) {
-        walletArea.classList.add('hidden'); 
-        actionArea.innerHTML = `<div class="text-center mb-4"><span class="text-xs font-bold text-slate-400">يجب تسجيل الدخول لإتمام الشراء الآمن</span></div><a href="register.html" class="w-full bg-[#00b4d8] hover:bg-[#0096b4] text-white font-black py-4 rounded-xl shadow-[0_0_15px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">تسجيل الدخول <i class="fa-regular fa-user"></i></a>`;
-    }
-    const modal = document.getElementById('checkoutModal'), content = document.getElementById('checkoutContent');
-    if(modal && content) {
-        modal.classList.remove('hidden'); 
-        setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
     }
 }
