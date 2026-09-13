@@ -332,7 +332,7 @@ app.get('/api/airalo/packages', async (req, res) => {
 });
 
 // ==========================================
-// 🚀 مسار جلب الأجهزة المتوافقة (Lite) - مضاف حديثاً
+// 🚀 مسار جلب الأجهزة المتوافقة (Lite)
 // ==========================================
 app.get('/api/airalo/devices', async (req, res) => {
     try {
@@ -345,7 +345,7 @@ app.get('/api/airalo/devices', async (req, res) => {
 });
 
 // ==========================================
-// مسار الدفع وتسليم الشريحة
+// مسار الدفع
 // ==========================================
 app.post('/api/checkout', async (req, res) => {
     let { packageId, price, customerEmail, walletDeducted } = req.body;
