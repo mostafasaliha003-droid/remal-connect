@@ -152,15 +152,67 @@ async function fetchPackageDetails(slug) {
     try {
         const res = await fetch(`${API_URL}/api/airalo/packages/${slug}/info`);
         const data = await res.json();
+        
         if(data.success && data.info) {
-            console.log("تفاصيل الباقة:", data.info);
-            alert(`مزودي الخدمة: ${data.info.network_providers.join(' - ')}\nالسرعة المدعومة: ${data.info.network_technologies.join(' - ')}\nالاستخدام العادل: ${data.info.is_fair_usage_policy ? 'نعم' : 'لا'}`);
+            // تجهيز البيانات بشكل أنيق
+            const providers = data.info.network_providers && data.info.network_providers.length > 0 ? data.info.network_providers.join(' - ') : 'غير محدد';
+            const speeds = data.info.network_technologies && data.info.network_technologies.length > 0 ? data.info.network_technologies.join(' - ') : 'غير محدد';
+            const hasFup = data.info.is_fair_usage_policy;
+            const fupText = hasFup ? 'تطبق سياسة الاستخدام العادل (قد تنخفض السرعة بعد استهلاك معين)' : 'غير محدود (بدون قيود استخدام عادل)';
+            const fupColor = hasFup ? 'text-amber-400' : 'text-emerald-400';
+            const fupIconColor = hasFup ? 'bg-amber-500/10' : 'bg-emerald-500/10';
+            const fupIcon = hasFup ? 'fa-scale-balanced' : 'fa-infinity';
+
+            // حقن البيانات في النافذة الزجاجية
+            const modalBody = document.getElementById('networkDetailsBody');
+            if(modalBody) {
+                modalBody.innerHTML = `
+                    <div class="bg-black/40 border border-white/5 rounded-xl p-4 flex items-center gap-4 hover:bg-[#00b4d8]/5 transition-colors mb-3">
+                        <div class="w-10 h-10 rounded-full bg-[#00b4d8]/10 flex items-center justify-center text-[#00b4d8] shrink-0 border border-[#00b4d8]/20"><i class="fa-solid fa-server text-lg"></i></div>
+                        <div>
+                            <span class="block text-[9px] text-slate-400 font-bold mb-0.5 uppercase tracking-wider">مزودي الخدمة</span>
+                            <span class="block text-sm font-black text-white" dir="ltr">${providers}</span>
+                        </div>
+                    </div>
+                    <div class="bg-black/40 border border-white/5 rounded-xl p-4 flex items-center gap-4 hover:bg-[#00b4d8]/5 transition-colors mb-3">
+                        <div class="w-10 h-10 rounded-full bg-[#00b4d8]/10 flex items-center justify-center text-[#00b4d8] shrink-0 border border-[#00b4d8]/20"><i class="fa-solid fa-gauge-high text-lg"></i></div>
+                        <div>
+                            <span class="block text-[9px] text-slate-400 font-bold mb-0.5 uppercase tracking-wider">السرعات المدعومة</span>
+                            <span class="block text-sm font-black text-white" dir="ltr">${speeds}</span>
+                        </div>
+                    </div>
+                    <div class="bg-black/40 border border-white/5 rounded-xl p-4 flex items-center gap-4 hover:bg-white/5 transition-colors">
+                        <div class="w-10 h-10 rounded-full ${fupIconColor} ${fupColor} flex items-center justify-center shrink-0 border border-white/5"><i class="fa-solid ${fupIcon} text-lg"></i></div>
+                        <div>
+                            <span class="block text-[9px] text-slate-400 font-bold mb-0.5 uppercase tracking-wider">الاستخدام العادل (FUP)</span>
+                            <span class="block text-xs font-black ${fupColor}">${fupText}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // إظهار النافذة
+            const m = document.getElementById('networkDetailsModal'), c = document.getElementById('networkDetailsContent');
+            if(m && c){ 
+                m.classList.remove('hidden'); 
+                setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-10'); }, 10); 
+            }
+            
         } else {
             if(typeof showToast === 'function') showToast('تعذر جلب تفاصيل هذه الباقة حالياً', true);
         }
     } catch (err) {
         if(typeof showToast === 'function') showToast('خطأ في الاتصال بالخادم', true);
     }
+}
+
+// دالة إغلاق نافذة تفاصيل الشبكة
+function closeNetworkDetailsModal() { 
+    const m = document.getElementById('networkDetailsModal'), c = document.getElementById('networkDetailsContent'); 
+    if(m && c){ 
+        m.classList.add('opacity-0'); c.classList.add('translate-y-10'); 
+        setTimeout(() => m.classList.add('hidden'), 300); 
+    } 
 }
 
 // ==========================================
@@ -345,15 +397,7 @@ async function verifyPaymentAndFulfill() {
                 const pendingPkg = JSON.parse(localStorage.getItem('pending_esim_package')) || { country: 'وجهة عالمية', flag: '🌍', data: 'N/A', price: '0.00' };
                 if(typeof saveEsimLocally === 'function') {
                     saveEsimLocally({ 
-                        ...pendingPkg, 
-                        iccid: data.iccid, 
-                        qrUrl: data.qr_code_url, 
-                        lpa: data.lpa || `LPA:1$smdp.io$${data.iccid}`, 
-                        cloudLink: data.esims_cloud_link || null,
-                        cloudCode: data.esims_cloud_access_code || null,
-                        date: new Date().toISOString().split('T')[0], 
-                        totalBytes: (parseInt(pendingPkg.data) || 1) * 1024, 
-                        usedBytes: 0 
+                        ...pendingPkg, iccid: data.iccid, qrUrl: data.qr_code_url, lpa: data.lpa || `LPA:1$smdp.io$${data.iccid}`, cloudLink: data.esims_cloud_link || null, cloudCode: data.esims_cloud_access_code || null, date: new Date().toISOString().split('T')[0], totalBytes: (parseInt(pendingPkg.data) || 1) * 1024, usedBytes: 0 
                     });
                 }
                 const user = typeof getSavedUser === 'function' ? getSavedUser() : null;
