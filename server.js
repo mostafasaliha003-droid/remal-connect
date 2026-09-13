@@ -96,7 +96,7 @@ const packageSchema = new mongoose.Schema({
 const AiraloPackage = mongoose.model('AiraloPackage', packageSchema);
 
 // ==========================================
-// مسارات الحسابات
+// مسارات الحسابات وسجل المشتريات
 // ==========================================
 app.post('/api/register', async (req, res) => {
     try {
@@ -163,9 +163,6 @@ app.get('/api/user/profile', async (req, res) => {
     } catch (e) { res.status(500).json({ success: false, message: 'خطأ داخلي' }); }
 });
 
-// ==========================================
-// 🚀 مسار جلب سجل شرائح العميل (مضاف حديثاً)
-// ==========================================
 app.get('/api/user/esims', async (req, res) => {
     try {
         const email = req.query.email ? req.query.email.trim().toLowerCase() : null;
@@ -174,13 +171,8 @@ app.get('/api/user/esims', async (req, res) => {
         const userOrders = await Transaction.find({ customerEmail: email, status: 'success' })
                                             .sort({ createdAt: -1 });
 
-        res.json({
-            success: true,
-            count: userOrders.length,
-            orders: userOrders
-        });
+        res.json({ success: true, count: userOrders.length, orders: userOrders });
     } catch (error) {
-        console.error('⚠️ خطأ في جلب سجل الطلبات:', error.message);
         res.status(500).json({ success: false, message: 'تعذر جلب سجل الطلبات' });
     }
 });
@@ -542,6 +534,20 @@ app.get('/api/airalo/topups/:iccid', async (req, res) => {
         res.json({ success: true, topups: topupsData });
     } catch (error) {
         res.status(500).json({ success: false, message: 'تعذر جلب باقات إعادة الشحن لهذه الشريحة.' });
+    }
+});
+
+// ==========================================
+// 🚀 مسار استرجاع سجل باقات الشريحة (مضاف حديثاً)
+// ==========================================
+app.get('/api/airalo/sim/:iccid/packages', async (req, res) => {
+    try {
+        const { iccid } = req.params;
+        const response = await airaloApiRequest('get', `/sims/${iccid}/packages`);
+        res.json({ success: true, history: response.data?.data || response.data });
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب سجل باقات الشريحة:', error.message);
+        res.status(500).json({ success: false, message: 'تعذر استرجاع سجل الباقات حالياً.' });
     }
 });
 
