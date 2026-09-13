@@ -77,7 +77,6 @@ function renderPackages(packages, isFeatured = false) {
     let html = '';
     
     packages.forEach((pkg, index) => {
-        const delay = index * 40;
         // تطبيق الأحمر الغامق للباقات المميزة
         const hotBadge = pkg.isHot 
             ? `<span class="bg-[#800000]/30 text-[#ff4d4d] border border-[#800000]/50 px-2.5 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(128,0,0,0.4)]">🔥 غير محدود</span>` 
@@ -86,8 +85,9 @@ function renderPackages(packages, isFeatured = false) {
         // 🚀 زر "عرض المزيد" يظهر فقط في الشاشة الرئيسية لأهم 10 دول
         let moreBtn = isFeatured ? `<button onclick="searchByCountryCode('${pkg.country_code}', '${pkg.country}')" class="mt-3 w-full bg-black/40 border border-white/10 hover:border-[#00b4d8]/50 hover:bg-[#00b4d8]/10 text-slate-300 hover:text-[#00b4d8] py-2 rounded-xl text-[10px] font-bold transition-colors shadow-sm flex items-center justify-center gap-2">عرض كل باقات ${pkg.country} <i class="fa-solid fa-arrow-left text-[9px]"></i></button>` : '';
 
+        // تم إزالة style="opacity: 0" من الـ div لكي تظهر البطاقات بشكل طبيعي
         html += `
-        <div class="bg-black/40 backdrop-blur-xl border border-white/5 hover:border-[#00b4d8]/30 rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,180,216,0.15)] group" style="animation: fadeInUp 0.5s ease forwards; animation-delay: ${delay}ms; opacity: 0;">
+        <div class="bg-black/40 backdrop-blur-xl border border-white/5 hover:border-[#00b4d8]/30 rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,180,216,0.15)] group">
             <div>
                 <div class="flex items-center justify-between mb-5 relative z-10">
                     <div class="flex items-center gap-3.5">
