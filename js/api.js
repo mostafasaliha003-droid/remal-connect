@@ -10,11 +10,21 @@ function quickSearch(country) {
     document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' }); 
 }
 
-async function fetchPackages(query = '') {
+// 🚀 دالة مخصصة لزر "عرض المزيد" تعتمد على كود الدولة
+function searchByCountryCode(code, name) {
+    document.getElementById('searchInput').value = name; 
+    fetchPackages(name, code); 
+    document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' }); 
+}
+
+async function fetchPackages(query = '', directCode = null) {
     const container = document.getElementById('packagesContainer'), title = document.getElementById('resultsTitle'), btn = document.getElementById('searchBtn');
     let searchKey = query.trim(); 
     let countryInfo = typeof countryMap !== 'undefined' && countryMap[searchKey] ? countryMap[searchKey] : { code: '', flag: '🌍', name: searchKey || 'الوجهات المتوفرة' };
     
+    // إذا تم الضغط على زر "عرض المزيد"، نستخدم كود الدولة المباشر
+    if (directCode) countryInfo = { code: directCode, flag: '🌍', name: searchKey };
+
     if(btn) { btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true; }
     
     // 🎨 الهيكل التحميلي (Skeleton) متوافق مع Glassmorphism
@@ -34,20 +44,21 @@ async function fetchPackages(query = '') {
         const data = await response.json();
         
         if (data.success && data.packages && data.packages.length > 0) {
-            if(title) title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8] drop-shadow-md">${countryInfo.name}</span>` : 'باقات الإنترنت الدولي 🔥';
+            if(title) title.innerHTML = query ? `نتائج البحث عن: <span class="text-[#00b4d8] drop-shadow-md">${countryInfo.name}</span>` : 'أهم الوجهات العالمية 🔥';
             window.allPackages = data.packages.map((pkg) => ({ 
                 id: pkg.id || pkg.package_id || 'pkg_default', 
                 country: pkg.country || countryInfo.name, 
-                flag: countryInfo.flag || '🌍', 
+                country_code: pkg.country_code || '',
+                flag: countryInfo.flag !== '🌍' ? countryInfo.flag : (pkg.country_code === 'TR'?'🇹🇷':pkg.country_code === 'AE'?'🇦🇪':pkg.country_code === 'SA'?'🇸🇦':pkg.country_code === 'GB'?'🇬🇧':pkg.country_code === 'FR'?'🇫🇷':pkg.country_code === 'EG'?'🇪🇬':pkg.country_code === 'US'?'🇺🇸':'🌍'), 
                 data: pkg.data || 'غير محدد', 
                 validity: pkg.validity || '7 أيام', 
                 price: parseFloat(pkg.sellingPrice || pkg.price || 35.00).toFixed(2), 
                 type: pkg.type || 'local', 
                 isHot: pkg.isHot || false 
             }));
-            if(typeof renderPackages === 'function') renderPackages(window.allPackages);
+            if(typeof renderPackages === 'function') renderPackages(window.allPackages, data.isFeatured);
         } else if (container) {
-            container.innerHTML = `<div class="col-span-full text-center text-[#ff4d4d] font-bold py-10 bg-[#800000]/20 backdrop-blur-md rounded-2xl border border-[#800000]/50 shadow-[0_0_15px_rgba(128,0,0,0.3)]">عذراً، لم نتمكن من العثور على باقات لهذه الوجهة حالياً. السيرفر يقوم بمزامنة الباقات، يرجى المحاولة بعد قليل.</div>`;
+            container.innerHTML = `<div class="col-span-full text-center text-[#ff4d4d] font-bold py-10 bg-[#800000]/20 backdrop-blur-md rounded-2xl border border-[#800000]/50 shadow-[0_0_15px_rgba(128,0,0,0.3)]">عذراً، لم نتمكن من العثور على باقات لهذه الوجهة حالياً. قد يكون السيرفر يزامن الباقات الآن.</div>`;
         }
     } catch (error) {
         if(container) container.innerHTML = `<div class="col-span-full text-center text-[#ff4d4d] font-bold py-10 bg-[#800000]/20 backdrop-blur-md rounded-2xl border border-[#800000]/50 shadow-[0_0_15px_rgba(128,0,0,0.3)]">حدث خطأ في الاتصال بالخادم، يرجى تحديث الصفحة.</div>`;
@@ -60,7 +71,7 @@ async function fetchPackages(query = '') {
 // ==========================================
 // 🚀 عرض الباقات (B2C Storefront)
 // ==========================================
-function renderPackages(packages) {
+function renderPackages(packages, isFeatured = false) {
     const container = document.getElementById('packagesContainer');
     if (!container) return;
     let html = '';
@@ -72,6 +83,9 @@ function renderPackages(packages) {
             ? `<span class="bg-[#800000]/30 text-[#ff4d4d] border border-[#800000]/50 px-2.5 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(128,0,0,0.4)]">🔥 غير محدود</span>` 
             : `<span class="bg-[#00b4d8]/10 text-[#00b4d8] border border-[#00b4d8]/30 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-[0_0_10px_rgba(0,180,216,0.2)]">⚡ تفعيل فوري</span>`;
             
+        // 🚀 زر "عرض المزيد" يظهر فقط في الشاشة الرئيسية لأهم 10 دول
+        let moreBtn = isFeatured ? `<button onclick="searchByCountryCode('${pkg.country_code}', '${pkg.country}')" class="mt-3 w-full bg-black/40 border border-white/10 hover:border-[#00b4d8]/50 hover:bg-[#00b4d8]/10 text-slate-300 hover:text-[#00b4d8] py-2 rounded-xl text-[10px] font-bold transition-colors shadow-sm flex items-center justify-center gap-2">عرض كل باقات ${pkg.country} <i class="fa-solid fa-arrow-left text-[9px]"></i></button>` : '';
+
         html += `
         <div class="bg-black/40 backdrop-blur-xl border border-white/5 hover:border-[#00b4d8]/30 rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,180,216,0.15)] group" style="animation: fadeInUp 0.5s ease forwards; animation-delay: ${delay}ms; opacity: 0;">
             <div>
@@ -102,23 +116,27 @@ function renderPackages(packages) {
                 </div>
             </div>
             
-            <div class="flex items-center justify-between border-t border-white/10 pt-4 relative z-10">
-                <div class="text-right flex flex-col">
-                    <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الشامل</span>
-                    <div class="flex items-baseline gap-1" dir="ltr">
-                        <span class="font-black text-2xl text-white price-val drop-shadow-[0_0_8px_rgba(0,180,216,0.3)]" data-aed="${pkg.price}">${pkg.price}</span>
-                        <span class="text-[10px] font-black text-[#00b4d8]">AED</span>
+            <div class="flex flex-col relative z-10 border-t border-white/10 pt-4">
+                <div class="flex items-center justify-between w-full mb-3">
+                    <div class="text-right flex flex-col">
+                        <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الشامل</span>
+                        <div class="flex items-baseline gap-1" dir="ltr">
+                            <span class="font-black text-2xl text-white price-val drop-shadow-[0_0_8px_rgba(0,180,216,0.3)]" data-aed="${pkg.price}">${pkg.price}</span>
+                            <span class="text-[10px] font-black text-[#00b4d8]">AED</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button aria-label="شراء الباقة" onclick="openCheckoutModalByIndex(${index})" class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-5 py-2.5 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer border-none shadow-[0_0_15px_rgba(0,180,216,0.4)] hover:shadow-[0_0_25px_rgba(0,180,216,0.6)]">
+                            شراء الآن <i class="fa-solid fa-bolt"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="flex flex-col gap-2">
-                    <button aria-label="شراء الباقة" onclick="openCheckoutModalByIndex(${index})" class="bg-[#00b4d8] hover:bg-[#0096b4] text-white px-5 py-2.5 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer border-none shadow-[0_0_15px_rgba(0,180,216,0.4)] hover:shadow-[0_0_25px_rgba(0,180,216,0.6)]">
-                        شراء الآن <i class="fa-solid fa-bolt"></i>
-                    </button>
-                    <!-- 🚀 زر التفاصيل المتقدمة (يستدعي مسار Product Information) -->
-                    <button onclick="fetchPackageDetails('${pkg.id}')" class="bg-transparent border border-white/10 hover:border-[#00b4d8]/50 text-slate-300 hover:text-[#00b4d8] px-5 py-1.5 rounded-xl font-bold text-[10px] transition-colors cursor-pointer flex items-center justify-center gap-1.5">
-                        تفاصيل الشبكة <i class="fa-solid fa-circle-info"></i>
-                    </button>
-                </div>
+                <!-- 🚀 زر التفاصيل المتقدمة (يستدعي مسار Product Information) -->
+                <button onclick="fetchPackageDetails('${pkg.id}')" class="mb-3 bg-transparent border border-white/10 hover:border-[#00b4d8]/50 text-slate-300 hover:text-[#00b4d8] px-5 py-1.5 rounded-xl font-bold text-[10px] transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+                    تفاصيل الشبكة <i class="fa-solid fa-circle-info"></i>
+                </button>
+                <!-- إضافة زر عرض المزيد هنا -->
+                ${moreBtn}
             </div>
         </div>`;
     });
@@ -300,7 +318,6 @@ async function verifyPaymentAndFulfill() {
         if(typeof switchView === 'function') switchView('dashboardView');
         const pendingTopupStr = localStorage.getItem('pending_topup_order');
         
-        // مسار إعادة الشحن
         if (pendingTopupStr) {
             const topupData = JSON.parse(pendingTopupStr); 
             let esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || []; 
@@ -313,7 +330,6 @@ async function verifyPaymentAndFulfill() {
             return;
         }
 
-        // مسار شريحة جديدة
         if(typeof showToast==='function') showToast('✅ الدفع ناجح! جاري استخراج الشريحة الآن...');
         try {
             let data = { success: false };
@@ -327,8 +343,6 @@ async function verifyPaymentAndFulfill() {
             
             if (data.success && data.iccid) {
                 const pendingPkg = JSON.parse(localStorage.getItem('pending_esim_package')) || { country: 'وجهة عالمية', flag: '🌍', data: 'N/A', price: '0.00' };
-                
-                // 🚀 حفظ روابط السحابة في التخزين المحلي
                 if(typeof saveEsimLocally === 'function') {
                     saveEsimLocally({ 
                         ...pendingPkg, 
@@ -342,7 +356,6 @@ async function verifyPaymentAndFulfill() {
                         usedBytes: 0 
                     });
                 }
-                
                 const user = typeof getSavedUser === 'function' ? getSavedUser() : null;
                 if (user && data.earnedCashback > 0) {
                     user.walletBalance = (user.walletBalance || 0) + data.earnedCashback;
@@ -362,5 +375,82 @@ async function verifyPaymentAndFulfill() {
     } else if (paymentStatus === 'failed') { 
         if(typeof showToast==='function') showToast('❌ تعذر إتمام عملية الدفع.', true); 
         window.history.replaceState({}, document.title, window.location.pathname); 
+    }
+}
+
+// ==========================================
+// 🚀 الأدوات المساعدة (Helpers)
+// ==========================================
+function installSmartEsim(lpaString) {
+    if (!lpaString) return; navigator.clipboard.writeText(lpaString).catch(() => {});
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) { 
+        if(typeof showToast==='function') showToast('جاري التوجيه لتطبيق الإعدادات...'); 
+        window.location.href = `https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=${encodeURIComponent(lpaString)}`; 
+    }
+    else { 
+        if(typeof showToast==='function') showToast('تم نسخ رمز LPA! انتقل للإعدادات'); 
+        alert(`تم نسخ رمز التفعيل.\nاذهب إلى إعدادات الهاتف > الاتصالات > إدارة بطاقة SIM > إضافة eSIM > أدخل الرمز يدوياً والصقه.`); 
+    }
+}
+
+function downloadQrCode(qrUrl, countryName) {
+    if (!qrUrl) return; 
+    if(typeof showToast==='function') showToast('جاري تحضير الـ QR Code...');
+    const newTab = window.open(); 
+    newTab.document.write(`<html dir="rtl"><head><title>كود eSIM</title></head><body style="background:#050a0f;color:white;text-align:center;font-family:sans-serif;padding:30px;"><h2>رمز تفعيل شريحة ${countryName}</h2><p style="color:#00b4d8;">خذ لقطة شاشة (Screenshot) أو اضغط مطولاً للحفظ</p><img src="${qrUrl}" style="max-width:300px;border-radius:20px;background:white;padding:15px;margin-top:20px;box-shadow: 0 0 20px rgba(0,180,216,0.5);" /></body></html>`);
+}
+
+async function fetchInstructions(iccid) {
+    const modal = document.getElementById('instructionsModal'), content = document.getElementById('instructionsContent'), body = document.getElementById('instructionsBody');
+    if(!modal) return;
+    modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
+    body.innerHTML = `<div class="flex flex-col items-center justify-center py-10"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00b4d8] mb-3"></div><p class="text-xs text-slate-400">جاري تحميل إرشادات التثبيت الآمن...</p></div>`;
+    try {
+        const res = await fetch(`${API_URL}/api/airalo/instructions/${iccid}?lang=ar`), data = await res.json();
+        if (data.success && data.instructions) {
+            let html = ''; const inst = data.instructions;
+            if (inst.ios && inst.ios.length > 0) { 
+                html += `<div class="mb-4"><h4 class="text-white font-bold mb-2 flex items-center gap-2"><i class="fa-brands fa-apple text-xl"></i> أجهزة أبل (iOS):</h4>`; 
+                inst.ios.forEach(item => { if (item.installation_manual && item.installation_manual.steps) { html += `<div class="bg-black/40 border border-white/5 p-3 rounded-xl mb-2 text-xs">`; Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => { html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`; }); html += `</div>`; } }); html += `</div>`; 
+            }
+            if (inst.android && inst.android.length > 0) { 
+                html += `<div><h4 class="text-[#00b4d8] font-bold mb-2 flex items-center gap-2"><i class="fa-brands fa-android text-xl"></i> أجهزة أندرويد:</h4>`; 
+                inst.android.forEach(item => { if (item.installation_manual && item.installation_manual.steps) { html += `<div class="bg-black/40 border border-white/5 p-3 rounded-xl mb-2 text-xs">`; Object.values(item.installation_manual.steps).forEach((stepText, sIdx) => { html += `<p class="mb-1 text-slate-300"><strong>خطوة ${sIdx + 1}:</strong> ${stepText}</p>`; }); html += `</div>`; } }); html += `</div>`; 
+            }
+            body.innerHTML = html || '<p class="text-center text-slate-400">لا توجد إرشادات متاحة.</p>';
+        } else body.innerHTML = '<p class="text-center text-[#ff4d4d]">تعذر تحميل الإرشادات من المزوّد.</p>';
+    } catch (err) { body.innerHTML = '<p class="text-center text-[#ff4d4d]">حدث خطأ في الاتصال بالشبكة.</p>'; }
+}
+
+function openCheckoutModalByIndex(index) {
+    const pkg = window.allPackages[index];
+    if (!pkg) return;
+    currentSelectedPackage = pkg; originalPriceAED = parseFloat(pkg.price); finalPriceAED = originalPriceAED; walletDeductionAED = 0;
+    
+    const countryEl = document.getElementById('modalCountry'), dataEl = document.getElementById('modalData'), opEl = document.getElementById('modalOriginalPrice'), fpEl = document.getElementById('modalFinalPrice');
+    if(countryEl) countryEl.innerText = `${pkg.country} ${pkg.flag}`; 
+    if(dataEl) dataEl.innerText = pkg.data; 
+    if(opEl) opEl.innerText = originalPriceAED.toFixed(2); 
+    if(fpEl) fpEl.innerText = finalPriceAED.toFixed(2);
+    
+    const user = typeof getSavedUser === 'function' ? getSavedUser() : null, actionArea = document.getElementById('checkoutActionArea'), walletArea = document.getElementById('walletDeductionArea'), walletCheckbox = document.getElementById('useWalletCheckbox');
+    if (user && actionArea) {
+        if (parseFloat(user.walletBalance || 0) > 0 && walletArea) { 
+            walletArea.classList.remove('hidden'); 
+            document.getElementById('availableWalletLabel').innerText = `الرصيد المتاح: ${parseFloat(user.walletBalance).toFixed(2)} AED`; 
+            if(walletCheckbox) walletCheckbox.checked = false; 
+            if(document.getElementById('deductedAmountLabel')) document.getElementById('deductedAmountLabel').innerText = '-0.00 AED'; 
+        } else if (walletArea) {
+            walletArea.classList.add('hidden');
+        }
+        if(typeof updateCheckoutButtonUI === 'function') updateCheckoutButtonUI(finalPriceAED);
+    } else if (actionArea && walletArea) {
+        walletArea.classList.add('hidden'); 
+        actionArea.innerHTML = `<div class="text-center mb-4"><span class="text-xs font-bold text-slate-400">يجب تسجيل الدخول لإتمام الشراء الآمن</span></div><a href="register.html" class="w-full bg-[#00b4d8] hover:bg-[#0096b4] text-white font-black py-4 rounded-xl shadow-[0_0_15px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">تسجيل الدخول <i class="fa-regular fa-user"></i></a>`;
+    }
+    const modal = document.getElementById('checkoutModal'), content = document.getElementById('checkoutContent');
+    if(modal && content) {
+        modal.classList.remove('hidden'); 
+        setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
     }
 }
