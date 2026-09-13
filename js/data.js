@@ -16,7 +16,7 @@ let finalPriceAED = 0;
 let walletDeductionAED = 0;
 let currentTopupIccid = '';
 
-// خريطة الدول والأعلام للبحث الذكي (يمكنك إضافة المزيد لاحقاً)
+// خريطة الدول والأعلام للبحث الذكي (تم إضافة جميع الدول المطلوبة)
 const countryMap = {
     'الامارات': { code: 'AE', flag: '🇦🇪', name: 'الإمارات' },
     'الإمارات': { code: 'AE', flag: '🇦🇪', name: 'الإمارات' },
@@ -25,14 +25,36 @@ const countryMap = {
     'عمان': { code: 'OM', flag: '🇴🇲', name: 'سلطنة عمان' },
     'البحرين': { code: 'BH', flag: '🇧🇭', name: 'البحرين' },
     'كويت': { code: 'KW', flag: '🇰🇼', name: 'الكويت' },
+    'الكويت': { code: 'KW', flag: '🇰🇼', name: 'الكويت' },
     'تركيا': { code: 'TR', flag: '🇹🇷', name: 'تركيا' },
     'أوروبا': { code: 'EU', flag: '🇪🇺', name: 'أوروبا الموحدة' },
     'اوروبا': { code: 'EU', flag: '🇪🇺', name: 'أوروبا الموحدة' },
+    'شينغن': { code: 'EU', flag: '🇪🇺', name: 'أوروبا الموحدة' },
+    'الشينغن': { code: 'EU', flag: '🇪🇺', name: 'أوروبا الموحدة' },
     'مصر': { code: 'EG', flag: '🇪🇬', name: 'مصر' },
     'بريطانيا': { code: 'GB', flag: '🇬🇧', name: 'بريطانيا' },
-    'عالمي': { code: 'GLOBAL', flag: '🌍', name: 'باقة عالمية' },
     'امريكا': { code: 'US', flag: '🇺🇸', name: 'الولايات المتحدة' },
     'أمريكا': { code: 'US', flag: '🇺🇸', name: 'الولايات المتحدة' },
+    'المالديف': { code: 'MV', flag: '🇲🇻', name: 'المالديف' },
+    'جورجيا': { code: 'GE', flag: '🇬🇪', name: 'جورجيا' },
+    'ارمينيا': { code: 'AM', flag: '🇦🇲', name: 'أرمينيا' },
+    'أرمينيا': { code: 'AM', flag: '🇦🇲', name: 'أرمينيا' },
+    'تنزانيا': { code: 'TZ', flag: '🇹🇿', name: 'تنزانيا' },
+    'تانزانيا': { code: 'TZ', flag: '🇹🇿', name: 'تنزانيا' },
+    'ايطاليا': { code: 'IT', flag: '🇮🇹', name: 'إيطاليا' },
+    'إيطاليا': { code: 'IT', flag: '🇮🇹', name: 'إيطاليا' },
+    'ماليزيا': { code: 'MY', flag: '🇲🇾', name: 'ماليزيا' },
+    'سنغافورة': { code: 'SG', flag: '🇸🇬', name: 'سنغافورة' },
+    'سنغافورا': { code: 'SG', flag: '🇸🇬', name: 'سنغافورة' },
+    'الصين': { code: 'CN', flag: '🇨🇳', name: 'الصين' },
+    'اليابان': { code: 'JP', flag: '🇯🇵', name: 'اليابان' },
+    'الاردن': { code: 'JO', flag: '🇯🇴', name: 'الأردن' },
+    'الأردن': { code: 'JO', flag: '🇯🇴', name: 'الأردن' },
+    'لبنان': { code: 'LB', flag: '🇱🇧', name: 'لبنان' },
+    'العراق': { code: 'IQ', flag: '🇮🇶', name: 'العراق' },
+    'سوريا': { code: 'SY', flag: '🇸🇾', name: 'سوريا' },
+    'فيتنام': { code: 'VN', flag: '🇻🇳', name: 'فيتنام' },
+    'عالمي': { code: 'GLOBAL', flag: '🌍', name: 'باقة عالمية' },
     '': { code: '', flag: '🌍', name: 'الوجهات المتوفرة' } 
 };
 
