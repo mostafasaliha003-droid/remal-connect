@@ -682,6 +682,27 @@
         </div>
     </div>
 
+    <!-- 🚀 Network Details Modal (نافذة تفاصيل الشبكة) -->
+    <div id="networkDetailsModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-brand-base/90 backdrop-blur-md cursor-pointer" onclick="closeNetworkDetailsModal()"></div>
+        <div class="checkout-modal w-[90%] max-w-sm p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300" id="networkDetailsContent">
+            <button aria-label="إغلاق" onclick="closeNetworkDetailsModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-brand-red hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-16 h-16 bg-brand-cyan/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-brand-cyan border border-brand-cyan/30 shadow-[0_0_15px_rgba(0,180,216,0.3)]">
+                <i class="fa-solid fa-tower-cell text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-black text-white mb-6 text-center drop-shadow-md">تفاصيل التغطية والشبكة 📡</h3>
+            
+            <!-- سيتم حقن تفاصيل الشبكة هنا من الجافاسكريبت -->
+            <div id="networkDetailsBody" class="space-y-3 mb-6">
+                <div class="flex justify-center py-5"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-cyan"></div></div>
+            </div>
+            
+            <button onclick="closeNetworkDetailsModal()" class="w-full masterstroke-btn text-white font-black py-3.5 rounded-xl shadow-[0_0_20px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                حسناً، فهمت <i class="fa-solid fa-check"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- 🚀 ربط الجافاسكربت المركزي مع كاسر الكاش -->
     <script src="js/data.js?v=2.0"></script>
     <script src="js/ui.js?v=2.0"></script>
