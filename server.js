@@ -295,15 +295,51 @@ cron.schedule('0 * * * *', syncAiraloPackages);
 setTimeout(syncAiraloPackages, 5000); 
 
 // ==========================================
-// مسار جلب الباقات السريع للمستخدم 
+// مسار جلب الباقات السريع للمستخدم (تم تحسينه لتفادي البطء)
 // ==========================================
 app.get('/api/airalo/packages', async (req, res) => {
     try {
-        const query = {};
-        if (req.query.country) query.country_code = req.query.country.toUpperCase();
+        const countryQuery = req.query.country;
+
+        // 1. حالة فتح الموقع الرئيسية (بدون بحث): عرض باقة واحدة لأهم 10 دول
+        if (!countryQuery) {
+            const topCountries = ['TR', 'AE', 'SA', 'EG', 'GB', 'FR', 'US', 'TH', 'CH', 'IT'];
+            let featuredPackages = [];
+
+            for (let code of topCountries) {
+                // جلب أرخص باقة لكل دولة من الدول المهمة
+                const pkg = await AiraloPackage.findOne({ country_code: code }).sort({ price: 1 });
+                if (pkg) featuredPackages.push(pkg);
+            }
+
+            if (featuredPackages.length === 0) {
+                return res.json({ success: true, count: 1, isFeatured: true, packages: [
+                    { id: "mock_1", package_id: "mock_1", country: "جاري مزامنة الباقات...", country_code: "AE", data: "تحديث", validity: "قريباً", price: "0.00", sellingPrice: "0.00", type: "local" }
+                ]});
+            }
+
+            const formattedPackages = featuredPackages.map(pkg => ({
+                id: pkg.package_id,
+                package_id: pkg.package_id,
+                country: pkg.country_title,
+                country_code: pkg.country_code,
+                operator: pkg.operator_title,
+                data: pkg.data,
+                validity: pkg.validity,
+                price: pkg.price,
+                sellingPrice: pkg.price,
+                type: pkg.type,
+                isHot: pkg.is_unlimited
+            }));
+            
+            return res.json({ success: true, count: formattedPackages.length, isFeatured: true, packages: formattedPackages });
+        }
+
+        // 2. حالة البحث عن دولة محددة: جلب باقات الدولة بحد أقصى 15 باقة
+        const query = { country_code: countryQuery.toUpperCase() };
         if (req.query.type) query.type = req.query.type;
 
-        const dbPackages = await AiraloPackage.find(query).sort({ price: 1 });
+        const dbPackages = await AiraloPackage.find(query).sort({ price: 1 }).limit(15);
 
         if (dbPackages.length > 0) {
             const formattedPackages = dbPackages.map(pkg => ({
@@ -319,14 +355,13 @@ app.get('/api/airalo/packages', async (req, res) => {
                 type: pkg.type,
                 isHot: pkg.is_unlimited
             }));
-            return res.json({ success: true, count: formattedPackages.length, packages: formattedPackages });
+            return res.json({ success: true, count: formattedPackages.length, isFeatured: false, packages: formattedPackages });
         }
 
-        return res.json({ success: true, count: 1, packages: [
-            { id: "mock_1", package_id: "mock_1", country: "جاري المزامنة مع Airalo", country_code: "AE", data: "تحديث", validity: "قريباً", price: "0.00", sellingPrice: "0.00", type: "local" }
-        ]});
+        return res.json({ success: true, count: 0, packages: [] });
 
     } catch (error) {
+        console.error('❌ خطأ في مسار جلب الباقات:', error.message);
         res.status(500).json({ success: false, message: 'تعذر جلب الباقات' });
     }
 });
