@@ -1,27 +1,66 @@
+// ==========================================
+// 🚀 التفاعل المركزي والمحرك الرئيسي (Main Controller)
+// ==========================================
+
 document.addEventListener('DOMContentLoaded', () => {
-    const container = document.querySelector('.perspective-container'), phone = document.getElementById('phoneMockup');
+    // 1. تأثير الـ 3D التفاعلي للهاتف (Glassmorphism Mockup)
+    const container = document.querySelector('.perspective-container');
+    const phone = document.getElementById('phoneMockup');
+    
     if (container && phone) {
         container.addEventListener('mousemove', (e) => {
-            const rect = container.getBoundingClientRect(), rotateX = (((e.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * -15, rotateY = (((e.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 15;
-            phone.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            // إيقاف التأثير التفاعلي على شاشات الموبايل لتجربة مستخدم أفضل
+            if (window.innerWidth < 1024) return; 
+            
+            const rect = container.getBoundingClientRect();
+            const rotateX = (((e.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * -12;
+            const rotateY = (((e.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 12;
+            
+            phone.style.transition = 'transform 0.1s ease-out';
+            phone.style.transform = `scale(1) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
-        container.addEventListener('mouseleave', () => { phone.style.transform = `rotateX(0deg) rotateY(0deg)`; });
+        
+        container.addEventListener('mouseleave', () => { 
+            // عودة الهاتف لوضعه الطبيعي بسلاسة
+            phone.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            phone.style.transform = `scale(1) rotateX(0deg) rotateY(0deg)`; 
+        });
     }
     
-    updateAuthUI();
-    fetchPackages();
-    verifyPaymentAndFulfill(); 
+    // 2. تهيئة الواجهة وجلب البيانات المباشرة
+    if (typeof updateAuthUI === 'function') updateAuthUI();
+    if (typeof fetchPackages === 'function') fetchPackages();
+    
+    // 3. التقاط استجابة بوابة الدفع (Ziina) فور عودة العميل للمتجر
+    if (typeof verifyPaymentAndFulfill === 'function') verifyPaymentAndFulfill(); 
 
+    // 4. تشغيل محرك البحث الذكي للوجهات
     const searchForm = document.getElementById('searchForm');
-    if(searchForm) {
+    if (searchForm) {
         searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            fetchPackages(document.getElementById('searchInput').value.trim());
-            document.getElementById('packagesSection').scrollIntoView({ behavior: 'smooth' });
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput && typeof fetchPackages === 'function') {
+                fetchPackages(searchInput.value.trim());
+                // التمرير السلس لقسم النتائج
+                const packagesSection = document.getElementById('packagesSection');
+                if (packagesSection) packagesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
     }
 });
 
+// ==========================================
+// 🚀 تسجيل تطبيق الويب التقدمي (PWA Service Worker)
+// ==========================================
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed: ', err)); });
+    window.addEventListener('load', () => { 
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('✅ [PWA] Service Worker is active and running.');
+            })
+            .catch(err => {
+                console.error('❌ [PWA] Service Worker registration failed:', err);
+            }); 
+    });
 }
