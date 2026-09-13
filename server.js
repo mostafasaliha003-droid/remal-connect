@@ -332,6 +332,20 @@ app.get('/api/airalo/packages', async (req, res) => {
 });
 
 // ==========================================
+// 🚀 مسار جلب التفاصيل المتقدمة للباقة (يُستدعى عند الطلب فقط)
+// ==========================================
+app.get('/api/airalo/packages/:slug/info', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        const response = await airaloApiRequest('get', `/packages/${slug}/product-information`);
+        res.json({ success: true, info: response.data?.data || response.data });
+    } catch (error) {
+        console.error(`⚠️ خطأ في جلب التفاصيل المتقدمة للباقة ${req.params.slug}:`, error.message);
+        res.status(500).json({ success: false, message: 'تعذر جلب تفاصيل الباقة في الوقت الحالي.' });
+    }
+});
+
+// ==========================================
 // 🚀 مسار جلب الأجهزة المتوافقة (Lite)
 // ==========================================
 app.get('/api/airalo/devices', async (req, res) => {
