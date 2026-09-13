@@ -580,12 +580,48 @@ app.get('/api/airalo/sim/:iccid', async (req, res) => {
 // ==========================================
 // مسار الخطافات (Webhooks) لاستقبال التنبيهات من Airalo
 // ==========================================
+
+// 1. مسار التحقق (HEAD): تحتاجه Airalo لتفعيل الخطاف في لوحة التحكم الخاصة بهم
+app.head('/api/webhooks/airalo', (req, res) => {
+    res.status(200).send();
+});
+
+// 2. مسار استقبال الإشعارات (POST)
 app.post('/api/webhooks/airalo', async (req, res) => {
     try {
-        const payload = req.body;
-        console.log('🔔 [WEBHOOK] تم استلام إشعار جديد من Airalo:', payload);
-        res.status(200).send('Webhook Received');
+        const signature = req.headers['airalo-signature'];
+        let payload = req.body;
+
+        // التحقق الأمني من التوقيع (HMAC SHA-512) لضمان أن الطلب من Airalo فقط
+        if (signature && process.env.AIRALO_CLIENT_SECRET) {
+            const payloadString = typeof payload === 'object' ? JSON.stringify(payload) : payload;
+            const expectedSignature = crypto.createHmac('sha512', process.env.AIRALO_CLIENT_SECRET)
+                                            .update(payloadString)
+                                            .digest('hex');
+            
+            if (expectedSignature !== signature) {
+                console.error('⛔ [WEBHOOK] تحذير أمني: توقيع غير صالح. تم رفض الطلب.');
+                return res.status(403).send('Invalid Signature');
+            }
+        }
+
+        console.log('🔔 [WEBHOOK] تم استلام إشعار موثوق من Airalo:', payload);
+
+        // أ. معالجة تنبيه "انخفاض بيانات العميل" (Low Data Notification)
+        if (payload.iccid && payload.level) {
+            console.log(`📉 [تنبيه باقة العميل] الشريحة ${payload.iccid} وصلت لمستوى: ${payload.level} - المتبقي: ${payload.remaining_percentage}%`);
+            // مستقبلاً: يمكن كتابة كود هنا يقرأ إيميل العميل من قاعدة البيانات ويرسل له إشعاراً أو واتساب لتشجيعه على إعادة الشحن (Top-up).
+        } 
+        // ب. معالجة تنبيه "انخفاض رصيد المنصة" (Credit Limit Notification)
+        else if (payload.message && payload.remaining !== undefined) {
+            console.log(`💰 [تنبيه الإدارة] تحذير: رصيد منصة Remal Connect في Airalo منخفض! الرصيد المتبقي: $${payload.remaining}`);
+        }
+
+        // يجب الرد دائماً بـ 200 لكي لا تقوم Airalo بإعادة إرسال نفس الطلب
+        res.status(200).send('Webhook Received and Processed');
+
     } catch (error) {
+        console.error('❌ خطأ في معالجة الـ Webhook:', error.message);
         res.status(500).send('Webhook Error');
     }
 });
