@@ -345,6 +345,19 @@ app.get('/api/airalo/devices', async (req, res) => {
 });
 
 // ==========================================
+// 🚀 مسار جلب رصيد محفظة Airalo (مخصص للوحة تحكم الإدارة)
+// ==========================================
+app.get('/api/airalo/balance', async (req, res) => {
+    try {
+        const response = await airaloApiRequest('get', '/balance');
+        res.json({ success: true, balance: response.data?.data || response.data });
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب رصيد Airalo:', error.message);
+        res.status(500).json({ success: false, message: 'تعذر جلب الرصيد الاستراتيجي' });
+    }
+});
+
+// ==========================================
 // مسار الدفع
 // ==========================================
 app.post('/api/checkout', async (req, res) => {
