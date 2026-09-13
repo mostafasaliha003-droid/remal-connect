@@ -1,9 +1,41 @@
+// ==========================================
+// 🚀 تحديث واجهة المستخدم والهوية البصرية (UI Controller)
+// ==========================================
+
 function getTierInfo(purchasesCount) {
     const count = parseInt(purchasesCount) || 0;
-    if (count <= 4) return { name: "الدرع الفضي", key: "silver", rate: 0.01, rateText: "كاش باك 1%", tagClass: "bg-slate-500/20 text-slate-300 border-slate-500/30", borderClass: "border-slate-400", glowColor: "bg-slate-400", progressGrad: "bg-gradient-to-l from-slate-200 to-slate-400", nextTier: "الدرع الذهبي (5 مشتريات)", progress: Math.min((count / 4) * 100, 100), desc: count === 0 ? "أكمل أول عملية شراء للبدء في حصد الكاش باك!" : `أكملت ${count} من 4 طلبات للوصول للدرع الذهبي!` };
-    else if (count <= 10) return { name: "الدرع الذهبي", key: "gold", rate: 0.015, rateText: "كاش باك 1.5%", tagClass: "bg-amber-500/20 text-amber-300 border-amber-500/30", borderClass: "border-amber-400", glowColor: "bg-amber-400", progressGrad: "bg-gradient-to-l from-amber-300 to-amber-500", nextTier: "الدرع البلاتيني (11 شراء)", progress: Math.min(((count - 4) / 6) * 100, 100), desc: `أكملت ${count} طلبات! يتبقى ${11 - count} طلبات للترقية للدرع البلاتيني.` };
-    else if (count <= 20) return { name: "الدرع البلاتيني", key: "platinum", rate: 0.02, rateText: "كاش باك 2%", tagClass: "bg-[#06b6d4]/20 text-[#06b6d4] border-[#06b6d4]/30", borderClass: "border-[#06b6d4]", glowColor: "bg-[#06b6d4]", progressGrad: "bg-gradient-to-l from-cyan-300 to-[#06b6d4]", nextTier: "الدرع الماسي VIP (21 شراء)", progress: Math.min(((count - 10) / 10) * 100, 100), desc: `رائع! ${count} طلبات مكتملة. يتبقى ${21 - count} طلبات لأعلى تصنيف!` };
-    else return { name: "الدرع الماسي VIP", key: "diamond", rate: 0.03, rateText: "كاش باك 3%", tagClass: "bg-purple-500/20 text-purple-300 border-purple-500/30", borderClass: "border-purple-400", glowColor: "bg-purple-400", progressGrad: "bg-gradient-to-l from-purple-300 to-purple-500", nextTier: "أعلى مستوى نخبوي", progress: 100, desc: "أنت في أعلى تصنيف نخبوي! تتمتع بأقصى نسبة كاش باك 3% على كل طلب." };
+    if (count <= 4) return { 
+        name: "الدرع الفضي", key: "silver", rate: 0.01, rateText: "كاش باك 1%", 
+        tagClass: "bg-slate-500/20 text-slate-300 border-slate-500/30 shadow-[0_0_10px_rgba(100,116,139,0.3)]", 
+        borderClass: "border-slate-400", glowColor: "bg-slate-400", 
+        progressGrad: "bg-gradient-to-l from-slate-200 to-slate-400 shadow-[0_0_8px_rgba(100,116,139,0.5)]", 
+        nextTier: "الدرع الذهبي (5 مشتريات)", progress: Math.min((count / 4) * 100, 100), 
+        desc: count === 0 ? "أكمل أول عملية شراء للبدء في حصد الكاش باك!" : `أكملت ${count} من 4 طلبات للوصول للدرع الذهبي!` 
+    };
+    else if (count <= 10) return { 
+        name: "الدرع الذهبي", key: "gold", rate: 0.015, rateText: "كاش باك 1.5%", 
+        tagClass: "bg-[#00b4d8]/20 text-[#00b4d8] border-[#00b4d8]/30 shadow-[0_0_10px_rgba(0,180,216,0.3)]", 
+        borderClass: "border-[#00b4d8]", glowColor: "bg-[#00b4d8]", 
+        progressGrad: "bg-gradient-to-l from-[#48cae4] to-[#00b4d8] shadow-[0_0_8px_rgba(0,180,216,0.5)]", 
+        nextTier: "الدرع البلاتيني (11 شراء)", progress: Math.min(((count - 4) / 6) * 100, 100), 
+        desc: `أكملت ${count} طلبات! يتبقى ${11 - count} طلبات للترقية للدرع البلاتيني.` 
+    };
+    else if (count <= 20) return { 
+        name: "الدرع البلاتيني", key: "platinum", rate: 0.02, rateText: "كاش باك 2%", 
+        tagClass: "bg-[#023e8a]/40 text-[#00b4d8] border-[#00b4d8]/50 shadow-[0_0_10px_rgba(0,180,216,0.5)]", 
+        borderClass: "border-[#0077b6]", glowColor: "bg-[#0077b6]", 
+        progressGrad: "bg-gradient-to-l from-[#00b4d8] to-[#023e8a] shadow-[0_0_10px_rgba(2,62,138,0.5)]", 
+        nextTier: "الدرع الماسي VIP (21 شراء)", progress: Math.min(((count - 10) / 10) * 100, 100), 
+        desc: `رائع! ${count} طلبات مكتملة. يتبقى ${21 - count} طلبات لأعلى تصنيف!` 
+    };
+    else return { 
+        name: "الدرع الماسي VIP", key: "diamond", rate: 0.03, rateText: "كاش باك 3%", 
+        tagClass: "bg-[#800000]/30 text-[#ff4d4d] border-[#ff4d4d]/30 shadow-[0_0_15px_rgba(128,0,0,0.5)]", 
+        borderClass: "border-[#800000]", glowColor: "bg-[#800000]", 
+        progressGrad: "bg-gradient-to-l from-[#ff4d4d] to-[#800000] shadow-[0_0_15px_rgba(128,0,0,0.8)]", 
+        nextTier: "أعلى مستوى نخبوي", progress: 100, 
+        desc: "أنت في أعلى تصنيف نخبوي! تتمتع بأقصى نسبة كاش باك 3% على كل طلب." 
+    };
 }
 
 function getSavedUser() {
@@ -37,12 +69,12 @@ function handleMobileAccountNav(e) {
 
 function convertCurrency() {
     const selector = document.getElementById('currencySelector');
-    if (selector) currentCurrency = selector.value;
+    if (selector && typeof currentCurrency !== 'undefined') currentCurrency = selector.value;
     document.querySelectorAll('.price-val').forEach(el => {
         const baseAED = parseFloat(el.getAttribute('data-aed'));
-        if (baseAED) {
+        if (baseAED && typeof exchangeRates !== 'undefined') {
             const converted = (baseAED * exchangeRates[currentCurrency]).toFixed(2);
-            el.innerHTML = `${converted} <span class="text-[10px] text-brand-cyan">${currentCurrency}</span>`;
+            el.innerHTML = `${converted} <span class="text-[10px] text-[#00b4d8] drop-shadow-md">${currentCurrency}</span>`;
         }
     });
 }
@@ -51,9 +83,11 @@ function showToast(message, isError = false) {
     const toast = document.getElementById('toastMsg'), icon = document.getElementById('toastIcon');
     if (!toast || !icon) return;
     document.getElementById('toastText').innerText = message;
-    icon.className = isError ? 'fa-solid fa-circle-xmark text-rose-500 text-xl' : 'fa-solid fa-circle-check text-brand-cyan text-xl';
-    toast.classList.remove('opacity-0', '-translate-y-32');
-    toast.classList.add('opacity-100', 'translate-y-0');
+    
+    // تطبيق ألوان الهوية على التنبيهات
+    icon.className = isError ? 'fa-solid fa-circle-xmark text-[#ff4d4d] text-xl drop-shadow-[0_0_8px_rgba(255,77,77,0.5)]' : 'fa-solid fa-circle-check text-[#00b4d8] text-xl drop-shadow-[0_0_8px_rgba(0,180,216,0.5)]';
+    toast.className = isError ? 'fixed top-24 left-1/2 -translate-x-1/2 opacity-100 bg-[#800000]/90 text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(128,0,0,0.6)] border border-[#ff4d4d]/50 flex items-center gap-3 z-[10000] backdrop-blur-md transition-all duration-400 translate-y-0' : 'fixed top-24 left-1/2 -translate-x-1/2 opacity-100 bg-[#0c151c]/90 text-white px-6 py-3.5 rounded-full font-bold text-sm shadow-[0_20px_50px_rgba(0,180,216,0.4)] border border-[#00b4d8]/40 flex items-center gap-3 z-[10000] backdrop-blur-md transition-all duration-400 translate-y-0';
+    
     setTimeout(() => { toast.classList.add('opacity-0', '-translate-y-32'); toast.classList.remove('opacity-100', 'translate-y-0'); }, 3500);
 }
 
@@ -70,33 +104,34 @@ function updateAuthUI() {
         const walletBalance = parseFloat(user.walletBalance || 0).toFixed(2);
         
         authArea.innerHTML = `
-            <select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-transparent border border-white/20 text-white hover:bg-white/10 text-xs font-bold py-2 px-3 rounded-2xl outline-none cursor-pointer transition-all appearance-none text-center backdrop-blur-md focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan">
-                <option value="AED" class="bg-slate-900 text-white">AED</option><option value="SAR" class="bg-slate-900 text-white">SAR</option><option value="USD" class="bg-slate-900 text-white">USD</option><option value="EUR" class="bg-slate-900 text-white">EUR</option>
+            <select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-transparent border border-white/20 text-white hover:bg-white/10 text-xs font-bold py-2 px-3 rounded-2xl outline-none cursor-pointer transition-all appearance-none text-center backdrop-blur-md focus:border-[#00b4d8] focus:ring-1 focus:ring-[#00b4d8]">
+                <option value="AED" class="bg-[#0c151c] text-white">AED</option><option value="SAR" class="bg-[#0c151c] text-white">SAR</option><option value="USD" class="bg-[#0c151c] text-white">USD</option><option value="EUR" class="bg-[#0c151c] text-white">EUR</option>
             </select>
-            <button onclick="switchView('dashboardView')" class="flex items-center gap-3 hover:bg-white/10 px-3 py-1.5 rounded-2xl transition-all text-left cursor-pointer border border-transparent hover:border-white/10 group">
+            <button onclick="switchView('dashboardView')" class="flex items-center gap-3 hover:bg-white/5 px-3 py-1.5 rounded-2xl transition-all text-left cursor-pointer border border-transparent hover:border-[#00b4d8]/30 group">
                 <div class="flex flex-col items-end">
-                    <span class="text-[10px] font-semibold text-emerald-400 tracking-wider group-hover:text-emerald-300 transition-colors">محفظتي: ${walletBalance} AED</span>
-                    <span class="text-sm font-black text-white group-hover:text-brand-cyan transition-colors">${firstName}</span>
+                    <span class="text-[10px] font-semibold text-[#00b4d8] tracking-wider group-hover:text-[#48cae4] transition-colors">محفظتي: ${walletBalance} AED</span>
+                    <span class="text-sm font-black text-white group-hover:text-[#00b4d8] transition-colors">${firstName}</span>
                 </div>
-                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#06b6d4] to-blue-600 flex items-center justify-center text-white text-sm font-black shadow-[0_0_15px_rgba(6,182,212,0.5)] ring-2 ring-transparent group-hover:ring-brand-cyan transition-all">${initialLetter}</div>
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#00b4d8] to-[#023e8a] flex items-center justify-center text-white text-sm font-black shadow-[0_0_15px_rgba(0,180,216,0.5)] ring-2 ring-transparent group-hover:ring-[#00b4d8] transition-all">${initialLetter}</div>
             </button>
-            <button onclick="logoutUser(event)" title="تسجيل الخروج" aria-label="تسجيل الخروج" class="w-9 h-9 rounded-full bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 flex items-center justify-center transition-all cursor-pointer ml-1 shadow-sm">
+            <button onclick="logoutUser(event)" title="تسجيل الخروج" aria-label="تسجيل الخروج" class="w-9 h-9 rounded-full bg-[#800000]/20 hover:bg-[#800000] text-[#ff4d4d] hover:text-white border border-[#800000]/50 flex items-center justify-center transition-all cursor-pointer ml-1 shadow-sm">
                 <i class="fa-solid fa-power-off text-xs"></i>
             </button>
         `;
-        if(document.getElementById('currencySelector')) document.getElementById('currencySelector').value = currentCurrency;
+        if(document.getElementById('currencySelector') && typeof currentCurrency !== 'undefined') document.getElementById('currencySelector').value = currentCurrency;
     }
 }
 
 function switchView(viewId) {
     const home = document.getElementById('homeView'), dash = document.getElementById('dashboardView');
     if (viewId === 'dashboardView') { 
-        home.classList.add('hidden'); home.classList.remove('block'); 
-        dash.classList.remove('hidden'); dash.classList.add('block'); 
-        updateDashboardVIP(); renderMyEsims();
+        if(home) { home.classList.add('hidden'); home.classList.remove('block'); }
+        if(dash) { dash.classList.remove('hidden'); dash.classList.add('block'); }
+        updateDashboardVIP(); 
+        if(typeof renderMyEsims === 'function') renderMyEsims();
     } else { 
-        dash.classList.add('hidden'); dash.classList.remove('block'); 
-        home.classList.remove('hidden'); home.classList.add('block'); 
+        if(dash) { dash.classList.add('hidden'); dash.classList.remove('block'); }
+        if(home) { home.classList.remove('hidden'); home.classList.add('block'); }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -111,18 +146,21 @@ function updateDashboardVIP() {
     const container = document.getElementById('tierBannerContainer');
     if (container) container.className = `glass-pill p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] ${tier.borderClass} rounded-3xl relative overflow-hidden`;
     const badge = document.getElementById('tierShieldBadge');
-    if (badge) badge.innerHTML = SHIELD_SVGS[tier.key];
+    if (badge && typeof SHIELD_SVGS !== 'undefined') badge.innerHTML = SHIELD_SVGS[tier.key];
     const glow = document.getElementById('tierGlow');
-    if (glow) glow.className = `glow-overlay top-0 right-0 ${tier.glowColor}`;
+    if (glow) glow.className = `absolute top-0 right-0 w-32 h-32 blur-3xl opacity-20 ${tier.glowColor}`;
     const tag = document.getElementById('userTierTag');
     if (tag) { tag.innerText = tier.name; tag.className = `text-[10px] md:text-xs font-black tracking-widest uppercase px-2.5 py-0.5 rounded-md border ${tier.tagClass}`; }
     const rateBadge = document.getElementById('cashbackRateBadge');
+    // لون الكاش باك الموحد
+    if (rateBadge) rateBadge.className = `text-xs font-bold text-[#00b4d8] drop-shadow-md`;
     if (rateBadge) rateBadge.innerText = tier.rateText;
     const walletText = document.getElementById('userWalletText');
     if (walletText) walletText.innerHTML = `<i class="fa-solid fa-wallet text-xs"></i> ${walletBalance} AED`;
     const currentLevel = document.getElementById('currentLevelName');
     if (currentLevel) currentLevel.innerText = `${tier.name} (${purchasesCount} طلبات)`;
     const nextLevel = document.getElementById('nextTierName');
+    if (nextLevel) nextLevel.className = `text-[#00b4d8]`;
     if (nextLevel) nextLevel.innerText = tier.nextTier;
     const bar = document.getElementById('tierProgressBar');
     if (bar) { bar.className = `h-2.5 rounded-full transition-all duration-1000 ${tier.progressGrad}`; setTimeout(() => { bar.style.width = `${tier.progress}%`; }, 200); }
@@ -143,102 +181,52 @@ function copyReferralCode() {
     if (!code || code === '--') return;
     navigator.clipboard.writeText(code).then(() => {
         const icon = document.getElementById('copyRefIcon');
-        if (icon) { icon.className = 'fa-solid fa-check text-slate-950 text-xl'; setTimeout(() => { icon.className = 'fa-regular fa-copy'; }, 2000); }
+        if (icon) { icon.className = 'fa-solid fa-check text-white text-xl'; setTimeout(() => { icon.className = 'fa-regular fa-copy'; }, 2000); }
         showToast(`تم نسخ كود المشاركة الخاص بك: ${code} 📋`);
     });
 }
 
-function renderPackages(packages) {
-    const container = document.getElementById('packagesContainer');
-    if (!container) return;
-    let html = '';
-    packages.forEach((pkg, index) => {
-        const delay = index * 40;
-        const hotBadge = pkg.isHot ? `<span class="bg-rose-500/15 text-rose-400 border border-rose-500/30 px-2.5 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(244,63,94,0.25)]">🔥 الأكثر طلباً</span>` : `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">⚡ تفعيل فوري</span>`;
-        html += `
-        <div class="glass-card rounded-3xl p-6 flex flex-col justify-between animate-fade-in-up group" style="animation-delay: ${delay}ms;">
-            <div>
-                <div class="flex items-center justify-between mb-5 relative z-10"><div class="flex items-center gap-3.5"><div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-3xl shadow-inner group-hover:scale-105 transition-transform">${pkg.flag}</div><div class="text-right"><h4 class="font-black text-lg text-white mb-0.5 tracking-tight">${pkg.country}</h4><span class="text-brand-cyan text-[10px] font-black uppercase tracking-widest flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> 5G تغطية فائقة</span></div></div>${hotBadge}</div>
-                <div class="grid grid-cols-2 gap-2.5 mb-5 relative z-10"><div class="bg-black/40 border border-white/5 p-3 rounded-2xl flex flex-col items-center justify-center text-center group-hover:border-brand-cyan/30 transition-colors"><span class="text-[10px] font-bold text-slate-400 mb-1 flex items-center gap-1"><i class="fa-solid fa-database text-brand-cyan"></i> البيانات</span><span class="font-black text-base text-white" dir="ltr">${pkg.data}</span></div><div class="bg-black/40 border border-white/5 p-3 rounded-2xl flex flex-col items-center justify-center text-center group-hover:border-brand-cyan/30 transition-colors"><span class="text-[10px] font-bold text-slate-400 mb-1 flex items-center gap-1"><i class="fa-regular fa-clock text-brand-cyan"></i> الصلاحية</span><span class="font-black text-base text-white">${pkg.validity}</span></div></div>
-                <div class="mb-5 bg-emerald-950/25 border border-emerald-500/20 py-1.5 px-3 rounded-xl flex items-center justify-between text-[11px] font-bold text-emerald-300"><span>كاش باك فوري لمحفظتك</span><span class="font-black text-emerald-400">حتى 3% 💰</span></div>
-            </div>
-            <div class="flex items-center justify-between border-t border-white/10 pt-4 relative z-10">
-                <div class="text-right flex flex-col">
-                    <span class="block text-[9px] font-bold text-slate-400 mb-0.5">السعر الشامل</span>
-                    <div class="flex items-baseline gap-1" dir="ltr"><span class="font-black text-2xl text-white price-val drop-shadow-md" data-aed="${pkg.price}">${pkg.price}</span><span class="text-[10px] font-black text-brand-cyan">AED</span></div>
-                    <div class="flex gap-1.5 mt-1.5 opacity-50"><i class="fa-brands fa-cc-visa text-xs text-white"></i><i class="fa-brands fa-cc-mastercard text-xs text-white"></i><i class="fa-brands fa-apple-pay text-xs text-white"></i></div>
-                </div>
-                <button aria-label="شراء الباقة" onclick="openCheckoutModalByIndex(${index})" class="masterstroke-btn text-white px-5 py-3 rounded-xl font-black text-xs transition-all active:scale-95 flex items-center gap-2 cursor-pointer border-none shadow-[0_0_20px_rgba(6,182,216,0.4)] hover:shadow-[0_0_30px_rgba(6,182,216,0.6)]">فعّل باقتك فوراً <i class="fa-solid fa-bolt text-[10px]"></i></button>
-            </div>
-        </div>`;
-    });
-    container.innerHTML = html; convertCurrency(); 
-}
-
-function renderMyEsims() {
-    const container = document.getElementById('myEsimsContainer');
-    const esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
-    if (esims.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-20 glass-card rounded-3xl border border-white/5"><div class="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 text-brand-cyan text-4xl shadow-inner border border-white/10"><i class="fa-solid fa-box-open"></i></div><p class="text-white font-black text-2xl mb-3">حقيبة السفر الرقمية فارغة حالياً</p><p class="text-slate-400 font-bold text-sm mb-8 max-w-md mx-auto">اشترِ باقتك الأولى وسنقوم بحفظها هنا للوصول السريع حتى في وضع الطيران!</p><button onclick="switchView('homeView')" class="masterstroke-btn text-white px-10 py-4 rounded-xl font-black text-sm transition-transform active:scale-95 border-none cursor-pointer shadow-[0_0_20px_rgba(6,182,216,0.3)]">تصفح الباقات العالمية</button></div>`;
-        return;
-    }
-    let html = '';
-    esims.forEach((esim) => {
-        const lpaString = esim.lpa || `LPA:1$smdp.io$${esim.iccid}`;
-        let totalMB = esim.totalBytes || 3072, usedMB = esim.usedBytes || 0;
-        let percentage = (usedMB / totalMB) * 100;
-        let progressColor = percentage > 85 ? 'from-rose-500 to-red-600' : 'from-[#06b6d4] to-emerald-400';
-        html += `<div class="glass-card p-6 md:p-8 flex flex-col md:flex-row gap-8 rounded-[2rem]"><div class="w-full md:w-3/5 flex flex-col justify-between relative z-10"><div><div class="flex justify-between items-start mb-6"><div><span class="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded text-[9px] font-black tracking-wide mb-2">🟢 الشريحة فعالة</span><h3 class="text-3xl font-black text-white flex items-center gap-3 drop-shadow-md">${esim.country} <span class="text-3xl filter drop-shadow-lg">${esim.flag}</span></h3></div><div class="text-left bg-black/20 p-2 rounded-lg border border-white/5"><span class="block text-[9px] text-slate-400 font-bold mb-0.5">تاريخ الشراء</span><span class="block text-xs font-bold text-slate-200" dir="ltr">${esim.date}</span></div></div><div class="mb-6"><div class="flex justify-between text-xs font-bold mb-2"><span class="text-slate-300">الاستهلاك المباشر</span><span class="text-white bg-black/40 px-2.5 py-1 rounded-md border border-white/5" dir="ltr">${(usedMB/1024).toFixed(2)} GB / ${(totalMB/1024).toFixed(2)} GB</span></div><div class="w-full bg-[#050B14] rounded-full h-3 overflow-hidden border border-white/5 shadow-inner"><div class="bg-gradient-to-r ${progressColor} h-3 rounded-full progress-bar-fill shadow-[0_0_10px_rgba(6,182,216,0.6)]" style="width: 0%" data-width="${percentage}%"></div></div><div class="mt-4 flex flex-wrap gap-2.5"><button aria-label="شحن الرصيد" onclick="openTopupModal('${esim.iccid}')" class="bg-white hover:bg-slate-200 text-[#030712] px-5 py-2 rounded-lg text-xs font-black transition-colors cursor-pointer flex items-center gap-2 shadow-md border-none"><i class="fa-solid fa-bolt text-brand-cyan"></i> شحن الرصيد</button><button aria-label="إرشادات التثبيت" onclick="fetchInstructions('${esim.iccid}')" class="bg-white/5 hover:bg-white/10 text-brand-cyan border border-brand-cyan/30 px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"><i class="fa-solid fa-book-open"></i> إرشادات التثبيت</button></div></div><div class="flex flex-wrap gap-3"><div class="bg-black/30 border border-white/5 p-3 rounded-xl flex-1 min-w-[120px]"><span class="block text-[9px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-sim-card text-brand-cyan ml-1"></i>رقم الشريحة (ICCID)</span><span class="block font-black text-xs text-white tracking-widest truncate" dir="ltr">${esim.iccid}</span></div><div class="bg-black/30 border border-white/5 p-3 rounded-xl flex-1 min-w-[100px]"><span class="block text-[9px] text-slate-400 font-bold mb-1"><i class="fa-solid fa-clock text-brand-cyan ml-1"></i>الصلاحية المتبقية</span><span class="block font-black text-sm text-emerald-400">14 يوماً</span></div></div></div></div><div class="w-full md:w-2/5 flex flex-col items-center justify-center border-t md:border-t-0 md:border-r border-white/5 pt-6 md:pt-0 md:pr-6 relative"><div class="qr-frame mb-4 w-44 h-44 z-10"><img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" /></div><button aria-label="تثبيت ذكي" onclick="installSmartEsim('${lpaString}')" class="w-full masterstroke-btn text-white py-3 rounded-xl font-black text-xs shadow-[0_0_15px_rgba(6,182,216,0.3)] flex items-center justify-center gap-2 border-none cursor-pointer transition-colors relative z-10 mb-2.5"><i class="fa-solid fa-mobile-button text-sm"></i> تثبيت تلقائي (ذكي)</button><button aria-label="تحميل QR" onclick="downloadQrCode('${esim.qrUrl}', '${esim.country}')" class="w-full bg-black hover:bg-[#0A101C] text-white py-2.5 rounded-xl font-black text-[11px] flex items-center justify-center gap-2 border border-slate-700 cursor-pointer transition-colors relative z-10 mb-4 shadow-sm"><i class="fa-solid fa-download text-brand-cyan"></i> حفظ رمز QR في الصور</button><div class="w-full bg-amber-500/10 p-3 rounded-xl border border-amber-500/30 text-right"><p class="text-[9px] text-amber-400 font-bold mb-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> رمز التثبيت اليدوي (LPA):</p><div class="flex justify-between items-center bg-black/40 p-2 rounded-lg border border-amber-500/20 cursor-pointer hover:border-amber-400 transition-colors" onclick="copyToClipboard('${lpaString}', this)"><span class="text-[9px] font-black text-slate-300 truncate mr-1 flex-1" dir="ltr">${lpaString}</span><button aria-label="نسخ رمز التثبيت" class="bg-amber-500 text-slate-900 w-6 h-6 rounded flex items-center justify-center border-none cursor-pointer pointer-events-none shrink-0"><i class="fa-regular fa-copy text-[10px]"></i></button></div></div></div></div>`;
-    });
-    container.innerHTML = html;
-    setTimeout(() => { document.querySelectorAll('.progress-bar-fill').forEach(bar => { bar.style.width = bar.getAttribute('data-width'); }); }, 100);
-}
-
-function openCheckoutModalByIndex(index) {
-    const pkg = window.allPackages[index];
-    if (!pkg) return;
-    currentSelectedPackage = pkg; originalPriceAED = parseFloat(pkg.price); finalPriceAED = originalPriceAED; walletDeductionAED = 0;
-    
-    document.getElementById('modalCountry').innerText = `${pkg.country} ${pkg.flag}`; 
-    document.getElementById('modalData').innerText = pkg.data; 
-    document.getElementById('modalOriginalPrice').innerText = originalPriceAED.toFixed(2); 
-    document.getElementById('modalFinalPrice').innerText = finalPriceAED.toFixed(2);
-    
-    const user = getSavedUser(), actionArea = document.getElementById('checkoutActionArea'), walletArea = document.getElementById('walletDeductionArea'), walletCheckbox = document.getElementById('useWalletCheckbox');
-    if (user) {
-        if (parseFloat(user.walletBalance || 0) > 0) { 
-            walletArea.classList.remove('hidden'); 
-            document.getElementById('availableWalletLabel').innerText = `الرصيد المتاح: ${parseFloat(user.walletBalance).toFixed(2)} AED`; 
-            walletCheckbox.checked = false; 
-            document.getElementById('deductedAmountLabel').innerText = '-0.00 AED'; 
-        } else {
-            walletArea.classList.add('hidden');
-        }
-        updateCheckoutButtonUI(finalPriceAED);
-    } else {
-        walletArea.classList.add('hidden'); 
-        actionArea.innerHTML = `<div class="text-center mb-4"><span class="text-xs font-bold text-slate-400">يجب تسجيل الدخول لإتمام الشراء</span></div><a href="register.html" class="w-full masterstroke-btn text-white font-black py-4 rounded-xl shadow-[0_0_15px_rgba(6,182,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm decoration-none">تسجيل الدخول <i class="fa-regular fa-user"></i></a>`;
-    }
-    const modal = document.getElementById('checkoutModal'), content = document.getElementById('checkoutContent');
-    modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('translate-y-10'); }, 10);
-}
-
 function toggleWalletDiscount() {
     const user = getSavedUser(), checkbox = document.getElementById('useWalletCheckbox'), userBalance = user ? parseFloat(user.walletBalance || 0) : 0;
-    if (checkbox.checked) { walletDeductionAED = Math.min(userBalance, originalPriceAED); finalPriceAED = Math.max(0, originalPriceAED - walletDeductionAED); document.getElementById('deductedAmountLabel').innerText = `-${walletDeductionAED.toFixed(2)} AED`; } else { walletDeductionAED = 0; finalPriceAED = originalPriceAED; document.getElementById('deductedAmountLabel').innerText = '-0.00 AED'; }
-    document.getElementById('modalFinalPrice').innerText = finalPriceAED.toFixed(2); updateCheckoutButtonUI(finalPriceAED);
+    if (checkbox && checkbox.checked) { 
+        walletDeductionAED = Math.min(userBalance, typeof originalPriceAED !== 'undefined' ? originalPriceAED : 0); 
+        finalPriceAED = Math.max(0, (typeof originalPriceAED !== 'undefined' ? originalPriceAED : 0) - walletDeductionAED); 
+        document.getElementById('deductedAmountLabel').innerText = `-${walletDeductionAED.toFixed(2)} AED`; 
+    } else { 
+        walletDeductionAED = 0; 
+        finalPriceAED = typeof originalPriceAED !== 'undefined' ? originalPriceAED : 0; 
+        if(document.getElementById('deductedAmountLabel')) document.getElementById('deductedAmountLabel').innerText = '-0.00 AED'; 
+    }
+    if(document.getElementById('modalFinalPrice')) document.getElementById('modalFinalPrice').innerText = finalPriceAED.toFixed(2); 
+    updateCheckoutButtonUI(finalPriceAED);
 }
 
 function updateCheckoutButtonUI(finalAmount) {
     const actionArea = document.getElementById('checkoutActionArea');
-    if (finalAmount <= 0) actionArea.innerHTML = `<div class="flex items-center justify-center gap-2 mb-3 text-[11px] text-emerald-400 font-black bg-emerald-950/40 py-2 rounded-xl border border-emerald-500/30"><i class="fa-solid fa-circle-check"></i> رصيد الكاش باك يغطي قيمة الباقة!</div><button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-black py-4 rounded-xl shadow-[0_0_20px_rgba(52,211,153,0.4)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">إتمام الشراء مجاناً <i class="fa-solid fa-arrow-left"></i></button>`;
-    else actionArea.innerHTML = `<div class="flex items-center justify-center gap-2 mb-3 text-[10px] text-emerald-400 font-bold bg-emerald-900/30 py-2 rounded-xl border border-emerald-500/30"><i class="fa-solid fa-lock"></i> دفع إلكتروني آمن عبر Ziina</div><button id="payNowBtn" onclick="processSecurePayment()" class="w-full masterstroke-btn text-white font-black py-4 rounded-xl shadow-[0_0_20px_rgba(6,182,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">دفع ${finalAmount.toFixed(2)} AED الآن <i class="fa-solid fa-arrow-left"></i></button>`;
+    if(!actionArea) return;
+    if (finalAmount <= 0) {
+        actionArea.innerHTML = `
+            <div class="flex items-center justify-center gap-2 mb-3 text-[11px] text-[#00b4d8] font-black bg-[#00b4d8]/10 py-2 rounded-xl border border-[#00b4d8]/30 shadow-inner">
+                <i class="fa-solid fa-circle-check"></i> رصيد الكاش باك يغطي قيمة الباقة!
+            </div>
+            <button id="payNowBtn" onclick="processSecurePayment()" class="w-full bg-[#00b4d8] hover:bg-[#0096b4] text-white font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,180,216,0.4)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                إتمام الشراء مجاناً <i class="fa-solid fa-bolt"></i>
+            </button>`;
+    } else {
+        actionArea.innerHTML = `
+            <div class="flex items-center justify-center gap-2 mb-3 text-[10px] text-[#00b4d8] font-bold bg-[#0c151c] py-2 rounded-xl border border-[#00b4d8]/20">
+                <i class="fa-solid fa-lock text-[#00b4d8]"></i> دفع إلكتروني آمن عبر بوابة Ziina
+            </div>
+            <button id="payNowBtn" onclick="processSecurePayment()" class="w-full masterstroke-btn text-white font-black py-4 rounded-xl shadow-[0_0_20px_rgba(0,180,216,0.3)] transition-transform active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+                دفع ${finalAmount.toFixed(2)} AED الآن <i class="fa-solid fa-credit-card"></i>
+            </button>`;
+    }
 }
 
-function closeCheckoutModal() { const m = document.getElementById('checkoutModal'), c = document.getElementById('checkoutContent'); m.classList.add('opacity-0'); c.classList.add('translate-y-10'); setTimeout(() => m.classList.add('hidden'), 300); }
-function openTopupModal(iccid) { currentTopupIccid = iccid; document.getElementById('topupIccid').innerText = iccid; const m = document.getElementById('topupModal'), c = document.getElementById('topupContent'); m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-10'); }, 10); }
-function closeTopupModal() { const m = document.getElementById('topupModal'), c = document.getElementById('topupContent'); m.classList.add('opacity-0'); c.classList.add('translate-y-10'); setTimeout(() => m.classList.add('hidden'), 300); }
-function openCompatibilityModal() { document.getElementById('compatibilityModal').classList.remove('hidden'); setTimeout(() => { document.getElementById('compatibilityModal').classList.remove('opacity-0'); document.getElementById('compatibilityContent').classList.remove('translate-y-10'); }, 10); }
-function closeCompatibilityModal() { document.getElementById('compatibilityModal').classList.add('opacity-0'); document.getElementById('compatibilityContent').classList.add('translate-y-10'); setTimeout(() => { document.getElementById('compatibilityModal').classList.add('hidden'); document.getElementById('deviceResult').classList.add('hidden'); }, 300); }
-function closeInstructionsModal() { const m = document.getElementById('instructionsModal'), c = document.getElementById('instructionsContent'); m.classList.add('opacity-0'); c.classList.add('translate-y-10'); setTimeout(() => m.classList.add('hidden'), 300); }
-function checkDeviceCompatibility(e) { e.preventDefault(); const res = document.getElementById('deviceResult'); res.classList.remove('hidden'); if(document.getElementById('deviceInput').value.length > 2) res.innerHTML = `<div class="bg-emerald-900/30 border border-emerald-500/50 p-4 rounded-xl flex items-start gap-4 mt-2"><i class="fa-solid fa-circle-check text-emerald-400 mt-1 text-2xl"></i><div class="text-right"><h4 class="text-emerald-300 font-black text-sm mb-1.5">ممتاز! جهازك مدعوم</h4><p class="text-emerald-100/70 text-[11px] font-bold leading-relaxed">هذا الجهاز متوافق مع شريحة eSIM الإلكترونية.</p></div></div>`; }
+function closeCheckoutModal() { const m = document.getElementById('checkoutModal'), c = document.getElementById('checkoutContent'); if(m && c){ m.classList.add('opacity-0'); c.classList.add('translate-y-10'); setTimeout(() => m.classList.add('hidden'), 300); } }
+function openTopupModal(iccid) { currentTopupIccid = iccid; if(document.getElementById('topupIccid')) document.getElementById('topupIccid').innerText = iccid; const m = document.getElementById('topupModal'), c = document.getElementById('topupContent'); if(m && c){ m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-10'); }, 10); } }
+function closeTopupModal() { const m = document.getElementById('topupModal'), c = document.getElementById('topupContent'); if(m && c){ m.classList.add('opacity-0'); c.classList.add('translate-y-10'); setTimeout(() => m.classList.add('hidden'), 300); } }
+function openCompatibilityModal() { const m = document.getElementById('compatibilityModal'), c = document.getElementById('compatibilityContent'); if(m && c){ m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('translate-y-10'); }, 10); } }
+function closeCompatibilityModal() { const m = document.getElementById('compatibilityModal'), c = document.getElementById('compatibilityContent'), res = document.getElementById('deviceResult'); if(m && c){ m.classList.add('opacity-0'); c.classList.add('translate-y-10'); setTimeout(() => { m.classList.add('hidden'); if(res) res.classList.add('hidden'); }, 300); } }
+function closeInstructionsModal() { const m = document.getElementById('instructionsModal'), c = document.getElementById('instructionsContent'); if(m && c){ m.classList.add('opacity-0'); c.classList.add('translate-y-10'); setTimeout(() => m.classList.add('hidden'), 300); } }
+function checkDeviceCompatibility(e) { e.preventDefault(); const res = document.getElementById('deviceResult'); if(res){ res.classList.remove('hidden'); if(document.getElementById('deviceInput').value.length > 2) res.innerHTML = `<div class="bg-[#00b4d8]/10 border border-[#00b4d8]/30 p-4 rounded-xl flex items-start gap-4 mt-2 backdrop-blur-md shadow-inner"><i class="fa-solid fa-circle-check text-[#00b4d8] mt-1 text-2xl"></i><div class="text-right"><h4 class="text-white font-black text-sm mb-1.5 drop-shadow-md">ممتاز! جهازك مدعوم</h4><p class="text-slate-300 text-[11px] font-bold leading-relaxed">هذا الجهاز متوافق تماماً مع شريحة eSIM الإلكترونية.</p></div></div>`; } }
