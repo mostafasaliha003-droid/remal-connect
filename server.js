@@ -192,7 +192,8 @@ async function getAiraloToken() {
         params.append('client_secret', process.env.AIRALO_CLIENT_SECRET);
         params.append('grant_type', 'client_credentials');
 
-        const response = await axios.post('https://sandbox-partners-api.airalo.com/v2/token', params, {
+        // تم الإعادة للبيئة الحية
+        const response = await axios.post('https://partners-api.airalo.com/v2/token', params, {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' } 
         });
 
@@ -205,7 +206,8 @@ async function getAiraloToken() {
 
 async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEncoded = false) {
     let token = await getAiraloToken();
-    const url = `https://sandbox-partners-api.airalo.com/v2${endpoint}`;
+    // تم الإعادة للبيئة الحية
+    const url = `https://partners-api.airalo.com/v2${endpoint}`;
     const headers = { 'Accept': 'application/json', 'Authorization': `Bearer ${token}`, 'Content-Type': isFormUrlEncoded ? 'application/x-www-form-urlencoded' : 'application/json' };
 
     try {
@@ -232,7 +234,8 @@ async function syncAiraloPackages() {
     console.log('🔄 بدء مزامنة باقات Airalo في الخلفية...');
     try {
         const token = await getAiraloToken();
-        const response = await axios.get('https://sandbox-partners-api.airalo.com/v2/packages', {
+        // تم الإعادة للبيئة الحية
+        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
             params: { limit: 1000, include: 'topup' }, 
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
         });
@@ -295,7 +298,7 @@ cron.schedule('0 * * * *', syncAiraloPackages);
 setTimeout(syncAiraloPackages, 5000); 
 
 // ==========================================
-// مسار جلب الباقات السريع للمستخدم (تم تحسينه لتفادي البطء)
+// مسار جلب الباقات السريع للمستخدم
 // ==========================================
 app.get('/api/airalo/packages', async (req, res) => {
     try {
@@ -570,7 +573,8 @@ app.get('/api/airalo/instructions/:iccid', async (req, res) => {
         const lang = req.query.lang || 'ar'; 
         const token = await getAiraloToken(); 
 
-        const response = await axios.get(`https://sandbox-partners-api.airalo.com/v2/sims/${iccid}/instructions`, {
+        // تم الإعادة للبيئة الحية
+        const response = await axios.get(`https://partners-api.airalo.com/v2/sims/${iccid}/instructions`, {
             headers: {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -672,7 +676,6 @@ app.post('/api/webhooks/airalo', async (req, res) => {
         // أ. معالجة تنبيه "انخفاض بيانات العميل" (Low Data Notification)
         if (payload.iccid && payload.level) {
             console.log(`📉 [تنبيه باقة العميل] الشريحة ${payload.iccid} وصلت لمستوى: ${payload.level} - المتبقي: ${payload.remaining_percentage}%`);
-            // مستقبلاً: يمكن كتابة كود هنا يقرأ إيميل العميل من قاعدة البيانات ويرسل له إشعاراً أو واتساب لتشجيعه على إعادة الشحن (Top-up).
         } 
         // ب. معالجة تنبيه "انخفاض رصيد المنصة" (Credit Limit Notification)
         else if (payload.message && payload.remaining !== undefined) {
