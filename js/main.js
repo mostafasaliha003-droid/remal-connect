@@ -27,12 +27,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // 2. تهيئة الواجهة وجلب البيانات المباشرة
-    if (typeof updateAuthUI === 'function') updateAuthUI();
-    if (typeof fetchPackages === 'function') fetchPackages();
+    // 2. 🛡️ تهيئة الواجهة بنظام الحماية من الانهيار (Crash Protection)
+    try { 
+        if (typeof updateAuthUI === 'function') updateAuthUI(); 
+    } catch (e) { 
+        console.error('⚠️ خطأ في واجهة المستخدم:', e); 
+    }
     
-    // 3. التقاط استجابة بوابة الدفع (Ziina) فور عودة العميل للمتجر
-    if (typeof verifyPaymentAndFulfill === 'function') verifyPaymentAndFulfill(); 
+    try { 
+        if (typeof fetchPackages === 'function') fetchPackages(); 
+    } catch (e) { 
+        console.error('⚠️ خطأ في جلب الباقات:', e); 
+    }
+    
+    // 3. التقاط استجابة بوابة الدفع (Ziina)
+    try { 
+        if (typeof verifyPaymentAndFulfill === 'function') verifyPaymentAndFulfill(); 
+    } catch (e) { 
+        console.error('⚠️ خطأ في التحقق من الدفع:', e); 
+    }
 
     // 4. تشغيل محرك البحث الذكي للوجهات
     const searchForm = document.getElementById('searchForm');
@@ -41,10 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const searchInput = document.getElementById('searchInput');
             if (searchInput && typeof fetchPackages === 'function') {
-                fetchPackages(searchInput.value.trim());
-                // التمرير السلس لقسم النتائج
-                const packagesSection = document.getElementById('packagesSection');
-                if (packagesSection) packagesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                try {
+                    fetchPackages(searchInput.value.trim());
+                    // التمرير السلس لقسم النتائج
+                    const packagesSection = document.getElementById('packagesSection');
+                    if (packagesSection) packagesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } catch(err) {
+                    console.error('⚠️ خطأ أثناء البحث:', err);
+                }
             }
         });
     }
