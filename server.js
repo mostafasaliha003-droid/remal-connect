@@ -192,7 +192,7 @@ async function getAiraloToken() {
         params.append('client_secret', process.env.AIRALO_CLIENT_SECRET);
         params.append('grant_type', 'client_credentials');
 
-        const response = await axios.post('https://partners-api.airalo.com/v2/token', params, {
+        const response = await axios.post('https://sandbox-partners-api.airalo.com/v2/token', params, {
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' } 
         });
 
@@ -205,7 +205,7 @@ async function getAiraloToken() {
 
 async function airaloApiRequest(method, endpoint, dataOrParams = {}, isFormUrlEncoded = false) {
     let token = await getAiraloToken();
-    const url = `https://partners-api.airalo.com/v2${endpoint}`;
+    const url = `https://sandbox-partners-api.airalo.com/v2${endpoint}`;
     const headers = { 'Accept': 'application/json', 'Authorization': `Bearer ${token}`, 'Content-Type': isFormUrlEncoded ? 'application/x-www-form-urlencoded' : 'application/json' };
 
     try {
@@ -232,7 +232,7 @@ async function syncAiraloPackages() {
     console.log('🔄 بدء مزامنة باقات Airalo في الخلفية...');
     try {
         const token = await getAiraloToken();
-        const response = await axios.get('https://partners-api.airalo.com/v2/packages', {
+        const response = await axios.get('https://sandbox-partners-api.airalo.com/v2/packages', {
             params: { limit: 1000, include: 'topup' }, 
             headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` }
         });
@@ -301,9 +301,9 @@ app.get('/api/airalo/packages', async (req, res) => {
     try {
         const countryQuery = req.query.country;
 
-        // 1. حالة فتح الموقع الرئيسية (بدون بحث): عرض باقة واحدة لأهم 10 دول
+        // 1. حالة فتح الموقع الرئيسية (بدون بحث): عرض باقة واحدة لأهم 21 دولة
         if (!countryQuery) {
-            const topCountries = ['TR', 'AE', 'SA', 'EG', 'GB', 'FR', 'US', 'TH', 'CH', 'IT'];
+            const topCountries = ['TR', 'AE', 'SA', 'EG', 'GB', 'FR', 'US', 'TH', 'CH', 'IT', 'MV', 'GE', 'AM', 'TZ', 'MY', 'SG', 'CN', 'JP', 'OM', 'KW', 'BH'];
             let featuredPackages = [];
 
             for (let code of topCountries) {
@@ -570,7 +570,7 @@ app.get('/api/airalo/instructions/:iccid', async (req, res) => {
         const lang = req.query.lang || 'ar'; 
         const token = await getAiraloToken(); 
 
-        const response = await axios.get(`https://partners-api.airalo.com/v2/sims/${iccid}/instructions`, {
+        const response = await axios.get(`https://sandbox-partners-api.airalo.com/v2/sims/${iccid}/instructions`, {
             headers: {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`,
