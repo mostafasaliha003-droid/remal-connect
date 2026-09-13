@@ -332,6 +332,19 @@ app.get('/api/airalo/packages', async (req, res) => {
 });
 
 // ==========================================
+// 🚀 مسار جلب الأجهزة المتوافقة (Lite) - مضاف حديثاً
+// ==========================================
+app.get('/api/airalo/devices', async (req, res) => {
+    try {
+        const response = await airaloApiRequest('get', '/compatible-devices-lite');
+        res.json({ success: true, devices: response.data?.data || response.data });
+    } catch (error) {
+        console.error('⚠️ خطأ في جلب قائمة الأجهزة:', error.message);
+        res.status(500).json({ success: false, message: 'تعذر جلب قائمة الأجهزة المتوافقة' });
+    }
+});
+
+// ==========================================
 // مسار الدفع وتسليم الشريحة
 // ==========================================
 app.post('/api/checkout', async (req, res) => {
@@ -365,7 +378,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// 🚀 استخراج الشريحة (ذكي: يفرق بين شريحة جديدة و إعادة الشحن)
+// استخراج الشريحة (ذكي: يفرق بين شريحة جديدة و إعادة الشحن)
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
@@ -538,7 +551,7 @@ app.get('/api/airalo/topups/:iccid', async (req, res) => {
 });
 
 // ==========================================
-// 🚀 مسار استرجاع سجل باقات الشريحة (مضاف حديثاً)
+// مسار استرجاع سجل باقات الشريحة
 // ==========================================
 app.get('/api/airalo/sim/:iccid/packages', async (req, res) => {
     try {
