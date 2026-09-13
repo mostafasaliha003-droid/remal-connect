@@ -3,10 +3,13 @@ tailwind.config = {
         extend: {
             colors: {
                 brand: {
-                    base: '#030712',
-                    surface: '#0f172a',
-                    cyan: '#06b6d4',
-                    cyanGlow: '#22d3ee',
+                    base: '#050a0f',
+                    surface: '#0c151c',
+                    cyan: '#00b4d8',
+                    cyanGlow: '#48cae4',
+                    red: '#800000',
+                    redLight: '#ff4d4d',
+                    green: '#10b981'
                 }
             },
             animation: {
@@ -25,8 +28,8 @@ tailwind.config = {
                     '100%': { transform: 'translateY(-100%)' }
                 },
                 pulseGlow: {
-                    '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(6,182,212,0.5))' },
-                    '50%': { filter: 'drop-shadow(0 0 25px rgba(6,182,212,0.8))' }
+                    '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(0,180,216,0.5))' },
+                    '50%': { filter: 'drop-shadow(0 0 25px rgba(0,180,216,0.8))' }
                 },
                 fadeInUp: {
                     from: { opacity: 0, transform: 'translateY(16px)' },
