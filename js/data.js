@@ -2,8 +2,8 @@
 // 🚀 الإعدادات، المتغيرات العامة، والبيانات الثابتة (Data Store)
 // ==========================================
 
-// رابط الـ API (تأكد من تغييره إلى دومينك عند الرفع على السيرفر الحي)
-const API_URL = 'http://localhost:3000'; // استخدم 'https://remalsim.com' في الإنتاج
+// رابط الـ API الحي المباشر (تأكد من عدم تغييره)
+const API_URL = 'https://remalsim.com';
 
 // المتغيرات العامة (Global State)
 window.allPackages = [];
@@ -57,7 +57,7 @@ const SHIELD_SVGS = {
 // 🚀 دوال إدارة وتخزين البيانات المحلية (Data Handlers)
 // ==========================================
 
-// دالة تخزين الشريحة المستخرجة في متصفح العميل (بدون الحاجة لدوال الـ UI والـ API هنا)
+// دالة تخزين الشريحة المستخرجة في متصفح العميل
 function saveEsimLocally(esimObj) {
     let esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
     
