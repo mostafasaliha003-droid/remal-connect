@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#030712">
+    <meta name="theme-color" content="#050a0f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -19,7 +19,7 @@
     <!-- 🚀 PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
 
-    <!-- الخطوط والأيقونات (Variable Fonts for Performance) -->
+    <!-- الخطوط والأيقونات -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,10 +30,13 @@
                 extend: {
                     colors: {
                         brand: {
-                            base: '#030712',
-                            surface: '#0f172a',
-                            cyan: '#06b6d4',
-                            cyanGlow: '#22d3ee',
+                            base: '#050a0f',
+                            surface: '#0c151c',
+                            cyan: '#00b4d8',
+                            cyanGlow: '#48cae4',
+                            red: '#800000',
+                            redLight: '#ff4d4d',
+                            green: '#10b981'
                         }
                     },
                     animation: {
@@ -52,8 +55,8 @@
                             '100%': { transform: 'translateY(-100%)' }
                         },
                         pulseGlow: {
-                            '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(6,182,212,0.5))' },
-                            '50%': { filter: 'drop-shadow(0 0 25px rgba(6,182,212,0.8))' }
+                            '0%, 100%': { filter: 'drop-shadow(0 0 10px rgba(0,180,216,0.5))' },
+                            '50%': { filter: 'drop-shadow(0 0 25px rgba(0,180,216,0.8))' }
                         },
                         fadeInUp: {
                             from: { opacity: 0, transform: 'translateY(16px)' },
@@ -68,7 +71,7 @@
     <style>
         body { 
             font-family: 'Cairo', sans-serif; 
-            background-color: #030712; 
+            background-color: #050a0f; 
             color: #f8fafc; 
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
@@ -77,10 +80,10 @@
         /* 🚀 Ultimate Cyber Background */
         .matrix-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
-            background-color: #030712;
+            background-color: #050a0f;
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(6,182,212,0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(6,182,212,0.12), transparent 30%);
+                radial-gradient(circle at 15% 50%, rgba(0,180,216,0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(128,0,0,0.1), transparent 30%);
         }
         .cyber-grid {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
@@ -92,69 +95,69 @@
             -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
         }
 
+        /* 🚀 Glassmorphism Core Classes */
         .glass-pill { 
-            background: rgba(15, 23, 42, 0.5); 
+            background: rgba(12, 21, 28, 0.6); 
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
         .glass-card {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.8));
+            background: linear-gradient(145deg, rgba(12, 21, 28, 0.6), rgba(5, 10, 15, 0.8));
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-top: 1px solid rgba(6, 182, 212, 0.2);
+            border-top: 1px solid rgba(0, 180, 216, 0.2);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
         .glass-card:hover {
             transform: translateY(-5px);
-            border-top: 1px solid rgba(6, 182, 212, 0.8);
-            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
+            border-top: 1px solid rgba(0, 180, 216, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 180, 216, 0.15);
         }
 
         .ai-search-box {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(12, 21, 28, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
         }
         .ai-search-box:focus-within {
-            border-color: #06b6d4;
-            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1);
-            background: rgba(15, 23, 42, 0.8);
+            border-color: #00b4d8;
+            box-shadow: 0 0 0 4px rgba(0, 180, 216, 0.15);
+            background: rgba(12, 21, 28, 0.8);
         }
 
         .text-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #06b6d4 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #00b4d8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        /* Primary Call-to-Action Buttons */
         .masterstroke-btn {
-            position: relative; overflow: hidden;
-            background: linear-gradient(90deg, #0891b2, #06b6d4);
+            background: #00b4d8;
+            transition: all 0.3s ease;
         }
-        .masterstroke-btn::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: all 0.5s ease;
-        }
-        .masterstroke-btn:hover::before { left: 100%; }
+        .masterstroke-btn:hover { background: #0096b4; box-shadow: 0 0 20px rgba(0, 180, 216, 0.6); }
 
         .qr-frame {
             background: white; padding: 10px; border-radius: 20px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
         }
 
+        /* Modals */
         .checkout-modal {
-            background: rgba(10, 16, 28, 0.98);
+            background: rgba(10, 15, 22, 0.98);
             backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255,255,255,0.1);
-            border-top: 1px solid rgba(6,182,212,0.6);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.85);
+            border-top: 1px solid #00b4d8;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
             border-radius: 30px;
         }
 
@@ -162,9 +165,9 @@
         .progress-bar-fill { transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
         
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-track { background: #050a0f; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+        ::-webkit-scrollbar-thumb:hover { background: #00b4d8; }
 
         #toastMsg { transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 10000; }
     </style>
@@ -182,20 +185,19 @@
 
     <!-- 🚀 Floating Navbar with Scalable SVG Logo -->
     <div class="fixed top-4 w-full z-50 flex justify-center px-4 md:px-0 transition-all duration-300 pointer-events-none">
-        <nav class="w-full max-w-7xl glass-pill rounded-[2rem] px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto shadow-2xl border border-white/10">
+        <nav class="w-full max-w-7xl glass-pill rounded-[2rem] px-4 sm:px-6 py-3 flex justify-between items-center pointer-events-auto shadow-2xl">
             
             <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('homeView')">
-                <div class="w-12 h-12 flex items-center justify-center transform group-hover:scale-105 transition-all">
-                    <!-- Brand SVG Perfection Logo -->
-                    <svg viewBox="0 0 400 400" class="w-full h-full drop-shadow-[0_0_10px_rgba(6,182,212,0.4)]">
+                <div class="w-12 h-12 flex items-center justify-center transform group-hover:scale-105 transition-all bg-brand-cyan/10 rounded-xl border border-brand-cyan/20">
+                    <svg viewBox="0 0 400 400" class="w-8 h-8 drop-shadow-[0_0_10px_rgba(0,180,216,0.4)]">
                         <defs>
                             <linearGradient id="neonCyan" x1="0%" y1="100%" x2="100%" y2="0%">
                                 <stop offset="0%" stop-color="#00b4d8" />
-                                <stop offset="100%" stop-color="#22d3ee" />
+                                <stop offset="100%" stop-color="#48cae4" />
                             </linearGradient>
                             <linearGradient id="deepBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#0ea5e9" />
-                                <stop offset="100%" stop-color="#3b82f6" />
+                                <stop offset="0%" stop-color="#0077b6" />
+                                <stop offset="100%" stop-color="#023e8a" />
                             </linearGradient>
                         </defs>
                         <g transform="translate(100, 70)">
@@ -213,16 +215,16 @@
                 </div>
             </div>
 
-            <!-- Dynamic Auth Area - WCAG Contrast & Miller's Law Chunking Applied -->
+            <!-- Dynamic Auth Area -->
             <div class="flex items-center gap-2 md:gap-3" id="headerAuthArea">
                 <select aria-label="اختيار العملة" id="currencySelector" onchange="convertCurrency()" class="hidden md:block bg-transparent border border-white/20 text-white hover:bg-white/10 text-xs font-bold py-2 px-3 rounded-2xl outline-none cursor-pointer transition-all appearance-none text-center backdrop-blur-md focus:border-brand-cyan focus:ring-1 focus:ring-brand-cyan">
-                    <option value="AED" class="bg-slate-900 text-white">AED</option>
-                    <option value="SAR" class="bg-slate-900 text-white">SAR</option>
-                    <option value="USD" class="bg-slate-900 text-white">USD</option>
-                    <option value="EUR" class="bg-slate-900 text-white">EUR</option>
+                    <option value="AED" class="bg-brand-surface text-white">AED</option>
+                    <option value="SAR" class="bg-brand-surface text-white">SAR</option>
+                    <option value="USD" class="bg-brand-surface text-white">USD</option>
+                    <option value="EUR" class="bg-brand-surface text-white">EUR</option>
                 </select>
 
-                <a href="register.html" class="masterstroke-btn text-white px-6 py-2.5 rounded-2xl text-sm font-black transition-all flex items-center gap-2 active:scale-95 shadow-[0_0_15px_rgba(6,182,212,0.3)] text-decoration-none border border-brand-cyan/50 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)]">
+                <a href="register.html" class="masterstroke-btn text-white px-6 py-2.5 rounded-2xl text-sm font-black transition-all flex items-center gap-2 active:scale-95 shadow-[0_0_15px_rgba(0,180,216,0.3)] text-decoration-none">
                     <i class="fa-regular fa-user"></i> <span class="hidden sm:inline">دخول / تسجيل</span>
                 </a>
             </div>
@@ -232,25 +234,21 @@
     <!-- ========================================== -->
     <!-- 🌟 الشاشة الرئيسية (Home View) -->
     <!-- ========================================== -->
-    <!-- Responsive Fix: overflow-hidden added to prevent horizontal scrolling on mobile -->
     <div id="homeView" class="block transition-opacity duration-300 w-full overflow-hidden">
         <main class="min-h-screen flex items-center pt-32 pb-20 relative z-10">
-            <!-- Responsive Fix: gap adjustment for mobile -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 relative z-10">
                 
                 <div class="w-full lg:w-[55%] text-center lg:text-right flex flex-col items-center lg:items-start z-10">
-                    <div class="glass-pill px-4 py-1.5 rounded-full mb-6 inline-flex items-center gap-2 border border-brand-cyan/20 text-brand-cyan text-[10px] sm:text-xs font-black shadow-sm">
+                    <div class="glass-pill px-4 py-1.5 rounded-full mb-6 inline-flex items-center gap-2 border border-brand-cyan/30 text-brand-cyan text-[10px] sm:text-xs font-black shadow-sm">
                         <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-cyan opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-brand-cyan"></span></span>
                         محرك ذكاء اصطناعي لاختيار أسرع شبكة خلوية
                     </div>
                     
-                    <!-- Responsive Fix: Modular Scale applied to headings -->
                     <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 sm:mb-6 leading-[1.1] tracking-tight text-white drop-shadow-2xl">
                         اهبط متصلاً..<br/>
                         <span class="text-gradient">قبل أن تُفتح أبواب الطائرة!</span> ✈️
                     </h1>
                     
-                    <!-- WCAG Fix: Increased contrast from text-slate-400 to text-slate-300 -->
                     <p class="text-slate-300 text-sm sm:text-base md:text-lg font-medium max-w-xl mb-8 sm:mb-10 leading-relaxed px-2 sm:px-0">
                         وداعاً لطوابير المطارات وفواتير التجوال المرتفعة. احصل على <span class="font-bold text-white">شريحتك الإلكترونية (eSIM)</span> بتقنية 5G وتصفح الإنترنت فور وصولك بضغطة زر.
                     </p>
@@ -266,33 +264,31 @@
                         </button>
                     </form>
 
-                    <div class="mt-6 sm:mt-8 flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs font-bold text-slate-500 flex-wrap justify-center lg:justify-start">
+                    <div class="mt-6 sm:mt-8 flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs font-bold text-slate-400 flex-wrap justify-center lg:justify-start">
                         <span><i class="fa-solid fa-language text-slate-500"></i> دعم 40 لغة محلية</span>
                         <span class="w-1 h-1 bg-slate-600 rounded-full hidden sm:block"></span>
                         <span><i class="fa-brands fa-apple text-slate-500"></i> <i class="fa-brands fa-android text-slate-500"></i> توافق تام</span>
                     </div>
                 </div>
 
-                <!-- Responsive Fix: 3D Mockup Container Scaling -->
                 <div class="w-full lg:w-[45%] flex items-center justify-center relative perspective-container mt-10 lg:mt-0" style="perspective: 1000px;">
-                    <svg class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[150%] max-w-[500px] h-auto opacity-20 animate-[spin_60s_linear_infinite] pointer-events-none" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45" fill="none" stroke="#06b6d4" stroke-width="0.5" stroke-dasharray="2 4"/>
-                        <circle cx="50" cy="50" r="35" fill="none" stroke="#06b6d4" stroke-width="0.2"/>
-                        <path d="M50 0 L50 100 M0 50 L100 50" stroke="#06b6d4" stroke-width="0.2" opacity="0.5"/>
+                    <svg class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[150%] max-w-[500px] h-auto opacity-20 animate-[spin_60s_linear_infinite] pointer-events-none text-brand-cyan" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2 4"/>
+                        <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-width="0.2"/>
+                        <path d="M50 0 L50 100 M0 50 L100 50" stroke="currentColor" stroke-width="0.2" opacity="0.5"/>
                     </svg>
 
-                    <!-- Responsive Fix: Mobile scale applied to the phone frame -->
-                    <div class="relative w-[260px] sm:w-[290px] md:w-[320px] bg-brand-base rounded-[3rem] sm:rounded-[3.5rem] border-[4px] sm:border-[6px] border-[#1E293B] shadow-[0_0_50px_rgba(6,182,212,0.15)] sm:shadow-[0_0_80px_rgba(6,182,212,0.15)] z-10 animate-float p-2 sm:p-3 transition-transform duration-200 ease-out transform scale-90 sm:scale-100 origin-center" id="phoneMockup">
+                    <div class="relative w-[260px] sm:w-[290px] md:w-[320px] bg-brand-surface rounded-[3rem] sm:rounded-[3.5rem] border-[4px] sm:border-[6px] border-[#1E293B] shadow-[0_0_50px_rgba(0,180,216,0.2)] z-10 animate-float p-2 sm:p-3 transition-transform duration-200 ease-out transform scale-90 sm:scale-100 origin-center" id="phoneMockup">
                         <div class="w-full h-[520px] sm:h-[580px] bg-slate-950 rounded-[2.2rem] sm:rounded-[2.6rem] relative overflow-hidden flex flex-col border border-white/5">
                             <svg class="absolute inset-0 w-full h-full opacity-10 pointer-events-none" preserveAspectRatio="none">
-                                <line x1="20%" y1="0" x2="20%" y2="100%" stroke="#06b6d4" stroke-width="1" class="animate-data-stream" stroke-dasharray="20 40"/>
-                                <line x1="80%" y1="0" x2="80%" y2="100%" stroke="#06b6d4" stroke-width="1" class="animate-data-stream" style="animation-delay: -10s" stroke-dasharray="10 50"/>
+                                <line x1="20%" y1="0" x2="20%" y2="100%" stroke="#00b4d8" stroke-width="1" class="animate-data-stream" stroke-dasharray="20 40"/>
+                                <line x1="80%" y1="0" x2="80%" y2="100%" stroke="#00b4d8" stroke-width="1" class="animate-data-stream" style="animation-delay: -10s" stroke-dasharray="10 50"/>
                             </svg>
 
                             <div class="flex justify-between items-center px-4 sm:px-6 pt-6 sm:pt-8 pb-3 sm:pb-4 z-20">
                                 <span class="text-[0.6rem] sm:text-[0.65rem] font-bold text-white">9:41</span>
                                 <div class="w-20 sm:w-24 h-5 sm:h-6 bg-black rounded-full shadow-inner border border-white/5 flex justify-end items-center px-2 relative">
-                                    <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-emerald-500 rounded-full animate-pulse absolute left-2 sm:left-3 shadow-[0_0_8px_#10b981]"></div>
+                                    <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-brand-cyan rounded-full animate-pulse absolute left-2 sm:left-3 shadow-[0_0_8px_#00b4d8]"></div>
                                 </div>
                                 <div class="flex gap-1 sm:gap-1.5 text-white">
                                     <i class="fa-solid fa-signal text-[0.5rem] sm:text-[0.6rem]"></i>
@@ -301,18 +297,18 @@
                                 </div>
                             </div>
 
-                            <div class="absolute -right-2 sm:-right-4 top-32 sm:top-40 glass-pill p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-emerald-500/30 z-30 animate-float-delayed flex items-center gap-2 sm:gap-3 backdrop-blur-xl scale-90 sm:scale-100 origin-right">
-                                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-[10px] sm:text-xs">
+                            <div class="absolute -right-2 sm:-right-4 top-32 sm:top-40 glass-pill p-2 sm:p-3 rounded-xl sm:rounded-2xl border border-brand-cyan/30 z-30 animate-float-delayed flex items-center gap-2 sm:gap-3 backdrop-blur-xl scale-90 sm:scale-100 origin-right">
+                                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-brand-cyan/20 flex items-center justify-center text-brand-cyan text-[10px] sm:text-xs">
                                     <i class="fa-solid fa-shield-halved"></i>
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="text-[0.55rem] sm:text-[0.65rem] font-black text-white">اتصال مشفر</span>
-                                    <span class="text-[0.45rem] sm:text-[0.55rem] text-emerald-400 font-bold">HMAC Validated</span>
+                                    <span class="text-[0.45rem] sm:text-[0.55rem] text-brand-cyan font-bold">HMAC Validated</span>
                                 </div>
                             </div>
 
                             <div class="px-4 sm:px-5 mt-auto mb-8 sm:mb-10 relative z-20 space-y-3 sm:space-y-4">
-                                <div class="bg-gradient-to-br from-[#111c22] to-[#0A101C] border border-brand-cyan/40 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                                <div class="bg-gradient-to-br from-[#0c151c] to-[#050a0f] border border-brand-cyan/40 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)] relative overflow-hidden">
                                     <div class="absolute -right-4 -bottom-6 text-7xl sm:text-8xl font-black text-white opacity-5">AE</div>
                                     <div class="flex justify-between items-center mb-3 sm:mb-4 relative z-10">
                                         <span class="bg-brand-cyan/20 text-brand-cyanGlow text-[0.5rem] sm:text-[0.6rem] font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg border border-brand-cyan/30">Local API</span>
@@ -324,10 +320,10 @@
                                     <div class="relative z-10">
                                         <div class="flex justify-between text-[0.55rem] sm:text-[0.65rem] font-bold text-white mb-1.5 sm:mb-2">
                                             <span class="text-slate-400">متبقي 8.5 GB</span>
-                                            <span class="text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[4px] sm:text-[6px]"></i> نشط الآن</span>
+                                            <span class="text-brand-cyan flex items-center gap-1"><i class="fa-solid fa-circle text-[4px] sm:text-[6px]"></i> نشط الآن</span>
                                         </div>
-                                        <div class="w-full bg-[#050B14] rounded-full h-1.5 sm:h-2 shadow-inner border border-white/5">
-                                            <div class="bg-gradient-to-r from-brand-cyan to-emerald-400 h-full rounded-full shadow-[0_0_10px_rgba(6,182,212,0.8)]" style="width: 85%"></div>
+                                        <div class="w-full bg-[#050a0f] rounded-full h-1.5 sm:h-2 shadow-inner border border-white/5">
+                                            <div class="bg-gradient-to-r from-brand-cyan to-brand-cyanGlow h-full rounded-full shadow-[0_0_10px_rgba(0,180,216,0.8)]" style="width: 85%"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -340,14 +336,14 @@
         </main>
 
         <section class="max-w-5xl mx-auto px-4 relative z-20 pb-20">
-            <div class="glass-pill rounded-[2rem] p-8 flex flex-wrap justify-between md:justify-around items-center gap-8 border-t border-brand-cyan/20">
+            <div class="glass-pill rounded-[2rem] p-8 flex flex-wrap justify-between md:justify-around items-center gap-8 border-t border-brand-cyan/30">
                 <div class="text-center flex-1">
-                    <div class="text-3xl font-black text-amber-400 mb-1 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">4.9 ★</div>
+                    <div class="text-3xl font-black text-[#facc15] mb-1 drop-shadow-[0_0_10px_rgba(250,204,21,0.3)]">4.9 ★</div>
                     <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">موثوقية عالمية</span>
                 </div>
                 <div class="w-px h-12 bg-white/10 hidden md:block"></div>
                 <div class="text-center flex-1">
-                    <div class="text-3xl font-black text-brand-cyanGlow mb-1 flex items-center justify-center gap-2 drop-shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+                    <div class="text-3xl font-black text-brand-cyanGlow mb-1 flex items-center justify-center gap-2 drop-shadow-[0_0_10px_rgba(0,180,216,0.3)]">
                         <i class="fa-solid fa-server text-xl"></i> +150
                     </div>
                     <span class="text-xs text-slate-400 font-bold uppercase tracking-widest">تغطية شبكات</span>
@@ -366,12 +362,13 @@
                     <h3 class="text-3xl md:text-4xl font-black text-white mb-2 drop-shadow-md" id="resultsTitle">باقات الإنترنت الدولي 🔥</h3>
                     <p class="text-sm font-semibold text-slate-400">اختر باقتك، امسح الرمز (QR)، وانطلق في رحلتك.</p>
                 </div>
-                <button type="button" aria-label="فحص توافق الهاتف" onclick="openCompatibilityModal()" class="text-xs md:text-sm text-brand-cyan hover:text-white font-bold bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/30 px-6 py-3 rounded-full transition-colors cursor-pointer backdrop-blur-sm flex items-center gap-2 shadow-[0_0_15px_rgba(6,182,216,0.1)]">
+                <button type="button" aria-label="فحص توافق الهاتف" onclick="openCompatibilityModal()" class="text-xs md:text-sm text-brand-cyan hover:text-white font-bold bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/30 px-6 py-3 rounded-full transition-colors cursor-pointer backdrop-blur-sm flex items-center gap-2 shadow-[0_0_15px_rgba(0,180,216,0.2)]">
                     <i class="fa-solid fa-mobile-screen"></i> فحص توافق جهازي
                 </button>
             </div>
             
             <div id="packagesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+                <!-- سيتم حقن الباقات الزجاجية هنا عبر api.js -->
             </div>
         </section>
     </div>
@@ -386,24 +383,25 @@
                     <h2 class="text-3xl md:text-4xl font-black text-white mb-2">حقيبة سفرك الرقمية 🧳⚡</h2>
                     <p class="text-slate-400 text-sm font-bold">إدارة الباقات، تتبع الاستهلاك، وتثبيت الشرائح الذكي.</p>
                 </div>
-                <button aria-label="عودة للرئيسية" onclick="switchView('homeView')" class="glass-pill hover:bg-white/10 text-white px-5 py-2.5 rounded-full text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5">
+                <button aria-label="عودة للرئيسية" onclick="switchView('homeView')" class="glass-pill hover:bg-white/10 text-white px-5 py-2.5 rounded-full text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 border-none">
                     <i class="fa-solid fa-arrow-right"></i> عودة للرئيسية
                 </button>
             </div>
 
             <!-- 🛡️ نظام الأدرع الذكي والمكافآت -->
             <div id="tierBannerContainer" class="glass-pill p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-slate-400 rounded-3xl relative overflow-hidden">
-                <div class="glow-overlay top-0 right-0 bg-slate-400" id="tierGlow"></div>
+                <div class="absolute top-0 right-0 w-32 h-32 bg-slate-400/10 rounded-full blur-3xl" id="tierGlow"></div>
                 <div class="flex items-center gap-5 w-full md:w-auto relative z-10">
                     <div id="tierShieldBadge" class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center shrink-0">
+                        <!-- Icon Injected by JS -->
                     </div>
                     <div class="text-right">
                         <div class="flex items-center gap-2 mb-1.5">
                             <span class="text-[10px] md:text-xs font-black tracking-widest uppercase px-2.5 py-0.5 rounded-md border" id="userTierTag">الدرع الفضي</span>
-                            <span class="text-xs font-bold text-slate-400" id="cashbackRateBadge">كاش باك 1%</span>
+                            <span class="text-xs font-bold text-brand-cyan" id="cashbackRateBadge">كاش باك 1%</span>
                         </div>
                         <h3 class="text-white text-xl md:text-2xl font-black mb-1">رصيد الكاش باك</h3>
-                        <p class="text-emerald-400 text-sm md:text-base font-black flex items-center gap-1.5" id="userWalletText">
+                        <p class="text-brand-cyan text-sm md:text-base font-black flex items-center gap-1.5" id="userWalletText">
                             <i class="fa-solid fa-wallet text-xs"></i> 0.00 AED
                         </p>
                     </div>
@@ -423,14 +421,14 @@
 
             <!-- 🎁 بطاقة كود المشاركة الحصري -->
             <div class="mb-12 w-full relative">
-                <div class="glass-pill p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-emerald-500 rounded-3xl relative overflow-hidden">
-                    <div class="glow-overlay bg-emerald-500 bottom-0 right-0"></div>
+                <div class="glass-pill p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border-t-[3px] border-brand-cyan rounded-3xl relative overflow-hidden">
+                    <div class="absolute bottom-0 right-0 w-40 h-40 bg-brand-cyan/10 rounded-full blur-3xl"></div>
                     <div class="relative z-10 text-white flex-1 text-right pl-0 md:pl-6">
-                        <div class="inline-block bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-black tracking-wide mb-3">
+                        <div class="inline-block bg-brand-cyan/20 text-brand-cyan border border-brand-cyan/30 px-3 py-1 rounded-full text-[10px] font-black tracking-wide mb-3 shadow-[0_0_10px_rgba(0,180,216,0.2)]">
                             برنامج سفراء رمال 🤝
                         </div>
                         <h3 class="text-2xl md:text-3xl font-black mb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-gift text-emerald-400"></i> شارك كودك واربح رصيداً مجانياً!
+                            <i class="fa-solid fa-gift text-brand-cyan"></i> شارك كودك واربح رصيداً مجانياً!
                         </h3>
                         <p class="text-xs md:text-sm font-semibold text-slate-300 max-w-2xl leading-relaxed">
                             أموالك ترجع لك.. شارك كودك الحصري مع أصدقائك؛ وعند إتمام صديقك أول طلب باقة ناجح عبر كودك، يُضاف رصيد نقدي فوري لمحفظتك لتستخدمه في خصم باقاتك القادمة.
@@ -439,9 +437,9 @@
                     <div class="relative z-10 bg-black/40 border border-white/10 p-3 rounded-2xl flex items-center justify-between gap-4 w-full md:w-auto min-w-[280px] shrink-0 backdrop-blur-md">
                         <div class="flex flex-col px-2">
                             <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">كود المشاركة الخاص بك</span>
-                            <span class="text-xl md:text-2xl font-black text-emerald-400 tracking-widest select-all font-mono" dir="ltr" id="referralCode">--</span>
+                            <span class="text-xl md:text-2xl font-black text-brand-cyan tracking-widest select-all font-mono drop-shadow-md" dir="ltr" id="referralCode">--</span>
                         </div>
-                        <button aria-label="نسخ الكود" onclick="copyReferralCode()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] cursor-pointer border-none transition-all active:scale-95 shrink-0" title="نسخ الكود">
+                        <button aria-label="نسخ الكود" onclick="copyReferralCode()" class="masterstroke-btn text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl cursor-pointer border-none transition-all active:scale-95 shrink-0" title="نسخ الكود">
                             <i class="fa-regular fa-copy" id="copyRefIcon"></i>
                         </button>
                     </div>
@@ -452,12 +450,13 @@
                 <i class="fa-solid fa-layer-group text-brand-cyan"></i> شرائحي الفعّالة
             </h3>
             <div id="myEsimsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- سيتم حقن البطاقات هنا من api.js -->
             </div>
         </main>
     </div>
 
     <!-- 🚀 شريط التنقل السفلي للموبايل -->
-    <nav class="md:hidden fixed bottom-4 left-4 right-4 glass-pill rounded-[2rem] flex justify-around items-center py-2.5 z-[999] shadow-lg border border-white/10">
+    <nav class="md:hidden fixed bottom-4 left-4 right-4 glass-pill rounded-[2rem] flex justify-around items-center py-2.5 z-[999] shadow-lg border border-brand-cyan/20">
         <a href="#" onclick="switchView('homeView'); return false;" class="flex flex-col items-center gap-1 text-brand-cyan w-16 text-decoration-none">
             <i class="fa-solid fa-globe text-lg"></i><span class="text-[9px] font-bold">الوجهات</span>
         </a>
@@ -472,17 +471,17 @@
     <!-- ========================================== -->
     <!-- 🌟 الفوتر (Footer) -->
     <!-- ========================================== -->
-    <footer class="bg-brand-base border-t border-white/5 pt-16 pb-24 md:pb-8 relative z-20 mt-auto">
+    <footer class="bg-brand-surface border-t border-white/5 pt-16 pb-24 md:pb-8 relative z-20 mt-auto">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 
                 <div class="col-span-1 md:col-span-1">
-                    <div class="flex items-center gap-3 mb-6 cursor-pointer">
-                        <div class="w-10 h-10 bg-brand-cyan/10 rounded-xl flex items-center justify-center border border-brand-cyan/30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                    <div class="flex items-center gap-3 mb-6 cursor-pointer" onclick="switchView('homeView')">
+                        <div class="w-10 h-10 bg-brand-cyan/10 rounded-xl flex items-center justify-center border border-brand-cyan/30 shadow-[0_0_15px_rgba(0,180,216,0.2)]">
                             <svg viewBox="0 0 400 400" class="w-6 h-6">
                                 <defs>
-                                    <linearGradient id="neonCyanFtr" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00b4d8" /><stop offset="100%" stop-color="#22d3ee" /></linearGradient>
-                                    <linearGradient id="deepBlueFtr" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0ea5e9" /><stop offset="100%" stop-color="#3b82f6" /></linearGradient>
+                                    <linearGradient id="neonCyanFtr" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#00b4d8" /><stop offset="100%" stop-color="#48cae4" /></linearGradient>
+                                    <linearGradient id="deepBlueFtr" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0077b6" /><stop offset="100%" stop-color="#023e8a" /></linearGradient>
                                 </defs>
                                 <g transform="translate(100, 70)">
                                     <path d="M 40 40 L 40 180" fill="none" stroke="url(#deepBlueFtr)" stroke-width="24" stroke-linecap="round" />
@@ -497,7 +496,7 @@
                         بنية تحتية للاتصالات تعتمد على الـ Cloud و الذكاء الاصطناعي لضمان أفضل تغطية للمسافرين حول العالم. إحدى خدمات <span class="text-white font-bold">شركة الرمال الدولية</span>.
                     </p>
                     <div class="flex gap-3">
-                        <a href="https://instagram.com/remaltourism" aria-label="انستجرام" target="_blank" class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-brand-cyan hover:text-slate-900 transition-all shadow-sm"><i class="fa-brands fa-instagram text-lg"></i></a>
+                        <a href="https://instagram.com/remaltourism" aria-label="انستجرام" target="_blank" class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-brand-cyan hover:text-white transition-all shadow-sm"><i class="fa-brands fa-instagram text-lg"></i></a>
                     </div>
                 </div>
 
@@ -506,14 +505,14 @@
                     <ul class="space-y-4 text-xs font-bold text-slate-400">
                         <li>
                             <a href="https://wa.me/971544757578" target="_blank" class="flex items-center gap-3 hover:text-brand-cyan transition-colors text-decoration-none group">
-                                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-slate-900 transition-colors">
+                                <div class="w-8 h-8 rounded-lg bg-brand-cyan/10 flex items-center justify-center text-brand-cyan group-hover:bg-brand-cyan group-hover:text-white transition-colors">
                                     <i class="fa-brands fa-whatsapp text-base"></i>
                                 </div>
                                 <span dir="ltr" class="tracking-wider">+971 54 475 7578</span>
                             </a>
                         </li>
                         <li class="flex items-center gap-3 hover:text-white transition-colors cursor-pointer group">
-                            <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-brand-cyan group-hover:text-slate-900 transition-colors">
+                            <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-brand-cyan group-hover:text-white transition-colors">
                                 <i class="fa-regular fa-envelope text-sm"></i>
                             </div>
                             <span>connect@remaltourismllc.com</span>
@@ -553,22 +552,23 @@
     </footer>
 
     <!-- ========================================== -->
-    <!-- 🌟 Modals -->
+    <!-- 🌟 Modals (Checkout, Topup, etc.) -->
     <!-- ========================================== -->
     <div id="checkoutModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-[#030712]/90 backdrop-blur-md cursor-pointer" onclick="closeCheckoutModal()"></div>
+        <div class="absolute inset-0 bg-brand-base/90 backdrop-blur-md cursor-pointer" onclick="closeCheckoutModal()"></div>
         <div class="checkout-modal w-[90%] max-w-md p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300" id="checkoutContent">
-            <button aria-label="إغلاق" onclick="closeCheckoutModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-16 h-16 bg-brand-cyan/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-brand-cyan border border-brand-cyan/20">
+            <button aria-label="إغلاق" onclick="closeCheckoutModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-brand-red hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="w-16 h-16 bg-brand-cyan/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-brand-cyan border border-brand-cyan/30 shadow-[0_0_15px_rgba(0,180,216,0.3)]">
                 <i class="fa-solid fa-cart-arrow-down text-3xl"></i>
             </div>
             <h3 class="text-2xl font-black text-white mb-6 text-center">تأكيد الشراء السريع ⚡</h3>
             
-            <div class="bg-black/40 border border-white/5 rounded-2xl p-5 mb-5 relative overflow-hidden">
+            <div class="bg-black/40 border border-white/5 rounded-2xl p-5 mb-5 relative overflow-hidden backdrop-blur-sm">
                 <div class="relative z-10">
                     <div class="flex justify-between items-center mb-3 pb-3 border-b border-white/5">
                         <span class="text-xs font-bold text-slate-400">وجهة الإنترنت:</span>
-                        <span class="text-sm font-black text-white" id="modalCountry">--</span>
+                        <span class="text-sm font-black text-white drop-shadow-md" id="modalCountry">--</span>
                     </div>
                     <div class="flex justify-between items-center mb-3 pb-3 border-b border-white/5">
                         <span class="text-xs font-bold text-slate-400">حجم البيانات:</span>
@@ -580,55 +580,56 @@
                     </div>
 
                     <div id="walletDeductionArea" class="hidden mb-3 pb-3 border-b border-white/5">
-                        <div class="flex items-center justify-between bg-emerald-950/40 border border-emerald-500/30 p-3 rounded-xl">
+                        <div class="flex items-center justify-between bg-brand-cyan/10 border border-brand-cyan/30 p-3 rounded-xl">
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="useWalletCheckbox" onchange="toggleWalletDiscount()" class="accent-emerald-400 w-4 h-4 cursor-pointer">
+                                <input type="checkbox" id="useWalletCheckbox" onchange="toggleWalletDiscount()" class="accent-brand-cyan w-4 h-4 cursor-pointer">
                                 <div class="text-right">
                                     <span class="block text-xs font-black text-white">استخدام رصيد الكاش باك</span>
-                                    <span class="block text-[10px] text-emerald-300 font-bold" id="availableWalletLabel">الرصيد: 0.00 AED</span>
+                                    <span class="block text-[10px] text-brand-cyan font-bold" id="availableWalletLabel">الرصيد: 0.00 AED</span>
                                 </div>
                             </label>
-                            <span class="text-xs font-black text-emerald-400" id="deductedAmountLabel">-0.00 AED</span>
+                            <span class="text-xs font-black text-brand-cyan drop-shadow-md" id="deductedAmountLabel">-0.00 AED</span>
                         </div>
                     </div>
 
                     <div class="flex justify-between items-center mt-4">
                         <span class="text-xs font-bold text-slate-400">المبلغ المطلوب للدفع:</span>
-                        <span class="text-3xl font-black text-white" dir="ltr"><span id="modalFinalPrice">0.00</span> <span class="text-[10px] text-brand-cyan">AED</span></span>
+                        <span class="text-3xl font-black text-white drop-shadow-[0_0_10px_rgba(0,180,216,0.3)]" dir="ltr"><span id="modalFinalPrice">0.00</span> <span class="text-[10px] text-brand-cyan">AED</span></span>
                     </div>
                 </div>
             </div>
-            <div id="checkoutActionArea"></div>
+            <!-- Action area handled by api.js -->
+            <div id="checkoutActionArea"></div> 
         </div>
     </div>
 
     <!-- 🚀 Top-Up Modal -->
     <div id="topupModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-[#030712]/90 backdrop-blur-md cursor-pointer" onclick="closeTopupModal()"></div>
-        <div class="checkout-modal w-[90%] max-w-md p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 border-t-[4px] border-brand-cyan" id="topupContent">
-            <button aria-label="إغلاق" onclick="closeTopupModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors border-none cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-16 h-16 bg-gradient-to-br from-brand-cyan to-[#1f3a40] rounded-2xl flex items-center justify-center mx-auto mb-4 text-white shadow-[0_0_20px_rgba(6,182,216,0.3)]">
-                <i class="fa-solid fa-bolt text-2xl"></i>
+        <div class="absolute inset-0 bg-brand-base/90 backdrop-blur-md cursor-pointer" onclick="closeTopupModal()"></div>
+        <div class="checkout-modal w-[90%] max-w-md p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300" id="topupContent">
+            <button aria-label="إغلاق" onclick="closeTopupModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-brand-red hover:text-white transition-colors border-none cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-16 h-16 bg-gradient-to-br from-brand-cyan to-[#023e8a] rounded-2xl flex items-center justify-center mx-auto mb-4 text-white shadow-[0_0_20px_rgba(0,180,216,0.4)]">
+                <i class="fa-solid fa-bolt text-2xl text-yellow-300"></i>
             </div>
             <h3 class="text-2xl font-black text-white mb-2 text-center">شحن رصيد البيانات ⚡</h3>
-            <p class="text-center text-xs font-bold text-slate-400 mb-6 border-b border-white/5 pb-4">الشريحة: <span id="topupIccid" class="text-white tracking-widest bg-white/5 px-2 py-0.5 rounded" dir="ltr"></span></p>
+            <p class="text-center text-xs font-bold text-slate-400 mb-6 border-b border-white/5 pb-4">الشريحة: <span id="topupIccid" class="text-brand-cyan tracking-widest bg-brand-cyan/10 px-2 py-0.5 rounded" dir="ltr"></span></p>
             
             <div class="space-y-3 mb-8">
-                <label class="flex justify-between items-center bg-black/30 border border-white/5 p-4 rounded-xl cursor-pointer hover:border-brand-cyan/50 transition-colors">
+                <label class="flex justify-between items-center bg-black/40 border border-white/5 p-4 rounded-xl cursor-pointer hover:border-brand-cyan/50 transition-colors">
                     <div class="flex items-center gap-3">
                         <input type="radio" name="topupOption" value="1|15" class="accent-brand-cyan w-4 h-4 cursor-pointer">
                         <span class="font-black text-white text-lg">1 GB</span>
                     </div>
                     <span class="font-bold text-sm text-brand-cyan">15 AED</span>
                 </label>
-                <label class="flex justify-between items-center bg-brand-cyan/10 border border-brand-cyan/40 p-4 rounded-xl cursor-pointer transition-colors shadow-[0_0_15px_rgba(6,182,216,0.1)]">
+                <label class="flex justify-between items-center bg-brand-cyan/10 border border-brand-cyan/40 p-4 rounded-xl cursor-pointer transition-colors shadow-[0_0_15px_rgba(0,180,216,0.15)]">
                     <div class="flex items-center gap-3">
                         <input type="radio" name="topupOption" value="3|35" checked class="accent-brand-cyan w-4 h-4 cursor-pointer">
-                        <span class="font-black text-white text-lg">3 GB</span>
+                        <span class="font-black text-white text-lg drop-shadow-md">3 GB</span>
                     </div>
                     <span class="font-bold text-sm text-brand-cyan">35 AED</span>
                 </label>
-                <label class="flex justify-between items-center bg-black/30 border border-white/5 p-4 rounded-xl cursor-pointer hover:border-brand-cyan/50 transition-colors">
+                <label class="flex justify-between items-center bg-black/40 border border-white/5 p-4 rounded-xl cursor-pointer hover:border-brand-cyan/50 transition-colors">
                     <div class="flex items-center gap-3">
                         <input type="radio" name="topupOption" value="5|50" class="accent-brand-cyan w-4 h-4 cursor-pointer">
                         <span class="font-black text-white text-lg">5 GB</span>
@@ -637,7 +638,7 @@
                 </label>
             </div>
             
-            <button id="confirmTopupBtn" onclick="processTopupPayment()" class="w-full masterstroke-btn text-white font-black py-4 rounded-xl shadow-[0_5px_20px_rgba(6,182,216,0.3)] transition-all active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
+            <button id="confirmTopupBtn" onclick="processTopupPayment()" class="w-full masterstroke-btn text-white font-black py-4 rounded-xl shadow-[0_5px_20px_rgba(0,180,216,0.4)] transition-all active:scale-95 flex items-center justify-center gap-2 border-none cursor-pointer text-sm">
                 الانتقال للدفع الآمن <i class="fa-solid fa-lock"></i>
             </button>
         </div>
@@ -645,18 +646,18 @@
 
     <!-- 🚀 Compatibility Modal -->
     <div id="compatibilityModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-[#030712]/90 backdrop-blur-md cursor-pointer" onclick="closeCompatibilityModal()"></div>
-        <div class="checkout-modal w-[90%] max-w-sm p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 border-t-[4px] border-white/20" id="compatibilityContent">
-            <button aria-label="إغلاق" onclick="closeCompatibilityModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-5 text-white border border-white/10"><i class="fa-solid fa-mobile-screen text-3xl"></i></div>
+        <div class="absolute inset-0 bg-brand-base/90 backdrop-blur-md cursor-pointer" onclick="closeCompatibilityModal()"></div>
+        <div class="checkout-modal w-[90%] max-w-sm p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300" id="compatibilityContent">
+            <button aria-label="إغلاق" onclick="closeCompatibilityModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-brand-red hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-5 text-white border border-white/10 shadow-inner"><i class="fa-solid fa-mobile-screen text-3xl"></i></div>
             <h3 class="text-xl font-black text-white mb-2 text-center">هل هاتفك يدعم الـ eSIM؟</h3>
             <p class="text-xs text-slate-400 font-semibold text-center mb-6 leading-relaxed">ابحث عن نوع هاتفك أدناه للتأكد من توافقه.</p>
             <form id="checkDeviceForm" onsubmit="checkDeviceCompatibility(event)">
                 <div class="relative mb-5">
-                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="deviceInput" required placeholder="مثال: iPhone 13..." class="w-full bg-black/40 border border-white/10 rounded-xl py-3.5 pr-11 pl-4 text-sm font-bold text-white outline-none focus:border-brand-cyan transition-all text-left placeholder:text-slate-500" dir="ltr">
+                    <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-brand-cyan"></i>
+                    <input type="text" id="deviceInput" required placeholder="مثال: iPhone 13..." class="w-full bg-black/40 border border-white/10 rounded-xl py-3.5 pr-11 pl-4 text-sm font-bold text-white outline-none focus:border-brand-cyan focus:shadow-[0_0_10px_rgba(0,180,216,0.2)] transition-all text-left placeholder:text-slate-500" dir="ltr">
                 </div>
-                <button type="submit" class="w-full bg-white hover:bg-slate-200 text-[#091016] font-black py-3.5 rounded-xl shadow-md transition-all active:scale-95 text-sm cursor-pointer border-none">افحص جهازي</button>
+                <button type="submit" class="w-full masterstroke-btn text-white font-black py-3.5 rounded-xl shadow-md transition-all active:scale-95 text-sm cursor-pointer border-none">افحص جهازي</button>
             </form>
             <div id="deviceResult" class="mt-5 hidden"></div>
         </div>
@@ -664,10 +665,10 @@
 
     <!-- 🚀 Instructions Modal -->
     <div id="instructionsModal" class="fixed inset-0 z-[9999] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-[#030712]/90 backdrop-blur-md cursor-pointer" onclick="closeInstructionsModal()"></div>
+        <div class="absolute inset-0 bg-brand-base/90 backdrop-blur-md cursor-pointer" onclick="closeInstructionsModal()"></div>
         <div class="checkout-modal w-[90%] max-w-xl p-6 md:p-8 relative z-10 transform translate-y-10 transition-transform duration-300 max-h-[85vh] overflow-y-auto" id="instructionsContent">
-            <button aria-label="إغلاق" onclick="closeInstructionsModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-14 h-14 bg-brand-cyan/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-brand-cyan border border-brand-cyan/20">
+            <button aria-label="إغلاق" onclick="closeInstructionsModal()" class="absolute top-4 left-4 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-brand-red hover:text-white transition-colors cursor-pointer border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-14 h-14 bg-brand-cyan/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-brand-cyan border border-brand-cyan/30 shadow-[0_0_15px_rgba(0,180,216,0.3)]">
                 <i class="fa-solid fa-book-open text-2xl"></i>
             </div>
             <h3 class="text-2xl font-black text-white mb-2 text-center">إرشادات التثبيت الرسمية 📖</h3>
