@@ -492,16 +492,16 @@ app.post('/api/fulfill-esim', async (req, res) => {
             airaloOrder = responseData;
             
         } catch (airaloError) {
-            if (airaloError.response?.status === 422 || (tx.packageId && tx.packageId.startsWith('mock_'))) {
-                finalIccid = finalIccid || `890000${Date.now().toString().slice(-9)}`;
-                airaloOrder = { sims: [{ 
-                    iccid: finalIccid, 
-                    qrcode_url: 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LPA:1$remalsim.com$TEST', 
-                    lpa: `LPA:1$smdp.io$${finalIccid}`, 
-                    direct_apple_installation_url: 'https://esimsetup.apple.com/esim_qrcode_provisioning?carddata=LPA:1$smdp.io$TEST',
-                    sharing: { link: "https://esims.cloud/remal-connect/mock-test", access_code: "1234" }
-                }] };
-            } else { return res.status(500).json({ success: false, message: 'عذراً، الخدمة غير متوفرة مؤقتاً لدى المزوّد.' }); }
+            console.error('Airalo API Error:', airaloError.response?.data || airaloError.message);
+            
+            // إرجاع حالة الطلب للتعليق لعدم ضياع حق العميل
+            tx.status = 'pending_fulfillment';
+            await tx.save();
+
+            return res.status(500).json({ 
+                success: false, 
+                message: 'عذراً، حدث تأخير في إصدار الشريحة من المزود. تم حفظ طلبك وسيقوم الدعم الفني بإصدارها لك فوراً، أو إرجاع المبلغ لمحفظتك.' 
+            });
         }
 
         let sharingLink = '';
