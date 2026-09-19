@@ -2,8 +2,8 @@
 // 🚀 الإعدادات، المتغيرات العامة، والبيانات الثابتة (Data Store)
 // ==========================================
 
-// رابط الـ API الحي المباشر (تأكد من عدم تغييره)
-const API_URL = 'https://remalsim.com';
+// 🔴 رابط الـ API الحي المباشر (الرابط الصحيح للباك إند على Render)
+const API_URL = 'https://remal-connect.onrender.com';
 
 // المتغيرات العامة (Global State)
 window.allPackages = [];
