@@ -306,7 +306,8 @@
             const fullName = document.getElementById('regName').value.trim();
             const email = emailInput.trim().toLowerCase();
             const whatsapp = document.getElementById('regPhone').value.trim();
-            const password = document.getElementById('regPassword').value;
+            // 🔴 إضافة .trim() لمنع أخطاء المسافات المنسوخة
+            const password = document.getElementById('regPassword').value.trim();
 
             try {
                 const fetchUrl = `${API_URL}/api/auth/register`; 
@@ -351,7 +352,8 @@
             btn.disabled = true;
 
             const email = emailInput.trim().toLowerCase();
-            const password = document.getElementById('logPassword').value;
+            // 🔴 إضافة .trim() لمنع أخطاء المسافات المنسوخة
+            const password = document.getElementById('logPassword').value.trim();
 
             try {
                 const fetchUrl = `${API_URL}/api/auth/login`;
