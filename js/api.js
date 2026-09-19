@@ -77,15 +77,12 @@ function renderPackages(packages, isFeatured = false) {
     let html = '';
     
     packages.forEach((pkg, index) => {
-        // تطبيق الأحمر الغامق للباقات المميزة
         const hotBadge = pkg.isHot 
             ? `<span class="bg-[#800000]/30 text-[#ff4d4d] border border-[#800000]/50 px-2.5 py-1 rounded-full text-[10px] font-black shadow-[0_0_10px_rgba(128,0,0,0.4)]">🔥 غير محدود</span>` 
             : `<span class="bg-[#00b4d8]/10 text-[#00b4d8] border border-[#00b4d8]/30 px-2.5 py-1 rounded-full text-[10px] font-bold shadow-[0_0_10px_rgba(0,180,216,0.2)]">⚡ تفعيل فوري</span>`;
             
-        // 🚀 زر "عرض المزيد" يظهر فقط في الشاشة الرئيسية لأهم 10 دول
         let moreBtn = isFeatured ? `<button onclick="searchByCountryCode('${pkg.country_code}', '${pkg.country}')" class="mt-3 w-full bg-black/40 border border-white/10 hover:border-[#00b4d8]/50 hover:bg-[#00b4d8]/10 text-slate-300 hover:text-[#00b4d8] py-2 rounded-xl text-[10px] font-bold transition-colors shadow-sm flex items-center justify-center gap-2">عرض كل باقات ${pkg.country} <i class="fa-solid fa-arrow-left text-[9px]"></i></button>` : '';
 
-        // تم إزالة style="opacity: 0" من الـ div لكي تظهر البطاقات بشكل طبيعي
         html += `
         <div class="bg-black/40 backdrop-blur-xl border border-white/5 hover:border-[#00b4d8]/30 rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,180,216,0.15)] group">
             <div>
@@ -131,11 +128,9 @@ function renderPackages(packages, isFeatured = false) {
                         </button>
                     </div>
                 </div>
-                <!-- 🚀 زر التفاصيل المتقدمة (يستدعي مسار Product Information) -->
                 <button onclick="fetchPackageDetails('${pkg.id}')" class="mb-3 bg-transparent border border-white/10 hover:border-[#00b4d8]/50 text-slate-300 hover:text-[#00b4d8] px-5 py-1.5 rounded-xl font-bold text-[10px] transition-colors cursor-pointer flex items-center justify-center gap-1.5">
                     تفاصيل الشبكة <i class="fa-solid fa-circle-info"></i>
                 </button>
-                <!-- إضافة زر عرض المزيد هنا -->
                 ${moreBtn}
             </div>
         </div>`;
@@ -154,7 +149,6 @@ async function fetchPackageDetails(slug) {
         const data = await res.json();
         
         if(data.success && data.info) {
-            // تجهيز البيانات بشكل أنيق
             const providers = data.info.network_providers && data.info.network_providers.length > 0 ? data.info.network_providers.join(' - ') : 'غير محدد';
             const speeds = data.info.network_technologies && data.info.network_technologies.length > 0 ? data.info.network_technologies.join(' - ') : 'غير محدد';
             const hasFup = data.info.is_fair_usage_policy;
@@ -163,7 +157,6 @@ async function fetchPackageDetails(slug) {
             const fupIconColor = hasFup ? 'bg-amber-500/10' : 'bg-emerald-500/10';
             const fupIcon = hasFup ? 'fa-scale-balanced' : 'fa-infinity';
 
-            // حقن البيانات في النافذة الزجاجية
             const modalBody = document.getElementById('networkDetailsBody');
             if(modalBody) {
                 modalBody.innerHTML = `
@@ -191,7 +184,6 @@ async function fetchPackageDetails(slug) {
                 `;
             }
 
-            // إظهار النافذة
             const m = document.getElementById('networkDetailsModal'), c = document.getElementById('networkDetailsContent');
             if(m && c){ 
                 m.classList.remove('hidden'); 
@@ -206,7 +198,6 @@ async function fetchPackageDetails(slug) {
     }
 }
 
-// دالة إغلاق نافذة تفاصيل الشبكة
 function closeNetworkDetailsModal() { 
     const m = document.getElementById('networkDetailsModal'), c = document.getElementById('networkDetailsContent'); 
     if(m && c){ 
@@ -216,11 +207,58 @@ function closeNetworkDetailsModal() {
 }
 
 // ==========================================
-// 🚀 عرض الشرائح المشتراة (My eSIMs Dashboard)
+// 🚀 عرض الشرائح المشتراة (مع المزامنة السحابية)
 // ==========================================
-function renderMyEsims() {
+async function renderMyEsims() {
     const container = document.getElementById('myEsimsContainer');
     if(!container) return;
+
+    // 1. عرض علامة تحميل (Loading) أثناء المزامنة
+    container.innerHTML = `<div class="col-span-full text-center py-12"><i class="fa-solid fa-spinner fa-spin text-4xl text-brand-cyan mb-4 drop-shadow-[0_0_15px_rgba(0,180,216,0.6)]"></i><p class="text-slate-300 font-bold tracking-wide">جاري مزامنة حقيبتك الرقمية مع السيرفر...</p></div>`;
+
+    const user = typeof getSavedUser === 'function' ? getSavedUser() : null;
+    
+    // 2. مزامنة البيانات من السيرفر
+    if (user && user.email) {
+        try {
+            const res = await fetch(`${API_URL}/api/user/esims?email=${user.email}`);
+            const data = await res.json();
+            
+            if (data.success && data.orders) {
+                let localEsims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
+                
+                data.orders.forEach(order => {
+                    if (!order.packageId.startsWith('topup_')) {
+                        const exists = localEsims.find(e => e.iccid === order.iccid);
+                        if (!exists) {
+                            let pkgInfo = window.allPackages ? window.allPackages.find(p => p.id === order.packageId) : null;
+                            localEsims.unshift({
+                                iccid: order.iccid,
+                                packageId: order.packageId,
+                                country: pkgInfo ? pkgInfo.country : 'باقة إنترنت',
+                                flag: pkgInfo ? pkgInfo.flag : '🌍',
+                                date: new Date(order.createdAt).toISOString().split('T')[0],
+                                totalBytes: 1024,
+                                usedBytes: 0,
+                                qrUrl: "", 
+                                lpa: `LPA:1$smdp.io$${order.iccid}`,
+                                cloudLink: order.esimsCloudLink || null,
+                                cloudCode: order.esimsCloudAccessCode || null
+                            });
+                        } else {
+                            exists.cloudLink = order.esimsCloudLink || exists.cloudLink;
+                            exists.cloudCode = order.esimsCloudAccessCode || exists.cloudCode;
+                        }
+                    }
+                });
+                localStorage.setItem('rimal_my_esims', JSON.stringify(localEsims));
+            }
+        } catch (err) {
+            console.error('فشل مزامنة الشرائح:', err);
+        }
+    }
+
+    // 3. رسم الواجهة
     const esims = JSON.parse(localStorage.getItem('rimal_my_esims')) || [];
     
     if (esims.length === 0) {
@@ -257,6 +295,11 @@ function renderMyEsims() {
                 </a>
             </div>`;
         }
+
+        // معالجة ذكية لصورة الباركود
+        let qrDisplay = esim.qrUrl 
+            ? `<img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />` 
+            : `<div class="w-full h-full flex flex-col items-center justify-center text-center p-2"><i class="fa-solid fa-qrcode text-3xl text-slate-600 mb-2"></i><span class="text-[9px] font-bold text-slate-500">تم تثبيت الشريحة<br>استخدم رمز التفعيل اليدوي أدناه إذا لزم الأمر</span></div>`;
 
         html += `
         <div class="bg-black/40 backdrop-blur-xl border border-white/5 hover:border-[#00b4d8]/20 p-6 md:p-8 flex flex-col md:flex-row gap-8 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.4)] mb-6 transition-colors">
@@ -304,14 +347,11 @@ function renderMyEsims() {
             </div>
             
             <div class="w-full md:w-2/5 flex flex-col items-center justify-center border-t md:border-t-0 md:border-r border-white/10 pt-6 md:pt-0 md:pr-6 relative">
-                <div class="bg-white p-2 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.1)] mb-4 w-44 h-44 z-10">
-                    <img src="${esim.qrUrl}" alt="QR Code" class="w-full h-full object-cover rounded-xl" />
+                <div class="bg-white p-2 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.1)] mb-4 w-44 h-44 z-10 flex items-center justify-center overflow-hidden">
+                    ${qrDisplay}
                 </div>
                 <button aria-label="تثبيت ذكي" onclick="if(typeof installSmartEsim==='function') installSmartEsim('${lpaString}')" class="w-full bg-white text-black py-3 rounded-xl font-black text-xs shadow-md flex items-center justify-center gap-2 border-none cursor-pointer hover:bg-gray-200 transition-colors relative z-10 mb-2.5">
                     <i class="fa-brands fa-apple text-sm"></i> تثبيت تلقائي للآيفون
-                </button>
-                <button aria-label="تحميل QR" onclick="if(typeof downloadQrCode==='function') downloadQrCode('${esim.qrUrl}', '${esim.country}')" class="w-full bg-black hover:bg-[#0A101C] text-white py-2.5 rounded-xl font-black text-[11px] flex items-center justify-center gap-2 border border-slate-700 cursor-pointer transition-colors relative z-10 mb-4 shadow-sm">
-                    <i class="fa-solid fa-download text-[#00b4d8]"></i> حفظ رمز QR في الصور
                 </button>
                 <div class="w-full bg-[#00b4d8]/10 p-3 rounded-xl border border-[#00b4d8]/30 text-right">
                     <p class="text-[9px] text-[#00b4d8] font-bold mb-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> رمز التثبيت اليدوي (LPA):</p>
@@ -422,9 +462,6 @@ async function verifyPaymentAndFulfill() {
     }
 }
 
-// ==========================================
-// 🚀 الأدوات المساعدة (Helpers)
-// ==========================================
 function installSmartEsim(lpaString) {
     if (!lpaString) return; navigator.clipboard.writeText(lpaString).catch(() => {});
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) { 
