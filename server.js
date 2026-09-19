@@ -16,7 +16,14 @@ const app = express();
 const APP_URL = process.env.APP_URL || 'https://remalsim.com';
 
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+
+// 🔴 تحديث إعدادات CORS للسماح بالاتصال من الواجهة الجديدة بأمان
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.static(__dirname));
 
 app.get('/api/health', (req, res) => {
@@ -151,7 +158,6 @@ app.post('/api/auth/login', async (req, res) => {
     } catch (error) { res.status(500).json({ success: false, message: 'خطأ داخلي' }); }
 });
 
-// 🔴 إضافة مسار استعادة كلمة المرور
 app.post('/api/auth/forgot-password', async (req, res) => {
     try {
         const email = req.body.email.trim().toLowerCase();
