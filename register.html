@@ -229,9 +229,8 @@
     </main>
 
     <script>
-        // 🔴 تحديث مهم: يجب أن يشير هذا المتغير إلى رابط الباك إند الخاص بـ remal-connect على Render. 
-        // لقد تركته فارغاً إذا كان التطبيق مدمجاً (Full-stack)، ولكن إذا كان السيرفر منفصلاً، ضع رابطه هنا.
-        const API_URL = 'https://remal-connect-api.onrender.com'; // استبدل هذا برابط السيرفر الصحيح إذا لزم الأمر، أو اتركه فارغاً '' إذا كان السيرفر مدمجاً
+        // 🔴 التعديل النهائي الفعال والمثالي
+        const API_URL = 'https://remal-connect.onrender.com';
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toastMsg');
@@ -310,8 +309,7 @@
             const password = document.getElementById('regPassword').value;
 
             try {
-                // استخدام المسار الصحيح وإزالة /api الزائدة إذا كانت مكررة
-                const fetchUrl = API_URL ? `${API_URL}/api/auth/register` : '/api/auth/register'; 
+                const fetchUrl = `${API_URL}/api/auth/register`; 
                 const res = await fetch(fetchUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -356,7 +354,7 @@
             const password = document.getElementById('logPassword').value;
 
             try {
-                const fetchUrl = API_URL ? `${API_URL}/api/auth/login` : '/api/auth/login';
+                const fetchUrl = `${API_URL}/api/auth/login`;
                 const res = await fetch(fetchUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -397,7 +395,7 @@
             btn.disabled = true;
 
             try {
-                const fetchUrl = API_URL ? `${API_URL}/api/auth/forgot-password` : '/api/auth/forgot-password';
+                const fetchUrl = `${API_URL}/api/auth/forgot-password`;
                 const res = await fetch(fetchUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
