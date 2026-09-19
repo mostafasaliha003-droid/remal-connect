@@ -98,7 +98,7 @@ const AiraloPackage = mongoose.model('AiraloPackage', packageSchema);
 // ==========================================
 // مسارات الحسابات وسجل المشتريات
 // ==========================================
-app.post('/api/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
     try {
         const { fullName, email, whatsapp, password, referredBy } = req.body;
         const cleanEmail = email.trim().toLowerCase();
@@ -129,7 +129,7 @@ app.post('/api/register', async (req, res) => {
     } catch (error) { res.status(500).json({ success: false, message: 'خطأ داخلي' }); }
 });
 
-app.post('/api/login', async (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         const cleanEmail = email.trim().toLowerCase();
@@ -149,6 +149,42 @@ app.post('/api/login', async (req, res) => {
             success: true, user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, walletBalance: user.walletBalance || 0, purchasesCount: user.purchasesCount || 0, referralCode: user.referralCode }
         });
     } catch (error) { res.status(500).json({ success: false, message: 'خطأ داخلي' }); }
+});
+
+// 🔴 إضافة مسار استعادة كلمة المرور
+app.post('/api/auth/forgot-password', async (req, res) => {
+    try {
+        const email = req.body.email.trim().toLowerCase();
+        const user = await User.findOne({ email });
+        
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'البريد الإلكتروني غير مسجل لدينا' });
+        }
+
+        const tempPassword = Math.random().toString(36).slice(-8);
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(tempPassword, salt);
+        await user.save();
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'استعادة كلمة المرور - Remal Connect',
+            text: `أهلاً بك،\n\nكلمة المرور المؤقتة الخاصة بحسابك هي: ${tempPassword}\n\nيرجى تسجيل الدخول وتغييرها فوراً من إعدادات حسابك.\n\nمع تحيات،\nفريق Remal Connect`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error("Email Error:", error);
+                return res.status(500).json({ success: false, message: 'فشل إرسال البريد الإلكتروني. يرجى المحاولة لاحقاً أو التحقق من إعدادات السيرفر.' });
+            }
+            res.json({ success: true, message: 'تم إرسال كلمة المرور المؤقتة إلى بريدك الإلكتروني.' });
+        });
+
+    } catch (error) {
+        console.error("Forgot Password Error:", error);
+        res.status(500).json({ success: false, message: 'حدث خطأ في الخادم' });
+    }
 });
 
 app.get('/api/user/profile', async (req, res) => {
@@ -421,10 +457,14 @@ app.post('/api/checkout', async (req, res) => {
         try {
             const user = await User.findOne({ email: cleanEmail });
             if (!user || (user.walletBalance || 0) < walletDeducted) return res.status(400).json({ success: false, message: 'رصيد المحفظة غير كافٍ لإتمام الطلب' });
+            
+            // خصم الرصيد مبدئياً
             user.walletBalance = Math.max(0, user.walletBalance - walletDeducted); await user.save();
+            
             const referenceId = `WAL-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-            const newTx = new Transaction({ referenceId, customerEmail: cleanEmail, packageId: packageId || 'package_default', sellingPrice: 0, walletDeducted: walletDeducted, apiCost: 0, status: 'pending_fulfillment' });
+            const newTx = new Transaction({ referenceId, customerEmail: cleanEmail, packageId: packageId || 'package_default', sellingPrice: walletDeducted, walletDeducted: walletDeducted, apiCost: 0, status: 'pending_fulfillment' });
             await newTx.save();
+            
             return res.json({ success: true, walletPaid: true, paymentUrl: `${APP_URL}/index.html?payment=success&ref=${referenceId}`, referenceId, message: 'تم خصم المبلغ من المحفظة بنجاح' });
         } catch (err) { return res.status(500).json({ success: false, message: 'تعذر الدفع عبر المحفظة' }); }
     }
@@ -433,8 +473,10 @@ app.post('/api/checkout', async (req, res) => {
 
     try {
         const referenceId = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-        const newTx = new Transaction({ referenceId, customerEmail: cleanEmail, packageId: packageId || 'package_default', sellingPrice: price, walletDeducted: walletDeducted, apiCost: 0, status: 'pending_payment' });
+        // 🔴 تحديث مهم: حفظ السعر الإجمالي في sellingPrice
+        const newTx = new Transaction({ referenceId, customerEmail: cleanEmail, packageId: packageId || 'package_default', sellingPrice: price + walletDeducted, walletDeducted: walletDeducted, apiCost: 0, status: 'pending_payment' });
         await newTx.save();
+        
         const amountInFils = Math.round(price * 100);
         const ziinaPayload = { amount: amountInFils, currency_code: 'AED', message: referenceId, success_url: `${APP_URL}/index.html?payment=success&ref=${referenceId}`, cancel_url: `${APP_URL}/index.html?payment=failed`, failure_url: `${APP_URL}/index.html?payment=failed`, test: false };
         const ziinaResponse = await axios.post('https://api-v2.ziina.com/api/payment_intent', ziinaPayload, { headers: { 'Authorization': `Bearer ${process.env.ZIINA_API_KEY}`, 'Content-Type': 'application/json' } });
@@ -443,25 +485,37 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // ==========================================
-// استخراج الشريحة (ذكي: يفرق بين شريحة جديدة و إعادة الشحن)
+// استخراج الشريحة (المعدل والقوي لحماية المشتريات)
 // ==========================================
 app.post('/api/fulfill-esim', async (req, res) => {
     const { referenceId, packageId, customerEmail } = req.body;
+    
+    if (!referenceId) {
+        return res.status(400).json({ success: false, message: 'رقم المرجع مطلوب لإتمام الطلب' });
+    }
+
     try {
         let tx = await Transaction.findOne({ referenceId });
+        
         if (!tx) {
-            if (referenceId && referenceId.startsWith('WAL-')) {
+            if (referenceId.startsWith('WAL-')) {
                 tx = new Transaction({ referenceId, customerEmail: customerEmail || 'guest@remalsim.com', packageId: packageId || 'package_default', sellingPrice: 0, status: 'pending_fulfillment' });
                 await tx.save();
-            } else { return res.status(404).json({ success: false, message: 'الطلب غير موجود' }); }
+            } else { 
+                return res.status(404).json({ success: false, message: 'الطلب غير موجود في النظام.' }); 
+            }
         }
 
-        if (tx.status === 'success') return res.json({ success: true, message: 'تم الإصدار مسبقاً' });
+        // منع التكرار والإصدار المزدوج
+        if (tx.status === 'success') {
+             return res.json({ success: true, message: 'تم الإصدار مسبقاً', is_topup: tx.packageId.startsWith('topup_'), iccid: tx.iccid });
+        }
 
-        if (tx.walletDeducted > 0 && !referenceId.startsWith('WAL-')) {
+        if (tx.walletDeducted > 0 && tx.status === 'pending_payment' && !referenceId.startsWith('WAL-')) {
             const buyer = await User.findOne({ email: tx.customerEmail });
             if (buyer && buyer.walletBalance >= tx.walletDeducted) {
-                buyer.walletBalance = Math.max(0, buyer.walletBalance - tx.walletDeducted); await buyer.save();
+                buyer.walletBalance = Math.max(0, buyer.walletBalance - tx.walletDeducted); 
+                await buyer.save();
             }
         }
 
@@ -493,14 +547,12 @@ app.post('/api/fulfill-esim', async (req, res) => {
             
         } catch (airaloError) {
             console.error('Airalo API Error:', airaloError.response?.data || airaloError.message);
-            
-            // إرجاع حالة الطلب للتعليق لعدم ضياع حق العميل
             tx.status = 'pending_fulfillment';
             await tx.save();
 
             return res.status(500).json({ 
                 success: false, 
-                message: 'عذراً، حدث تأخير في إصدار الشريحة من المزود. تم حفظ طلبك وسيقوم الدعم الفني بإصدارها لك فوراً، أو إرجاع المبلغ لمحفظتك.' 
+                message: 'عذراً، حدث تأخير في إصدار الشريحة. تم حفظ طلبك وسيقوم الدعم الفني بمعالجته فوراً.' 
             });
         }
 
@@ -540,11 +592,15 @@ app.post('/api/fulfill-esim', async (req, res) => {
             earnedCashback = parseFloat((tx.sellingPrice * cashbackRate).toFixed(2));
             buyer.walletBalance = parseFloat(((buyer.walletBalance || 0) + earnedCashback).toFixed(2));
             buyer.purchasesCount = currentPurchases + 1;
+            
             if (!buyer.hasCompletedFirstPurchase) {
                 buyer.hasCompletedFirstPurchase = true;
                 if (buyer.referredBy) {
                     const referrer = await User.findOne({ referralCode: buyer.referredBy });
-                    if (referrer) { referrer.walletBalance = parseFloat(((referrer.walletBadge || referrer.walletBalance || 0) + 1.00).toFixed(2)); await referrer.save(); }
+                    if (referrer) { 
+                        referrer.walletBalance = parseFloat(((referrer.walletBalance || 0) + 1.00).toFixed(2)); 
+                        await referrer.save(); 
+                    }
                 }
             }
             await buyer.save();
@@ -564,7 +620,10 @@ app.post('/api/fulfill-esim', async (req, res) => {
             newPurchasesCount: buyer ? buyer.purchasesCount : 0 
         });
 
-    } catch (error) { res.status(500).json({ success: false, message: 'فشل تسليم الشريحة بسبب مشكلة تقنية' }); }
+    } catch (error) { 
+        console.error("Fulfill Server Error:", error.message);
+        res.status(500).json({ success: false, message: 'فشل تسليم الشريحة بسبب مشكلة تقنية' }); 
+    }
 });
 
 app.get('/api/airalo/instructions/:iccid', async (req, res) => {
